@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karol Grove — Premium Dry Fruits & Nuts</title>
+<meta name="description" content="Karol Grove brings you premium, hand-picked dry fruits, nuts, seeds and natural sweeteners — 100% natural, freshly packed, delivered to your doorstep.">
+<link rel="icon" href="assets/karol-grove-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/translations.js" defer></script>
+</head>
+<body>
+
+<canvas id="vfx-canvas"></canvas>
+
+<div class="brand-strip"></div>
+<div class="topbar">
+  <div class="container topbar-inner">
+    <div class="topbar-left">
+      <a href="tel:9384169322" class="topbar-item">&#128222; 9384169322</a>
+      <a href="mailto:karolgrovenuts@gmail.com" class="topbar-item">&#9993; karolgrovenuts@gmail.com</a>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-item">&#127807; 100% Natural &amp; Fresh &bull; Pan-India Delivery</span>
+    </div>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="brand">
+      <img src="assets/karol-grove-logo-full.png" alt="Karol Grove Premium Dry Fruits & Nuts" class="brand-logo-img">
+      <div class="brand-text">
+        <span class="brand-name">Karol Grove</span>
+        <span class="brand-tagline">Premium Dry Fruits &amp; Nuts</span>
+      </div>
+    </a>
+          <nav class="main-nav">
+        <a href="index.html" class="active" data-tr="nav_home">Home</a>
+        <a href="products.html" data-tr="nav_products">Products</a>
+        <a href="pricelist.html" data-tr="nav_pricelist">Price List</a>
+        <a href="contact.html" data-tr="nav_contact">Contact</a>
+        <a href="about.html" data-tr="nav_about">About</a>
+      </nav>
+    <a class="header-cta" href="https://wa.me/+919384169322" target="_blank" rel="noopener"><span data-tr="cta_whatsapp">Order on WhatsApp</span> &rarr;</a>
+    <button class="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+      <div class="mobile-nav" id="mobileNav">
+      <a href="index.html" class="active" data-tr="nav_home">Home</a>
+      <a href="products.html" data-tr="nav_products">Products</a>
+      <a href="pricelist.html" data-tr="nav_pricelist">Price List</a>
+      <a href="contact.html" data-tr="nav_contact">Contact</a>
+      <a href="about.html" data-tr="nav_about">About</a>
+    </div>
+</header>
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="reveal reveal-up">
+      <span class="eyebrow" data-tr="hero_eyebrow">Premium Dry Fruits &amp; Nuts</span>
+      <h1 data-tr="hero_title">Nature's harvest,<br><em>handpicked</em> for you.</h1>
+      <p class="lede" data-tr="hero_desc">From orchard to your doorstep — almonds, cashews, dates, seeds and more, sourced with care and packed with honesty. No shortcuts, no additives, just pure, wholesome nutrition.</p>
+      <div class="hero-actions">
+        <a href="products.html" class="btn btn-primary" data-tr="explore_btn">Explore Products</a>
+        <a href="https://wa.me/+919384169322" target="_blank" rel="noopener" class="btn btn-secondary" data-tr="order_now_btn">Order Now</a>
+      </div>
+      <div class="trust-row">
+        <span class="trust-item"><span class="dot">&#127807;</span> <span data-tr="natural_badge">100% Natural</span></span>
+        <span class="trust-item"><span class="dot">&#9889;</span> <span data-tr="source_badge">Direct Sourcing</span></span>
+        <span class="trust-item"><span class="dot">&#128230;</span> <span data-tr="pack_badge">Fresh Packaging</span></span>
+      </div>
+    </div>
+    <div class="hero-art reveal reveal-scale">
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="tin-frame tilt-card">
+        <video autoplay muted loop playsinline poster="assets/karol-grove-pouch-hd.jpg" class="hero-video">
+          <source src="assets/hero-video.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="hero-badge">100%<br>Natural</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="feature-strip">
+  <div class="container feature-grid reveal reveal-up">
+    <div class="feature-item">
+      <span class="icon">&#127807;</span>
+      <div>
+        <h3>100% Natural</h3>
+        <p>No artificial preservatives or chemical additives</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="icon">&#11088;</span>
+      <div>
+        <h3>Premium Quality</h3>
+        <p>Hand-picked from the finest orchards</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="icon">&#128666;</span>
+      <div>
+        <h3>Fresh Delivery</h3>
+        <p>Expert packaging shipped straight to you</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO ORDER GUIDE SECTION -->
+<section class="section section-how-to-order section-cream-deep">
+  <div class="container">
+    <div class="section-head reveal reveal-up">
+      <span class="eyebrow" data-tr="how_to_order_eyebrow">Ordering Guide</span>
+      <h2 data-tr="how_to_order_title">How to Order in <em>3 Simple Steps</em></h2>
+      <p data-tr="how_to_order_desc">Building your basket and placing an order takes less than a minute.</p>
+    </div>
+    <div class="how-to-grid">
+      <div class="how-to-card reveal reveal-up">
+        <div class="step-num">01</div>
+        <div class="step-icon">🛒</div>
+        <h3 data-tr="how_to_order_step1_title">Add to Your Order</h3>
+        <p data-tr="how_to_order_step1_desc">Browse our catalog or price list. Click <strong>Add to WhatsApp Order</strong> or click any price badge to choose your size.</p>
+      </div>
+      <div class="how-to-card reveal reveal-up">
+        <div class="step-num">02</div>
+        <div class="step-icon">📦</div>
+        <h3 data-tr="how_to_order_step2_title">Review Your Basket</h3>
+        <p data-tr="how_to_order_step2_desc">A floating cart will appear in the bottom-right. Click it to adjust quantities, weights, or remove items at any time.</p>
+      </div>
+      <div class="how-to-card reveal reveal-up">
+        <div class="step-num">03</div>
+        <div class="step-icon">💬</div>
+        <h3 data-tr="how_to_order_step3_title">Confirm on WhatsApp</h3>
+        <p data-tr="how_to_order_step3_desc">Click <strong>Send WhatsApp Order</strong>. We'll receive your pre-filled cart list automatically to finalize delivery and payment!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAUNCHING OFFER BANNER SECTION -->
+<section class="section section-offer">
+  <div class="container">
+    <div class="offer-banner-card reveal reveal-scale">
+      <div class="offer-banner-grid">
+        <div class="offer-banner-img-frame">
+          <img src="assets/karol-grove-logo-tree.jpg" alt="Karol Grove Premium Dry Fruits & Nuts" class="offer-banner-img">
+        </div>
+        <div class="offer-banner-content">
+          <span class="offer-badge-tag">LIMITED TIME OFFER</span>
+          <h2>Grand Launching Offer!</h2>
+          <p class="offer-quote">“Wholesome, natural energy to power your daily life — direct from orchards to you, now with our special launch savings.”</p>
+          <div class="offer-discount-box">
+            <span class="discount-upto">UP TO</span>
+            <span class="discount-value">40% OFF</span>
+            <span class="discount-products">ON SELECTIVE PRODUCTS</span>
+          </div>
+          <div class="offer-actions">
+            <a href="products.html" class="btn btn-primary-offer">Browse Selective Products &rarr;</a>
+          </div>
+          <p class="tc-text">*Conditions apply. Offers are valid on selected premium items. Discount applied automatically during order checkout on WhatsApp.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal reveal-up">
+      <span class="eyebrow" data-tr="promise_eyebrow">Our promise</span>
+      <h2 data-tr="promise_title">Why choose <em>Karol Grove</em>?</h2>
+    </div>
+    <div class="why-grid">
+      <div class="glass-card why-card tilt-card reveal reveal-up">
+        <div class="icon">&#9989;</div>
+        <div class="num">01</div>
+        <h3 data-tr="why_card_1_title">Quality Assurance</h3>
+        <p data-tr="why_card_1_desc">Every product undergoes rigorous sorting and packaging checks before reaching you.</p>
+      </div>
+      <div class="glass-card why-card tilt-card reveal reveal-up">
+        <div class="icon">&#127806;</div>
+        <div class="num">02</div>
+        <h3 data-tr="why_card_2_title">Direct Sourcing</h3>
+        <p data-tr="why_card_2_desc">We work closely with certified organic growers to offer the finest harvests at fair prices.</p>
+      </div>
+      <div class="glass-card why-card tilt-card reveal reveal-up">
+        <div class="icon">&#127807;</div>
+        <div class="num">03</div>
+        <h3 data-tr="why_card_3_title">Natural Processing</h3>
+        <p data-tr="why_card_3_desc">No artificial sweeteners, sulfur processing, or oil additions — only pure nature.</p>
+      </div>
+      <div class="glass-card why-card tilt-card reveal reveal-up">
+        <div class="icon">&#128230;</div>
+        <div class="num">04</div>
+        <h3 data-tr="why_card_4_title">Premium Packing</h3>
+        <p data-tr="why_card_4_desc">Specially engineered airtight storage keeps the crunch alive and flavor lock-tight.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE PROCESS -->
+<section class="section section-cream-deep">
+  <div class="container">
+    <div class="section-head reveal reveal-up">
+      <span class="eyebrow" data-tr="journey_eyebrow">Our Journey</span>
+      <h2 data-tr="journey_title">How We Bring You the Best</h2>
+      <p data-tr="journey_desc">A meticulous path from natural orchards to your doorstep, maintaining peak hygiene and quality.</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal reveal-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h3 data-tr="jt_1_title">01. Handpicked Sourcing</h3>
+          <p data-tr="jt_1_desc">We work directly with certified farmers globally to source top-tier, raw ingredients at optimal harvest times.</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal reveal-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h3 data-tr="jt_2_title">02. Quality Sorting</h3>
+          <p data-tr="jt_2_desc">Every batch is checked manually and sorted to weed out flaws and ensure grade-A size fruits and nuts.</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal reveal-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h3 data-tr="jt_3_title">03. Sealed Packaging</h3>
+          <p data-tr="jt_3_desc">Packed under strict humidity parameter inside premium jars/pouches, locking in crunchiness and essential nutrients.</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal reveal-up">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <h3 data-tr="jt_4_title">04. Prompt Delivery</h3>
+          <p data-tr="jt_4_desc">Freshly packed batches are shipped through our express logistics network directly to your doorstep.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal reveal-up">
+      <span class="eyebrow" data-tr="offer_eyebrow">From our grove</span>
+      <h2 data-tr="offer_title">What we offer</h2>
+      <p data-tr="offer_desc">A rich selection of health, taste, and nutrition for the whole family.</p>
+    </div>
+    <div class="offer-grid">
+      <div class="glass-card offer-card tilt-card reveal reveal-up">
+        <span class="icon">&#129372;</span>
+        <span class="tag" data-tr="offer_tag_1">Nuts &amp; Berries</span>
+        <h3 data-tr="offer_card_1_title">Dry Fruits &amp; Berries</h3>
+        <p data-tr="offer_card_1_desc">Almonds, Cashews, Pistachios, Raisins, Dates, Cranberries, Blueberries, Mango &amp; more.</p>
+      </div>
+      <div class="glass-card offer-card tilt-card reveal reveal-up">
+        <span class="icon">&#127817;</span>
+        <span class="tag" data-tr="offer_tag_2">Snacking</span>
+        <h3 data-tr="offer_card_2_title">Flavored Nuts</h3>
+        <p data-tr="offer_card_2_desc">Pepper Cashews, Chilli Cashews, Honey Almonds, Mixed Nuts.</p>
+      </div>
+      <div class="glass-card offer-card tilt-card reveal reveal-up">
+        <span class="icon">&#127793;</span>
+        <span class="tag" data-tr="offer_tag_3">Wellness</span>
+        <h3 data-tr="offer_card_3_title">Healthy Seeds</h3>
+        <p data-tr="offer_card_3_desc">Chia, Sunflower, Pumpkin, Sabja, Flax, Watermelon.</p>
+      </div>
+      <div class="glass-card offer-card tilt-card reveal reveal-up">
+        <span class="icon">&#127814;</span>
+        <span class="tag" data-tr="offer_tag_4">Pantry</span>
+        <h3 data-tr="offer_card_4_title">Spices</h3>
+        <p data-tr="offer_card_4_desc">Cardamom, Pepper, Cinnamon, Cloves.</p>
+      </div>
+      <div class="glass-card offer-card tilt-card reveal reveal-up">
+        <span class="icon">&#129469;</span>
+        <span class="tag" data-tr="offer_tag_5">Natural</span>
+        <h3 data-tr="offer_card_5_title">Natural Sweeteners</h3>
+        <p data-tr="offer_card_5_desc">Palm Sugar, Palm Candy, Jaggery, Honey, Brown Sugar.</p>
+      </div>
+      <div class="glass-card offer-card tilt-card reveal reveal-up">
+        <span class="icon">&#127873;</span>
+        <span class="tag" data-tr="offer_tag_6">Gifting</span>
+        <h3 data-tr="offer_card_6_title">Gift Packs</h3>
+        <p data-tr="offer_card_6_desc">Mixed Dry Fruits, Festival Hampers, Corporate Gifts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CORPORATE GIFTING SECTION -->
+<section class="section section-corporate">
+  <div class="container">
+    <div class="corporate-card reveal reveal-scale">
+      <div class="corporate-grid">
+        <!-- Left Side: Poster image -->
+        <div class="corporate-img-frame">
+          <img src="assets/corporate-gift-poster-v3.png" alt="Karol Grove Corporate Gifts - Custom Hampers & Exclusive Offers" class="corporate-poster-img">
+        </div>
+        <!-- Right Side: Text & Form -->
+        <div class="corporate-content">
+          <span class="corporate-badge">Corporate Gifting</span>
+          <h2>Exclusive Offers for Corporate Gifts</h2>
+          <p class="corporate-desc">Make a lasting impression on your clients, partners, and employees with our premium, handpicked dry fruits and custom festival hampers. Tailored to your branding, theme, and budget specifications.</p>
+          
+          <!-- Request Quotation Form -->
+          <form id="corporateQuoteForm" class="corporate-form">
+            <div class="form-title">Request a Custom Quotation</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="corpMobile">Mobile Number <span class="required">*</span></label>
+                <input type="tel" id="corpMobile" placeholder="e.g. 9876543210" required>
+              </div>
+              <div class="form-group">
+                <label for="corpEmail">Email Address <span class="required">*</span></label>
+                <input type="email" id="corpEmail" placeholder="e.g. corporate@company.com" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-corporate-submit">Send for Quotation &rarr;</button>
+            <div id="formStatus" class="form-status"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-banner reveal reveal-scale">
+      <div>
+        <h2 data-tr="ready_title">Ready to taste the difference?</h2>
+        <p data-tr="ready_desc">Assemble your cart in our catalog and place your order on WhatsApp instantly.</p>
+      </div>
+      <a href="products.html" class="btn btn-primary" data-tr="browse_add_btn">Browse &amp; Add Items &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="assets/karol-grove-logo-full.png" alt="Karol Grove Premium Dry Fruits & Nuts" class="footer-logo-img">
+          <div class="footer-brand-text">
+            <span class="footer-brand-name">Karol Grove</span>
+            <span class="footer-brand-tagline">Premium Dry Fruits &amp; Nuts</span>
+          </div>
+        </div>
+        <p data-tr="footer_desc">Premium dry fruits, nuts, seeds and natural sweeteners — handpicked, honest, and delivered fresh to your door.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-tr="footer_links_title">Quick Links</h4>
+        <a href="index.html" data-tr="nav_home">Home</a>
+        <a href="products.html" data-tr="nav_products">Products</a>
+        <a href="pricelist.html" data-tr="nav_pricelist">Price List</a>
+        <a href="contact.html" data-tr="nav_contact">Contact</a>
+        <a href="about.html" data-tr="nav_about">About</a>
+      </div>
+      <div class="footer-col">
+        <h4 data-tr="footer_contact_title">Contact Us</h4>
+        <a href="mailto:karolgrovenuts@gmail.com">karolgrovenuts@gmail.com</a>
+        <a href="tel:9384169322">9384169322</a>
+        <a href="https://wa.me/+919384169322" target="_blank" rel="noopener" data-tr="cta_whatsapp">WhatsApp Order</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Karol Grove. All rights reserved.</span>
+      <div class="legal-ids">
+        <span><strong data-tr="legal_packed_by">Marketed &amp; Packed by:</strong> SRG Stores</span>
+        <span><strong data-tr="legal_gstin">GSTIN:</strong> 33JQUPK0008M1ZH</span>
+        <span><strong data-tr="legal_fssai">FSSAI Lic. No.:</strong> 22421062000070</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating WhatsApp Contact Button -->
+<a href="https://wa.me/919384169322?text=Hi%20Karol%20Grove%2C%20I%20would%20like%20to%20place%20an%20order." 
+   class="floating-whatsapp" 
+   target="_blank" 
+   rel="noopener" 
+   aria-label="Order on WhatsApp">
+  <div class="whatsapp-badge">Order on WhatsApp</div>
+  <svg class="whatsapp-icon-svg" viewBox="0 0 24 24" width="24" height="24">
+    <path fill="currentColor" d="M12.031 2c-5.514 0-9.99 4.477-9.99 9.99 0 2.08.636 4.01 1.728 5.614l-1.127 4.12 4.22-1.107c1.514.938 3.284 1.48 5.17 1.48 5.515 0 9.99-4.477 9.99-9.99 0-5.514-4.475-9.99-9.99-9.99zm5.556 14.13c-.224.634-1.22 1.157-1.68 1.206-.432.046-.86.23-2.738-.508-2.398-.942-3.896-3.376-4.016-3.536-.12-.16-1.002-1.332-1.002-2.54 0-1.21.632-1.804.856-2.048.225-.244.49-.305.653-.305.163 0 .326.002.47.01.15.008.347-.057.545.422.203.49.693 1.693.754 1.815.06.123.1.265.018.428-.08.163-.122.265-.244.407-.122.143-.257.32-.367.43-.122.12-.25.253-.108.497.143.244.636 1.05 1.362 1.7 1 .894 1.85 1.173 2.116 1.306.265.132.418.11.57-.06.153-.173.663-.774.846-1.037.183-.265.367-.224.622-.132.255.09 1.62.764 1.9.905.28.14.47.21.536.326.067.116.067.67-.156 1.306z"/>
+  </svg>
+</a>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('corporateQuoteForm');
+  const statusDiv = document.getElementById('formStatus');
+  
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const mobile = document.getElementById('corpMobile').value.trim();
+      const email = document.getElementById('corpEmail').value.trim();
+      
+      if (!mobile || !email) {
+        statusDiv.className = 'form-status error';
+        statusDiv.textContent = 'Please fill out all required fields.';
+        return;
+      }
+      
+      // Update status on page
+      statusDiv.className = 'form-status success';
+      statusDiv.innerHTML = '✓ Quotation request submitted! Redirecting to WhatsApp...';
+      
+      // Pre-fill WhatsApp message
+      const whatsappNumber = '919384169322';
+      const message = `Hi Karol Grove, I would like to request a corporate gifting quotation.\n\n📱 Mobile: ${mobile}\n📧 Email: ${email}`;
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+      
+      // Redirect after a short delay
+      setTimeout(function() {
+        window.open(whatsappUrl, '_blank');
+        form.reset();
+        setTimeout(() => { 
+          statusDiv.innerHTML = ''; 
+          statusDiv.className = 'form-status'; 
+        }, 5000);
+      }, 1200);
+    });
+  }
+});
+</script>
+
+<script src="assets/main.js" defer></script>
+</body>
+</html>
