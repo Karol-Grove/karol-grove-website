@@ -4,7 +4,17 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  initPriceList();
+  // Dynamically load prices.js with a cache-buster to completely bypass browser and CDN cache
+  const cacheBuster = document.createElement('script');
+  cacheBuster.src = `assets/prices.js?t=${Date.now()}`;
+  cacheBuster.onload = () => {
+    initPriceList();
+  };
+  cacheBuster.onerror = () => {
+    console.error('Failed to load fresh prices.js, falling back to cached.');
+    initPriceList();
+  };
+  document.head.appendChild(cacheBuster);
 });
 
 function initPriceList() {
@@ -370,6 +380,7 @@ function initPriceList() {
     // Pre-populate fields
     document.getElementById('gh-username').value = localStorage.getItem('gh_username') || '';
     document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+    document.getElementById('gh-path').value = localStorage.getItem('gh_path') || 'assets/prices.js';
     document.getElementById('gh-pat').value = localStorage.getItem('gh_pat') || '';
   }
 
@@ -378,6 +389,7 @@ function initPriceList() {
     const username = document.getElementById('gh-username').value.trim();
     const repo = document.getElementById('gh-repo').value.trim();
     const pat = document.getElementById('gh-pat').value.trim();
+    let path = document.getElementById('gh-path').value.trim() || 'assets/prices.js';
     const syncStatus = document.getElementById('gh-sync-status');
 
     if (!username || !repo || !pat) {
@@ -389,18 +401,18 @@ function initPriceList() {
     localStorage.setItem('gh_username', username);
     localStorage.setItem('gh_repo', repo);
     localStorage.setItem('gh_pat', pat);
+    localStorage.setItem('gh_path', path);
 
     if (syncStatus) {
       syncStatus.textContent = '🔄 Querying repository...';
       syncStatus.style.color = 'var(--gold)';
     }
 
-    const path = 'karol-grove/assets/prices.js'; // path in repository
-    const url = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
+    let url = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
 
     try {
-      // 1. Get the current file content to get the SHA
-      const getResponse = await fetch(url, {
+      // 1. Get the current file content to get the SHA (try specified path first, fallback if not found and was default)
+      let getResponse = await fetch(url, {
         headers: {
           'Authorization': `token ${pat}`,
           'Accept': 'application/vnd.github.v3+json'
@@ -411,8 +423,33 @@ function initPriceList() {
       if (getResponse.ok) {
         const fileData = await getResponse.json();
         sha = fileData.sha;
-      } else if (getResponse.status !== 404) {
-        throw new Error(`Failed to fetch file SHA. Check repository name and token permissions. Status: ${getResponse.status}`);
+      } else if (getResponse.status === 404) {
+        // Fallback to legacy path if assets/prices.js is not found at root and was used as default
+        if (path === 'assets/prices.js') {
+          const fallbackPath = 'karol-grove/assets/prices.js';
+          const fallbackUrl = `https://api.github.com/repos/${username}/${repo}/contents/${fallbackPath}`;
+          const fallbackResponse = await fetch(fallbackUrl, {
+            headers: {
+              'Authorization': `token ${pat}`,
+              'Accept': 'application/vnd.github.v3+json'
+            }
+          });
+          
+          if (fallbackResponse.ok) {
+            path = fallbackPath;
+            url = fallbackUrl;
+            const fileData = await fallbackResponse.json();
+            sha = fileData.sha;
+            
+            // Update UI/localStorage with detected path
+            document.getElementById('gh-path').value = fallbackPath;
+            localStorage.setItem('gh_path', fallbackPath);
+          } else if (fallbackResponse.status !== 404) {
+            throw new Error(`Failed to fetch file SHA from fallback path. Status: ${fallbackResponse.status}`);
+          }
+        }
+      } else {
+        throw new Error(`Failed to fetch file SHA. Check repository name, token permissions, and file path. Status: ${getResponse.status}`);
       }
 
       // 2. Generate updated file contents
@@ -451,6 +488,8 @@ function initPriceList() {
           syncStatus.style.color = '#3c8f5f';
         }
         alert('Successfully pushed edits to your GitHub repository! GitHub Pages will rebuild and show the updated prices globally in a few minutes.');
+        // Update in-memory default list so UI doesn't revert to old values before page reload
+        window.priceListData = JSON.parse(JSON.stringify(priceListData));
         // We can now safely clear local edits as they are synced
         localStorage.removeItem('kg_prices_local');
         loadData();
