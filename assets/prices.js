@@ -4,7 +4,7 @@
  */
 
 window.priceListData = [
-  { category: "Nuts", name: "Premium Almonds (Badam)", price250g: 1, price500g: 1, price1kg: 1 },
+  { category: "Nuts", name: "Premium Almonds()", price250g: 1, price500g: 1, price1kg: 1 },
   { category: "Nuts", name: "Premium Cashews (Kaju) - W240", price250g: 1, price500g: 1, price1kg: 1 },
   { category: "Nuts", name: "Pistachios (Pista) - Roasted & Salted", price250g: 280, price500g: 550, price1kg: 1080 },
   { category: "Nuts", name: "Premium Walnuts (Akhrot) - Chile Halves", price250g: 320, price500g: 620, price1kg: 1200 },
