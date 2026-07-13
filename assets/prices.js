@@ -4,10 +4,10 @@
  */
 
 window.priceListData = [
-  { category: "Nuts", name: "Premium Almonds()", price250g: 1, price500g: 1, price1kg: 1 },
-  { category: "Nuts", name: "Premium Cashews (Kaju) - W240", price250g: 1, price500g: 1, price1kg: 1 },
-  { category: "Nuts", name: "Pistachios (Pista) - Roasted & Salted", price250g: 280, price500g: 550, price1kg: 1080 },
-  { category: "Nuts", name: "Premium Walnuts (Akhrot) - Chile Halves", price250g: 320, price500g: 620, price1kg: 1200 },
+  { category: "Nuts", name: "Premium Almonds()", price250g: 250, price500g: 500, price1kg: 1000 },
+  { category: "Nuts", name: "Premium Cashews (Kaju) - W240", price250g: 270, price500g: 540, price1kg: 1050 },
+  { category: "Nuts", name: "Pistachios (Pista) - Roasted & Salted", price250g: 500, price500g: 1000, price1kg: 1800 },
+  { category: "Nuts", name: "Pistachios (Without shell) - plain non flavoured", price250g: 800, price500g: 1600, price1kg: 3100 },
   { category: "Nuts", name: "Pepper Cashews", price250g: 270, price500g: 530, price1kg: 1020 },
   { category: "Nuts", name: "Chilli Cashews", price250g: 270, price500g: 530, price1kg: 1020 },
   { category: "Nuts", name: "Salted Cashews", price250g: 260, price500g: 510, price1kg: 990 },
