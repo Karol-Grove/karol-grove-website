@@ -241,9 +241,138 @@ function initTiltEffect() {
 function initOrderBuilder() {
   let cart = JSON.parse(localStorage.getItem('kg_order_cart')) || [];
 
-  // Create UI elements if they do not exist
-  createCartUI();
-  updateCartCounters();
+  // Helper to escape single quotes for onclick HTML handlers
+  function escapeQuote(str) {
+    return str.replace(/'/g, "\\'");
+  }
+
+  // Lookup function to find the price of an item from the priceListData (including local storage cache)
+  function findPriceInList(name, variant) {
+    let priceListData = [];
+    const cached = localStorage.getItem('kg_prices_local');
+    if (cached) {
+      try {
+        priceListData = JSON.parse(cached);
+      } catch (e) {
+        console.error('Failed to parse cached prices:', e);
+      }
+    }
+    if (!priceListData || priceListData.length === 0) {
+      priceListData = window.priceListData || [];
+    }
+
+    if (priceListData.length === 0) return null;
+
+    const normName = name.toLowerCase().trim();
+    let found = priceListData.find(item => item.name.toLowerCase() === normName);
+
+    if (!found) {
+      const aliasKey = normName.replace(/^(premium|organic|raw|pure|dried|dry|fresh)\s+/i, '')
+                               .replace(/\s+(premium|organic|raw|pure|dried|dry|fresh)$/i, '');
+      const nameAliases = {
+        "almonds": "Premium Almonds (Badam)",
+        "cashews": "Premium Cashews (Kaju) - W240",
+        "pistachios": "Pistachios (Pista) - Roasted & Salted",
+        "salted pistachios": "Pistachios (Pista) - Roasted & Salted",
+        "walnuts": "Premium Walnuts (Akhrot) - Chile Halves",
+        "dates": "Medjool Dates (Premium)",
+        "dry date": "Dry Dates (Kharik) - Yellow",
+        "black date": "Black Dates (Premium)",
+        "raisins": "Golden Raisins (Kishmish)",
+        "dried figs": "Dried Figs (Anjeer) - Premium Jumbo",
+        "apricots": "Dried Apricots (Jardalu)",
+        "honey": "Pure Organic Honey",
+        "jaggery": "Organic Jaggery (Powder)",
+        "palm sugar": "Palm Sugar",
+        "palm candy": "Palm Candy (Panakarkandu)",
+        "almond gum": "Almond Gum (Pisin)",
+        "brown sugar": "Brown Sugar (Nattu Sakkarai)",
+        "deluxe harvest mix": "Premium Festive Gift Hamper",
+        "festive dry fruits box": "Dry Fruit & Nuts Gift Box (4-in-1)",
+        "seed mixed": "Healthy Seeds & Mix Gift Pack",
+        "nuts mixed": "Dry Fruit & Nuts Gift Box (4-in-1)",
+        "karol grove deluxe harvest mix": "Premium Festive Gift Hamper",
+        "dry cherry": "Dried Cranberries (Whole)",
+        "dried kiwi": "Dried Cranberries (Whole)",
+        "dried pineapple": "Dried Cranberries (Whole)",
+        "dry strawberry": "Dried Cranberries (Whole)",
+        "dry amla": "Dried Cranberries (Whole)",
+        "honey amla": "Pure Organic Honey",
+        "dry mango": "Dried Cranberries (Whole)",
+        "dry blueberry": "Dried Blueberries",
+        "dry cranberry": "Dried Cranberries (Whole)",
+        "sabja seeds": "Basil Seeds (Sabja)",
+        "chia seeds": "Chia Seeds (Organic)",
+        "pumpkin seeds": "Pumpkin Seeds (Raw)",
+        "sunflower seeds": "Sunflower Seeds (Raw)",
+        "flax seeds": "Flax Seeds (Organic)",
+        "watermelon seeds": "Watermelon Seeds",
+      };
+      const mappedRealName = nameAliases[normName] || nameAliases[aliasKey];
+      if (mappedRealName) {
+        found = priceListData.find(item => item.name === mappedRealName);
+      }
+    }
+
+    if (!found) {
+      found = priceListData.find(item => {
+        const itemNorm = item.name.toLowerCase();
+        return itemNorm.includes(normName) || normName.includes(itemNorm);
+      });
+    }
+
+    if (!found) {
+      const words = normName.split(/\s+/).filter(w => w.length > 2);
+      found = priceListData.find(item => {
+        const itemNorm = item.name.toLowerCase();
+        return words.some(w => itemNorm.includes(w));
+      });
+    }
+
+    if (!found) return null;
+
+    const variantNorm = variant.toLowerCase().replace(/\s+/g, '');
+    if (variantNorm.includes('250g')) {
+      return found.price250g || null;
+    } else if (variantNorm.includes('500g')) {
+      return found.price500g || null;
+    } else if (variantNorm.includes('1kg')) {
+      return found.price1kg || null;
+    } else if (variantNorm.includes('6egg')) {
+      return 36;
+    } else if (variantNorm.includes('12egg') || variantNorm.includes('1dozen')) {
+      return 72;
+    } else if (variantNorm.includes('30egg')) {
+      return found.price1kg || 180;
+    }
+
+    return found.price250g || found.price500g || found.price1kg || null;
+  }
+
+  // Dynamic loader for prices.js
+  function checkAndLoadPrices(callback) {
+    const cached = localStorage.getItem('kg_prices_local');
+    if (cached || window.priceListData) {
+      if (callback) callback();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = `assets/prices.js?t=${Date.now()}`;
+    script.onload = () => {
+      if (callback) callback();
+    };
+    script.onerror = () => {
+      console.error('Failed to load prices.js dynamically.');
+      if (callback) callback();
+    };
+    document.head.appendChild(script);
+  }
+
+  // Initialize once prices are loaded
+  checkAndLoadPrices(() => {
+    createCartUI();
+    updateCartCounters();
+  });
 
   // Attach event listeners to all Add to Order buttons
   const addButtons = document.querySelectorAll('.add-to-order-btn');
@@ -361,9 +490,13 @@ function initOrderBuilder() {
           <!-- Items will render here -->
         </div>
         <div class="drawer-footer">
-          <div class="footer-summary">
+          <div class="footer-summary" style="margin-bottom: 8px;">
             <span>Total Items:</span>
             <strong id="drawer-total-count">0</strong>
+          </div>
+          <div class="footer-summary" style="margin-bottom: 18px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 10px;">
+            <span>Total Value:</span>
+            <strong id="drawer-total-price">₹0</strong>
           </div>
           <button class="btn btn-primary btn-block" onclick="sendWhatsAppOrder()">
             Order on WhatsApp &rarr;
@@ -400,6 +533,7 @@ function initOrderBuilder() {
   function renderCartItems() {
     const list = document.getElementById('drawer-items-list');
     const totalEl = document.getElementById('drawer-total-count');
+    const totalValEl = document.getElementById('drawer-total-price');
     if (!list) return;
 
     if (cart.length === 0) {
@@ -410,25 +544,39 @@ function initOrderBuilder() {
         </div>
       `;
       totalEl.textContent = '0';
+      if (totalValEl) totalValEl.textContent = '₹0';
       return;
     }
 
     let itemsHtml = '';
     let totalItems = 0;
+    let totalPrice = 0;
 
     cart.forEach(item => {
       totalItems += item.quantity;
+      
+      const price = findPriceInList(item.name, item.variant);
+      let priceDisplay = '';
+      let qtyDisplay = `${item.quantity}`;
+      
+      if (price) {
+        const itemTotal = price * item.quantity;
+        totalPrice += itemTotal;
+        priceDisplay = ` &bull; ₹${price}`;
+        qtyDisplay = `${item.quantity} <span style="font-size: 11px; color: var(--text-secondary); font-weight: normal;">(₹${itemTotal})</span>`;
+      }
+
       itemsHtml += `
         <div class="cart-item-row">
           <div class="item-info">
             <h4>${item.name}</h4>
-            <span class="variant">${item.variant}</span>
+            <span class="variant">${item.variant}${priceDisplay}</span>
           </div>
           <div class="item-controls">
-            <button onclick="addToCart('${item.name}', '${item.variant}', -1)">-</button>
-            <span class="qty">${item.quantity}</span>
-            <button onclick="addToCart('${item.name}', '${item.variant}', 1)">+</button>
-            <button class="remove" onclick="removeFromCart('${item.name}', '${item.variant}')">&times;</button>
+            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', -1)">-</button>
+            <span class="qty">${qtyDisplay}</span>
+            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', 1)">+</button>
+            <button class="remove" onclick="removeFromCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}')">&times;</button>
           </div>
         </div>
       `;
@@ -436,6 +584,7 @@ function initOrderBuilder() {
 
     list.innerHTML = itemsHtml;
     totalEl.textContent = totalItems;
+    if (totalValEl) totalValEl.textContent = `₹${totalPrice}`;
   }
 
   function sendWhatsAppOrder() {
@@ -446,10 +595,24 @@ function initOrderBuilder() {
 
     const phoneNumber = '+918494832492';
     let text = `Hello Karol Grove! I would like to place an order for the following premium items:\n\n`;
+    let totalPrice = 0;
+    let hasPrice = false;
 
     cart.forEach((item, index) => {
-      text += `${index + 1}. *${item.name}* (${item.variant}) — Qty: ${item.quantity}\n`;
+      const price = findPriceInList(item.name, item.variant);
+      if (price) {
+        const itemTotal = price * item.quantity;
+        totalPrice += itemTotal;
+        hasPrice = true;
+        text += `${index + 1}. *${item.name}* (${item.variant}) — Qty: ${item.quantity} @ ₹${price} = *₹${itemTotal}*\n`;
+      } else {
+        text += `${index + 1}. *${item.name}* (${item.variant}) — Qty: ${item.quantity}\n`;
+      }
     });
+
+    if (hasPrice) {
+      text += `\n*Estimated Total: ₹${totalPrice}*\n`;
+    }
 
     text += `\nPlease let me know the current pricing and payment details. Thank you!`;
     const encodedText = encodeURIComponent(text);
