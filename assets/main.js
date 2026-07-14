@@ -444,7 +444,7 @@ function initOrderBuilder() {
       return;
     }
 
-    const phoneNumber = '+919384169322';
+    const phoneNumber = '+918494832492';
     let text = `Hello Karol Grove! I would like to place an order for the following premium items:\n\n`;
 
     cart.forEach((item, index) => {
@@ -584,21 +584,56 @@ function initContactForm() {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     
-    // Create custom feedback VFX
-    const formCard = form.closest('.contact-form-card');
-    if (formCard) {
-      formCard.innerHTML = `
-        <div class="form-success-animation text-center" style="padding: 40px 10px;">
-          <div class="success-icon-wrap" style="width: 80px; height: 80px; background: rgba(31, 92, 61, 0.15); color: var(--forest-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 40px; animation: scaleUpPulse 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;">
-            ✓
-          </div>
-          <h3 style="font-family: var(--font-display); font-size: 26px; color: var(--forest-deep); margin-bottom: 12px;">Message Received!</h3>
-          <p style="color: var(--charcoal-soft); font-size: 16px; max-width: 320px; margin: 0 auto 28px;">
-            Thank you for reaching out to Karol Grove. We have received your inquiry and our team will get back to you shortly.
-          </p>
-          <button class="btn btn-primary" onclick="window.location.reload();">Send Another Message</button>
-        </div>
-      `;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Send Message &rarr;';
+    
+    // Show sending/loading state
+    if (submitBtn) {
+      submitBtn.innerHTML = 'Sending...';
+      submitBtn.disabled = true;
     }
+    
+    const formData = new FormData(form);
+    
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: formData
+    })
+    .then(async (response) => {
+      let json = await response.json();
+      if (response.status == 200) {
+        // Create custom success feedback VFX
+        const formCard = form.closest('.contact-form-card');
+        if (formCard) {
+          formCard.innerHTML = `
+            <div class="form-success-animation text-center" style="padding: 40px 10px;">
+              <div class="success-icon-wrap" style="width: 80px; height: 80px; background: rgba(31, 92, 61, 0.15); color: var(--forest-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 40px; animation: scaleUpPulse 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;">
+                ✓
+              </div>
+              <h3 style="font-family: var(--font-display); font-size: 26px; color: var(--forest-deep); margin-bottom: 12px;">Message Received!</h3>
+              <p style="color: var(--charcoal-soft); font-size: 16px; max-width: 320px; margin: 0 auto 28px;">
+                Thank you for reaching out to Karol Grove. We have received your inquiry and our team will get back to you shortly.
+              </p>
+              <button class="btn btn-primary" onclick="window.location.reload();">Send Another Message</button>
+            </div>
+          `;
+        }
+      } else {
+        console.error(json);
+        alert(json.message || 'Something went wrong. Please try again.');
+        if (submitBtn) {
+          submitBtn.innerHTML = originalBtnText;
+          submitBtn.disabled = false;
+        }
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      alert('Form submission failed. Please check your internet connection and try again.');
+      if (submitBtn) {
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+      }
+    });
   });
 }
