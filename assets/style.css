@@ -2918,30 +2918,33 @@ footer.site-footer {
 .admin-editable-input {
   width: 100%;
   padding: 8px 12px;
-  background: #ffffff;
-  border: 1px solid var(--border-light);
+  background: rgba(18, 48, 32, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.35);
   border-radius: 6px;
-  color: var(--text-primary);
+  color: #fbf9f4;
   font-family: var(--font-body);
   font-size: 14px;
+  font-weight: 500;
   outline: none;
   transition: var(--transition-smooth);
 }
 
 .admin-editable-input:focus {
   border-color: var(--gold);
-  background: #ffffff;
+  background: rgba(18, 48, 32, 0.95);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
 }
 
 .admin-editable-select {
   width: 100%;
   padding: 8px 12px;
-  background: #ffffff;
-  border: 1px solid var(--border-light);
+  background: rgba(18, 48, 32, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.35);
   border-radius: 6px;
-  color: var(--text-primary);
+  color: #fbf9f4;
   font-family: var(--font-body);
   font-size: 14px;
+  font-weight: 500;
   outline: none;
   cursor: pointer;
   transition: var(--transition-smooth);
@@ -2949,6 +2952,19 @@ footer.site-footer {
 
 .admin-editable-select:focus {
   border-color: var(--gold);
+  background: rgba(18, 48, 32, 0.95);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+.admin-editable-select option {
+  background: #0c1c13;
+  color: #fbf9f4;
+  padding: 8px;
+}
+
+.admin-editable-input::placeholder,
+.admin-form-group input::placeholder {
+  color: rgba(251, 249, 244, 0.45);
 }
 
 .row-delete-btn {
@@ -3066,18 +3082,20 @@ footer.site-footer {
 .admin-form-group input {
   width: 100%;
   padding: 12px 16px;
-  background: #ffffff;
-  border: 1px solid var(--border-light);
+  background: rgba(18, 48, 32, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.35);
   border-radius: 8px;
-  color: var(--text-primary);
+  color: #fbf9f4;
   font-size: 15px;
+  font-weight: 500;
   outline: none;
   transition: var(--transition-smooth);
 }
 
 .admin-form-group input:focus {
   border-color: var(--gold);
-  box-shadow: 0 0 12px rgba(216, 147, 42, 0.1);
+  background: rgba(18, 48, 32, 0.95);
+  box-shadow: 0 0 12px rgba(216, 147, 42, 0.25);
 }
 
 .admin-modal-btn {

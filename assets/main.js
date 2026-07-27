@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initOrderBuilder();
   initProductFilters();
   initContactForm();
+  initHeroVideoLoop();
 });
 
 /* ==========================================================================
@@ -798,5 +799,22 @@ function initContactForm() {
         submitBtn.disabled = false;
       }
     });
+  });
+}
+
+/* ==========================================================================
+   Seamless Hero Video Loop Fix
+   ========================================================================== */
+function initHeroVideoLoop() {
+  const heroVideo = document.querySelector('.hero-bg-video');
+  if (!heroVideo) return;
+
+  // Ensure seamless looping without pause or frozen trailing frames.
+  // The video stream is 10s long; resetting slightly before stream end prevents browser loop stutter and track length mismatches.
+  heroVideo.addEventListener('timeupdate', () => {
+    if (heroVideo.currentTime >= 9.95 || (heroVideo.duration && heroVideo.currentTime >= heroVideo.duration - 0.1)) {
+      heroVideo.currentTime = 0;
+      heroVideo.play().catch(() => {});
+    }
   });
 }
