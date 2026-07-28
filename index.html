@@ -7,7 +7,7 @@
 <meta name="description" content="Karol Grove brings you premium, hand-picked dry fruits, nuts, seeds and natural sweeteners — 100% natural, freshly packed, delivered to your doorstep.">
 <link rel="icon" href="assets/karol-grove-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="assets/style.css?v=20260727">
+<link rel="stylesheet" href="assets/style.css?v=20260727-v2">
 <script src="assets/translations.js" defer></script>
 </head>
 <body>
@@ -409,30 +409,81 @@
   <div class="container">
     <div class="corporate-card reveal reveal-scale">
       <div class="corporate-grid">
-        <!-- Left Side: Poster image -->
+        <!-- Left Side: VIP Presentation Showcase -->
         <div class="corporate-img-frame">
+          <div class="corporate-aurora-glow"></div>
           <img src="assets/corporate-gift-poster-v3.png" alt="Karol Grove Corporate Gifts - Custom Hampers & Exclusive Offers" class="corporate-poster-img">
-        </div>
-        <!-- Right Side: Text & Form -->
-        <div class="corporate-content">
-          <span class="corporate-badge">Corporate Gifting</span>
-          <h2>Exclusive Offers for Corporate Gifts</h2>
-          <p class="corporate-desc">Make a lasting impression on your clients, partners, and employees with our premium, handpicked dry fruits and custom festival hampers. Tailored to your branding, theme, and budget specifications.</p>
           
+          <div class="corporate-floating-badge top-left">
+            <div class="badge-icon-box">👑</div>
+            <div class="badge-content">
+              <strong>EXECUTIVE TIER</strong>
+              <span>Dedicated Concierge Manager</span>
+            </div>
+          </div>
+
+          <div class="corporate-floating-badge bottom-right">
+            <div class="badge-icon-box">✨</div>
+            <div class="badge-content">
+              <strong>BESPOKE HAMPERS</strong>
+              <span>Laser-Engraved Box Branding</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Executive Terminal & Form -->
+        <div class="corporate-content">
+          <div class="corporate-vip-header">
+            <span class="corporate-badge">★ VIP EXECUTIVE SUITE ★</span>
+            <h2>Bespoke Corporate Gifting &amp; Hampers</h2>
+            <p class="corporate-desc">Make a legendary impression on your leadership teams, partners, and key clients with our artisanal dry fruit curations. Custom-tailored to your corporate branding, festival themes, and budget architecture.</p>
+          </div>
+          
+          <!-- Executive Perks Grid -->
+          <div class="corporate-perks-grid">
+            <div class="corp-perk-pill">
+              <span class="perk-emoji">🎁</span>
+              <span>Custom Engraving</span>
+            </div>
+            <div class="corp-perk-pill">
+              <span class="perk-emoji">⚡</span>
+              <span>Tiered VIP Rates</span>
+            </div>
+            <div class="corp-perk-pill">
+              <span class="perk-emoji">🚚</span>
+              <span>Pan-India Priority</span>
+            </div>
+          </div>
+
           <!-- Request Quotation Form -->
           <form id="corporateQuoteForm" class="corporate-form">
-            <div class="form-title">Request a Custom Quotation</div>
+            <div class="form-title-bar">
+              <span class="form-icon">🏛️</span>
+              <div>
+                <div class="form-title">Request VIP Custom Quotation</div>
+                <div class="form-subtitle">Instant Direct-to-Orchard WhatsApp Dispatch</div>
+              </div>
+            </div>
             <div class="form-grid">
               <div class="form-group">
                 <label for="corpMobile">Mobile Number <span class="required">*</span></label>
-                <input type="tel" id="corpMobile" placeholder="e.g. 9876543210" required>
+                <div class="input-glow-wrapper">
+                  <span class="input-icon">📱</span>
+                  <input type="tel" id="corpMobile" placeholder="e.g. 9876543210" required>
+                </div>
               </div>
               <div class="form-group">
                 <label for="corpEmail">Email Address <span class="required">*</span></label>
-                <input type="email" id="corpEmail" placeholder="e.g. corporate@company.com" required>
+                <div class="input-glow-wrapper">
+                  <span class="input-icon">📧</span>
+                  <input type="email" id="corpEmail" placeholder="e.g. corporate@company.com" required>
+                </div>
               </div>
             </div>
-            <button type="submit" class="btn btn-corporate-submit">Send for Quotation &rarr;</button>
+            <button type="submit" class="btn btn-corporate-submit">
+              <span>CLAIM VIP CORPORATE RATES</span>
+              <span class="submit-arrow">&rarr;</span>
+            </button>
             <div id="formStatus" class="form-status"></div>
           </form>
         </div>
@@ -546,6 +597,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<script src="assets/main.js?v=20260727" defer></script>
+<script src="assets/main.js?v=20260727-v2" defer></script>
 </body>
 </html>
