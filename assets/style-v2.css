@@ -5,13 +5,11 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-:root {
-  /* Theme Palette: Luxury Warm Cream & Deep Organic Forest */
-  --bg-dark: #fbf9f4; /* Warm Cream Alabaster background */
-  --bg-card: rgba(255, 255, 255, 0.72); /* Translucent soft white glass cards */
-  --bg-card-hover: rgba(255, 255, 255, 0.96); /* High-contrast focus state */
-  --border-glow: rgba(18, 48, 32, 0.08); /* Soft dark-forest borders instead of bright glows */
-  --border-light: rgba(18, 48, 32, 0.05);
+:root {  /* Theme Palette: Top MNC Corporate */
+  --bg-dark: #FFFFFF; /* Stark white background for ultimate cleanliness */
+  --bg-card: #FFFFFF; /* Solid white cards */
+  --bg-card-hover: #F8F9FA; /* Very light grey on hover */
+  --border-light: #E9ECEF; /* Standard crisp grey border */
 
   /* Colors */
   --gold: #d8932a; /* Dark sienna gold (legible on light backgrounds) */
@@ -80,52 +78,10 @@ body {
   position: relative;
 }
 
-/* Background Ambient Glows */
-body::before {
-  content: '';
-  position: fixed;
-  top: -10%;
-  left: -10%;
-  width: 50%;
-  height: 50%;
-  background: radial-gradient(circle, rgba(216, 147, 42, 0.03) 0%, transparent 70%);
-  z-index: -2;
-  pointer-events: none;
-  animation: pulseGlow 12s infinite alternate ease-in-out;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  bottom: -10%;
-  right: -10%;
-  width: 60%;
-  height: 60%;
-  background: radial-gradient(circle, rgba(34, 107, 66, 0.03) 0%, transparent 70%);
-  z-index: -2;
-  pointer-events: none;
-  animation: pulseGlow 16s infinite alternate-reverse ease-in-out;
-}
-
-.ambient-light-spot {
-  position: absolute;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(240, 145, 106, 0.05) 0%, transparent 70%);
-  border-radius: 50%;
-  z-index: -1;
-  pointer-events: none;
-}
+/* Background Ambient Glows REMOVED for clean corporate look */
 
 #vfx-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.75;
+  display: none !important; /* Completely hidden for professional layout */
 }
 
 img {
@@ -213,14 +169,12 @@ a.topbar-item:hover {
 
 .site-header {
   position: sticky;
-  top: 0; /* Changed from 4px to 0 to align with relative brand strip */
+  top: 0;
   z-index: 100;
-  background: rgba(251, 249, 244, 0.85); /* Translucent warm cream */
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: #FFFFFF;
   border-bottom: 1px solid var(--border-light);
-  box-shadow: 0 4px 30px rgba(18, 48, 32, 0.05); /* Soft natural shadow */
-  height: 110px; /* Fixed height to guarantee brand logo is fully enclosed */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); /* Extremely subtle shadow for depth */
+  height: 110px;
 }
 
 .header-inner {
@@ -408,7 +362,7 @@ nav.main-nav a.active::after {
   justify-content: center;
   gap: 8px;
   padding: 14px 28px;
-  border-radius: 30px;
+  border-radius: 4px; /* Professional slightly rounded shape */
   font-weight: 700;
   font-size: 14.5px;
   cursor: pointer;
@@ -417,30 +371,29 @@ nav.main-nav a.active::after {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--gold-deep) 0%, var(--gold) 100%);
-  color: var(--bg-dark);
-  box-shadow: var(--shadow-glow-gold);
+  background: var(--forest-deep);
+  color: #ffffff !important;
+  box-shadow: none;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, var(--forest) 0%, var(--forest-deep) 100%);
-  color: var(--text-primary);
-  border-color: var(--gold);
-  box-shadow: var(--shadow-glow-forest);
-  transform: translateY(-3px) scale(1.02);
+  background: #0d2216; /* Darker green on hover */
+  border-color: #0d2216;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--text-primary);
-  border-color: var(--border-light);
-  backdrop-filter: blur(10px);
+  border-color: var(--text-primary) !important;
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--gold);
-  transform: translateY(-3px);
+  background: var(--text-primary);
+  color: #ffffff !important; 
+  border-color: var(--text-primary);
+  transform: translateY(-2px);
 }
 
 .btn-block {
@@ -735,18 +688,16 @@ nav.main-nav a.active::after {
 .glass-card {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
-  border-radius: 20px;
+  border-radius: 8px; /* Sharper corners for corporate feel */
   padding: 32px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02); /* Extremely faint shadow */
   transition: var(--transition-smooth);
 }
 
 .glass-card:hover {
   background: var(--bg-card-hover);
-  border-color: var(--border-glow);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08), 0 0 20px var(--border-glow);
+  border-color: #DDE2E5; /* Slightly darker grey border on hover */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
 }
 
 /* Why choose us Grid */
@@ -3566,11 +3517,10 @@ footer.site-footer {
 .offer-banner-content h2 {
   font-family: var(--font-display);
   font-size: clamp(30px, 4.5vw, 44px);
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 900;
   line-height: 1.15;
   margin-bottom: 16px;
-  text-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
 }
 
 .offer-quote {
@@ -3582,20 +3532,19 @@ footer.site-footer {
   margin-bottom: 26px;
   border-left: 3px solid var(--gold);
   padding-left: 18px;
-  text-shadow: 0 1px 5px rgba(0,0,0,0.3);
 }
 
 .offer-discount-box {
-  background: linear-gradient(135deg, rgba(60, 143, 95, 0.35) 0%, rgba(18, 48, 32, 0.8) 100%);
-  color: #ffffff;
+  background: var(--bg-card);
+  color: var(--text-primary);
   padding: 18px 28px;
-  border-radius: 20px;
+  border-radius: 8px;
   display: inline-flex;
   flex-direction: column;
   align-self: flex-start;
   margin-bottom: 26px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 25px rgba(242, 194, 101, 0.15);
-  border: 1.5px solid rgba(242, 194, 101, 0.45);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-light);
 }
 
 .discount-upto {
@@ -3611,9 +3560,8 @@ footer.site-footer {
   font-size: 42px;
   font-weight: 900;
   line-height: 1;
-  color: var(--gold);
+  color: var(--forest-deep);
   margin: 6px 0;
-  text-shadow: 0 0 20px rgba(242, 194, 101, 0.5);
 }
 
 .discount-products {
@@ -3869,11 +3817,10 @@ footer.site-footer {
 .corporate-vip-header h2 {
   font-family: var(--font-display);
   font-size: clamp(32px, 4.2vw, 44px);
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 900;
   line-height: 1.15;
   margin-bottom: 18px;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
 }
 
 .corporate-desc {
