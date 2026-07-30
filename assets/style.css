@@ -396,6 +396,33 @@ nav.main-nav a.active::after {
   transform: translateY(-2px);
 }
 
+.btn-hero-primary {
+  background: var(--gold);
+  color: #123020 !important;
+  border-color: var(--gold) !important;
+}
+
+.btn-hero-primary:hover {
+  background: #ffffff;
+  color: #123020 !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(255,255,255,0.2);
+  transform: translateY(-2px);
+}
+
+.btn-hero-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(5px);
+}
+
+.btn-hero-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #ffffff !important;
+  transform: translateY(-2px);
+}
+
 .btn-block {
   display: flex;
   width: 100%;
@@ -459,13 +486,13 @@ nav.main-nav a.active::after {
   font-family: var(--font-display);
   font-size: 5rem;
   line-height: 1.1;
-  color: var(--forest);
+  color: #ffffff;
   margin-bottom: 24px;
 }
 
 .hero-content-center .lede {
   font-size: 1.25rem;
-  color: var(--text-primary);
+  color: var(--cream);
   opacity: 0.9;
   margin-bottom: 40px;
 }
@@ -2038,7 +2065,7 @@ footer.site-footer {
   align-items: center;
   margin-bottom: 18px;
   font-size: 14px;
-  color: var(--bg-dark);
+  color: var(--text-primary);
 }
 
 .footer-summary strong {
@@ -3100,13 +3127,14 @@ footer.site-footer {
 
 .admin-btn-secondary {
   background: rgba(255, 255, 255, 0.05);
-  border-color: var(--border-light);
-  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
 }
 
 .admin-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #ffffff;
 }
 
 .admin-btn-danger {
