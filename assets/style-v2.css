@@ -81,7 +81,13 @@ body {
 /* Background Ambient Glows REMOVED for clean corporate look */
 
 #vfx-canvas {
-  display: none !important; /* Completely hidden for professional layout */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -1;
 }
 
 img {
