@@ -9,9 +9,245 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261002-v3">
+<link rel="stylesheet" href="assets/style.css?v=20261002-v5">
+<style>
+  /* Contact Page Mobile Responsive Styles */
+  .contact-section {
+    padding: 60px 0 90px;
+    background: #FAF8F5;
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 36px;
+    align-items: start;
+  }
+  .contact-form-card {
+    background: #ffffff;
+    padding: 38px;
+    border-radius: 16px;
+    border: 1.5px solid var(--border-light, #E9ECEF);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.04);
+  }
+  .contact-form-card h3 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--forest-deep, #123020);
+    margin-bottom: 20px;
+  }
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .contact-form .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  .contact-form label {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-primary, #123020);
+    margin-bottom: 6px;
+  }
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1.5px solid var(--border-light, #E9ECEF);
+    color: var(--text-primary, #123020);
+    font-family: var(--font-body);
+    font-size: 15px;
+    outline: none;
+    transition: var(--transition-smooth, all 0.3s ease);
+    box-sizing: border-box;
+  }
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    border-color: var(--gold, #d8932a);
+    box-shadow: 0 0 0 3px rgba(216, 147, 42, 0.15);
+  }
+  .contact-form textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+  .contact-form button[type="submit"] {
+    width: 100%;
+    justify-content: center;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+  .contact-info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .contact-info-card {
+    background: #ffffff;
+    padding: 34px;
+    border-radius: 16px;
+    border: 1.5px solid var(--border-light, #E9ECEF);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.04);
+  }
+  .contact-info-card h3 {
+    color: var(--forest-deep, #123020);
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 22px;
+  }
+  .contact-info-row {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+  .contact-info-row:last-of-type {
+    margin-bottom: 24px;
+  }
+  .contact-ico {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .contact-label {
+    font-size: 11.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-muted, #64756a);
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .contact-val {
+    font-size: 14.5px;
+    color: var(--text-primary, #123020);
+    font-weight: 600;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+  .contact-val a {
+    color: var(--forest, #226b42);
+    font-weight: 700;
+    transition: color 0.2s ease;
+  }
+  .contact-val a:hover {
+    color: var(--gold, #d8932a);
+  }
+  .contact-meta-box {
+    padding-top: 18px;
+    border-top: 1px dashed var(--border-light, #E9ECEF);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text-muted, #64756a);
+  }
+  .contact-quick-wa-box {
+    background: #25D366;
+    color: #ffffff;
+    padding: 20px 24px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25);
+  }
+  .contact-quick-wa-text strong {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+  .contact-quick-wa-text span {
+    font-size: 13px;
+    opacity: 0.95;
+    line-height: 1.4;
+    display: block;
+  }
+  .contact-quick-wa-btn {
+    background: #ffffff;
+    color: #123020;
+    font-weight: 800;
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+  .contact-quick-wa-btn:hover {
+    background: #f0fdf4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  }
+  @media (max-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 1fr !important;
+      gap: 28px !important;
+    }
+    .contact-section {
+      padding: 40px 0 60px !important;
+    }
+    .contact-form-card,
+    .contact-info-card {
+      padding: 28px 22px !important;
+    }
+  }
+  @media (max-width: 600px) {
+    .page-header {
+      padding: 45px 16px 35px !important;
+    }
+    .contact-section {
+      padding: 24px 0 50px !important;
+    }
+    .contact-grid {
+      gap: 20px !important;
+    }
+    .contact-form-card,
+    .contact-info-card {
+      padding: 20px 16px !important;
+      border-radius: 14px !important;
+    }
+    .contact-form-card h3,
+    .contact-info-card h3 {
+      font-size: 20px !important;
+      margin-bottom: 16px !important;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      font-size: 16px !important; /* Prevents auto-zoom on iOS mobile */
+      padding: 12px 14px !important;
+      border-radius: 8px !important;
+    }
+    .contact-quick-wa-box {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      text-align: center !important;
+      padding: 18px 16px !important;
+      gap: 14px !important;
+    }
+    .contact-quick-wa-btn {
+      width: 100% !important;
+      justify-content: center !important;
+      padding: 12px 18px !important;
+      font-size: 13.5px !important;
+    }
+    .contact-form button[type="submit"] {
+      font-size: 14.5px !important;
+      padding: 14px 20px !important;
+    }
+  }
+</style>
 <script src="assets/prices.js" defer></script>
-<script src="assets/main.js?v=20261002-v3" defer></script>
+<script src="assets/main.js?v=20261002-v5" defer></script>
 </head>
 <body>
 
@@ -55,90 +291,90 @@
   </div>
 </header>
 
-<section class="page-header" style="background: linear-gradient(135deg, #0E3B2E 0%, #082119 100%); color: #fff; padding: 70px 20px 50px; text-align: center;">
+<section class="page-header" style="background: linear-gradient(135deg, #0E3B2E 0%, #082119 100%); color: #fff; padding: 60px 20px 45px; text-align: center;">
   <div class="container reveal">
     <span class="launch-badge-pill">WE ARE HERE TO ASSIST</span>
     <h1 style="font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.5rem); color: #fff; margin-bottom: 12px;">Get In Touch</h1>
-    <p style="font-size: 16px; color: #D3E0D8; max-width: 650px; margin: 0 auto;">
+    <p style="font-size: 16px; color: #D3E0D8; max-width: 650px; margin: 0 auto; line-height: 1.6;">
       Have questions about our dry fruits, packaging sizes, wholesale pricing, or corporate gifting? We're ready to assist you.
     </p>
   </div>
 </section>
 
-<section class="section" style="padding: 60px 0 90px; background: #FAF8F5;">
-  <div class="container contact-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px;">
+<section class="section contact-section">
+  <div class="container contact-grid">
 
     <!-- Contact Form -->
-    <div class="glass-card contact-form-card reveal" style="background: #fff; padding: 40px; border-radius: 16px; border: 1.5px solid var(--border-light); box-shadow: 0 6px 25px rgba(0,0,0,0.04);">
-      <h3 style="font-family: var(--font-display); font-size: 24px; color: var(--forest-deep); margin-bottom: 18px;">Send Us a Message</h3>
-      <form class="contact-form" onsubmit="event.preventDefault(); const n = document.getElementById('cName').value; const m = document.getElementById('cMsg').value; window.open('https://wa.me/+918494832492?text=' + encodeURIComponent('Hi Karol Grove, my name is ' + n + '. ' + m), '_blank');">
-        <div class="form-group" style="margin-bottom: 18px;">
-          <label for="cName" style="display: block; font-weight: 700; font-size: 13.5px; margin-bottom: 6px; color: var(--text-primary);">Your Full Name *</label>
-          <input type="text" id="cName" name="name" placeholder="e.g. Rahul Sharma" required style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-light); font-size: 14px;">
+    <div class="glass-card contact-form-card reveal">
+      <h3>Send Us a Message</h3>
+      <form class="contact-form" id="contactWhatsAppForm" onsubmit="submitContactWhatsApp(event);">
+        <div class="form-group">
+          <label for="cName">Your Full Name *</label>
+          <input type="text" id="cName" name="name" placeholder="e.g. Rahul Sharma" required autocomplete="name">
         </div>
-        <div class="form-group" style="margin-bottom: 18px;">
-          <label for="cEmail" style="display: block; font-weight: 700; font-size: 13.5px; margin-bottom: 6px; color: var(--text-primary);">Email Address *</label>
-          <input type="email" id="cEmail" name="email" placeholder="e.g. rahul@example.com" required style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-light); font-size: 14px;">
+        <div class="form-group">
+          <label for="cEmail">Email Address *</label>
+          <input type="email" id="cEmail" name="email" placeholder="e.g. rahul@example.com" required autocomplete="email">
         </div>
-        <div class="form-group" style="margin-bottom: 18px;">
-          <label for="cMsg" style="display: block; font-weight: 700; font-size: 13.5px; margin-bottom: 6px; color: var(--text-primary);">How can we help you? *</label>
-          <textarea id="cMsg" name="message" rows="4" placeholder="Order inquiry, price inquiry, corporate hamper details..." required style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-light); font-size: 14px;"></textarea>
+        <div class="form-group">
+          <label for="cMsg">How can we help you? *</label>
+          <textarea id="cMsg" name="message" rows="4" placeholder="Order inquiry, price inquiry, corporate hamper details..." required></textarea>
         </div>
-        <button type="submit" class="btn btn-launch-primary" style="width: 100%; justify-content: center; cursor: pointer;">
+        <button type="submit" class="btn btn-launch-primary">
           Send Message via WhatsApp &rarr;
         </button>
       </form>
     </div>
 
     <!-- Contact Info Cards -->
-    <div class="reveal">
-      <div class="glass-card contact-info-card tilt-card" style="background: #fff; padding: 36px; border-radius: 16px; border: 1.5px solid var(--border-light); box-shadow: 0 6px 25px rgba(0,0,0,0.04);">
-        <h3 style="font-family: var(--font-display); font-size: 22px; color: var(--forest-deep); margin-bottom: 22px;">Direct Contact Details</h3>
+    <div class="contact-info-column reveal">
+      <div class="glass-card contact-info-card">
+        <h3>Direct Contact Details</h3>
 
-        <div style="display: flex; gap: 14px; margin-bottom: 20px;">
-          <div style="font-size: 22px; color: var(--forest);">📍</div>
+        <div class="contact-info-row">
+          <div class="contact-ico">📍</div>
           <div>
-            <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Location &amp; Packing Unit</div>
-            <div style="font-size: 14.5px; color: var(--text-primary); font-weight: 600; margin-top: 2px;">
+            <div class="contact-label">Location &amp; Packing Unit</div>
+            <div class="contact-val">
               SRG Stores, Mullamparappu,<br>Erode, Tamil Nadu 638115
             </div>
           </div>
         </div>
 
-        <div style="display: flex; gap: 14px; margin-bottom: 20px;">
-          <div style="font-size: 22px; color: var(--forest);">📱</div>
+        <div class="contact-info-row">
+          <div class="contact-ico">📱</div>
           <div>
-            <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Phone &amp; WhatsApp</div>
-            <div style="font-size: 15px; font-weight: 700; margin-top: 2px;">
-              <a href="tel:8494832492" style="color: var(--forest);">+91 84948 32492</a>
+            <div class="contact-label">Phone &amp; WhatsApp</div>
+            <div class="contact-val">
+              <a href="tel:8494832492">+91 84948 32492</a>
             </div>
             <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Mon – Sat, 9:00 AM to 7:00 PM</div>
           </div>
         </div>
 
-        <div style="display: flex; gap: 14px; margin-bottom: 24px;">
-          <div style="font-size: 22px; color: var(--forest);">✉️</div>
+        <div class="contact-info-row">
+          <div class="contact-ico">✉️</div>
           <div>
-            <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Official Email</div>
-            <div style="font-size: 14.5px; font-weight: 600; margin-top: 2px;">
-              <a href="mailto:karolgrovenuts@gmail.com" style="color: var(--forest);">karolgrovenuts@gmail.com</a>
+            <div class="contact-label">Official Email</div>
+            <div class="contact-val">
+              <a href="mailto:karolgrovenuts@gmail.com">karolgrovenuts@gmail.com</a>
             </div>
           </div>
         </div>
 
-        <div style="padding-top: 18px; border-top: 1px dashed var(--border-light); font-size: 12.5px; line-height: 1.6; color: var(--text-muted);">
+        <div class="contact-meta-box">
           <div><strong>GSTIN:</strong> 33JQUPK0008M1ZH</div>
           <div><strong>FSSAI Lic. No.:</strong> 22421062000070</div>
         </div>
       </div>
 
       <!-- Quick WhatsApp Button Box -->
-      <div style="margin-top: 20px; background: #25D366; color: #fff; padding: 20px 24px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
-        <div>
-          <strong style="display: block; font-size: 15px;">Need an immediate response?</strong>
-          <span style="font-size: 13px; opacity: 0.95;">Message our customer support on WhatsApp</span>
+      <div class="contact-quick-wa-box">
+        <div class="contact-quick-wa-text">
+          <strong>Need an immediate response?</strong>
+          <span>Message our customer support on WhatsApp</span>
         </div>
-        <a href="https://wa.me/+918494832492" target="_blank" rel="noopener" style="background: #fff; color: #123020; font-weight: 800; font-size: 13px; padding: 10px 18px; border-radius: 20px; text-transform: uppercase;">
+        <a href="https://wa.me/918494832492?text=Hi%20Karol%20Grove%2C%20I%20have%20an%20inquiry." target="_blank" rel="noopener" class="contact-quick-wa-btn">
           Chat Now &rarr;
         </a>
       </div>
@@ -232,6 +468,26 @@
     <path fill="currentColor" d="M12.031 2c-5.514 0-9.99 4.477-9.99 9.99 0 2.08.636 4.01 1.728 5.614l-1.127 4.12 4.22-1.107c1.514.938 3.284 1.48 5.17 1.48 5.515 0 9.99-4.477 9.99-9.99 0-5.514-4.475-9.99-9.99-9.99zm5.556 14.13c-.224.634-1.22 1.157-1.68 1.206-.432.046-.86.23-2.738-.508-2.398-.942-3.896-3.376-4.016-3.536-.12-.16-1.002-1.332-1.002-2.54 0-1.21.632-1.804.856-2.048.225-.244.49-.305.653-.305.163 0 .326.002.47.01.15.008.347-.057.545.422.203.49.693 1.693.754 1.815.06.123.1.265.018.428-.08.163-.122.265-.244.407-.122.143-.257.32-.367.43-.122.12-.25.253-.108.497.143.244.636 1.05 1.362 1.7 1 .894 1.85 1.173 2.116 1.306.265.132.418.11.57-.06.153-.173.663-.774.846-1.037.183-.265.367-.224.622-.132.255.09 1.62.764 1.9.905.28.14.47.21.536.326.067.116.067.67-.156 1.306z"/>
   </svg>
 </a>
+
+<script>
+function submitContactWhatsApp(e) {
+  e.preventDefault();
+  const nameEl = document.getElementById('cName');
+  const emailEl = document.getElementById('cEmail');
+  const msgEl = document.getElementById('cMsg');
+  const n = (nameEl ? nameEl.value : '').trim();
+  const em = (emailEl ? emailEl.value : '').trim();
+  const m = (msgEl ? msgEl.value : '').trim();
+  let text = `Hi Karol Grove, my name is ${n}`;
+  if (em) text += ` (${em})`;
+  if (m) text += `.\n\n${m}`;
+  const waUrl = `https://wa.me/918494832492?text=${encodeURIComponent(text)}`;
+  const win = window.open(waUrl, '_blank');
+  if (!win || win.closed || typeof win.closed === 'undefined') {
+    window.location.href = waUrl;
+  }
+}
+</script>
 
 </body>
 </html>
