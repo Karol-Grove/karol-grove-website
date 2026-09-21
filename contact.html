@@ -3,16 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact Us — Karol Grove</title>
-<meta name="description" content="Get in touch with Karol Grove for orders, bulk inquiries, and questions about our premium dry fruits and nuts.">
+<title>Contact Us — Karol Grove | Order Support &amp; Bulk Inquiries</title>
+<meta name="description" content="Get in touch with Karol Grove for orders, corporate gifting, price inquiries, and questions about our premium dry fruits and nuts.">
 <link rel="icon" href="assets/karol-grove-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="assets/style.css">
-<script src="assets/translations.js" defer></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=20261002-v3">
+<script src="assets/prices.js" defer></script>
+<script src="assets/main.js?v=20261002-v3" defer></script>
 </head>
 <body>
-
-<canvas id="vfx-canvas"></canvas>
 
 <header class="site-header">
   <div class="header-inner">
@@ -24,134 +25,203 @@
       </div>
     </a>
     <nav class="main-nav">
-      <a href="index.html" data-tr="nav_home">Home</a>
-      <a href="products.html" data-tr="nav_products">Products</a>
-      <a href="pricelist.html" data-tr="nav_pricelist">Price List</a>
-      <a href="contact.html" class="active" data-tr="nav_contact">Contact</a>
-      <a href="about.html" data-tr="nav_about">About</a>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="index.html#launch-offers">Launch Offers</a>
+      <a href="corporate-gifts.html">Corporate Gifting</a>
+      <a href="pricelist.html">Price List</a>
+      <a href="contact.html" class="active">Contact</a>
     </nav>
-    <a class="header-cta" href="https://wa.me/+918494832492" target="_blank" rel="noopener"><span data-tr="cta_whatsapp">Order on WhatsApp</span> &rarr;</a>
-    <button class="nav-toggle" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="header-actions-group">
+      <button class="header-cart-btn" onclick="toggleCartDrawer(true)" aria-label="Shopping Cart">
+        <span class="cart-icon-symbol">🛒</span>
+        <span class="cart-text">Cart</span>
+        <span class="badge cart-badge">0</span>
+      </button>
+      <a class="header-cta" href="https://wa.me/+918494832492" target="_blank" rel="noopener">WhatsApp Order &rarr;</a>
+      <button class="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
   <div class="mobile-nav" id="mobileNav">
-    <a href="index.html" data-tr="nav_home">Home</a>
-    <a href="products.html" data-tr="nav_products">Products</a>
-    <a href="pricelist.html" data-tr="nav_pricelist">Price List</a>
-    <a href="contact.html" class="active" data-tr="nav_contact">Contact</a>
-    <a href="about.html" data-tr="nav_about">About</a>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="index.html#launch-offers">Launch Offers</a>
+    <a href="corporate-gifts.html">Corporate Gifting</a>
+    <a href="pricelist.html">Price List</a>
+    <a href="contact.html" class="active">Contact</a>
+    <a href="https://wa.me/+918494832492" target="_blank" rel="noopener" style="color:var(--forest); font-weight:700;">💬 Order on WhatsApp</a>
   </div>
 </header>
 
-<section class="page-header">
-  <div class="container reveal reveal-up">
-    <span class="eyebrow" data-tr="nav_contact">Contact</span>
-    <h1 data-tr="contact_header_title">Get In Touch</h1>
-    <p data-tr="contact_header_desc">Have questions about our harvests, packaging, or bulk orders? We're here to help.</p>
+<section class="page-header" style="background: linear-gradient(135deg, #0E3B2E 0%, #082119 100%); color: #fff; padding: 70px 20px 50px; text-align: center;">
+  <div class="container reveal">
+    <span class="launch-badge-pill">WE ARE HERE TO ASSIST</span>
+    <h1 style="font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.5rem); color: #fff; margin-bottom: 12px;">Get In Touch</h1>
+    <p style="font-size: 16px; color: #D3E0D8; max-width: 650px; margin: 0 auto;">
+      Have questions about our dry fruits, packaging sizes, wholesale pricing, or corporate gifting? We're ready to assist you.
+    </p>
   </div>
 </section>
 
-<section class="section">
-  <div class="container contact-grid">
+<section class="section" style="padding: 60px 0 90px; background: #FAF8F5;">
+  <div class="container contact-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px;">
 
-    <div class="glass-card contact-form-card reveal reveal-scale">
-      <h3 data-tr="contact_form_heading">Send Us a Message</h3>
-      <form class="contact-form">
-        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
-        <div class="form-group">
-          <label for="name" data-tr="contact_label_name">Your Name</label>
-          <input type="text" id="name" name="name" placeholder="Enter your name" required>
+    <!-- Contact Form -->
+    <div class="glass-card contact-form-card reveal" style="background: #fff; padding: 40px; border-radius: 16px; border: 1.5px solid var(--border-light); box-shadow: 0 6px 25px rgba(0,0,0,0.04);">
+      <h3 style="font-family: var(--font-display); font-size: 24px; color: var(--forest-deep); margin-bottom: 18px;">Send Us a Message</h3>
+      <form class="contact-form" onsubmit="event.preventDefault(); const n = document.getElementById('cName').value; const m = document.getElementById('cMsg').value; window.open('https://wa.me/+918494832492?text=' + encodeURIComponent('Hi Karol Grove, my name is ' + n + '. ' + m), '_blank');">
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label for="cName" style="display: block; font-weight: 700; font-size: 13.5px; margin-bottom: 6px; color: var(--text-primary);">Your Full Name *</label>
+          <input type="text" id="cName" name="name" placeholder="e.g. Rahul Sharma" required style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-light); font-size: 14px;">
         </div>
-        <div class="form-group">
-          <label for="email" data-tr="contact_label_email">Your Email Address</label>
-          <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label for="cEmail" style="display: block; font-weight: 700; font-size: 13.5px; margin-bottom: 6px; color: var(--text-primary);">Email Address *</label>
+          <input type="email" id="cEmail" name="email" placeholder="e.g. rahul@example.com" required style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-light); font-size: 14px;">
         </div>
-        <div class="form-group">
-          <label for="message" data-tr="contact_label_message">Your Message</label>
-          <textarea id="message" name="message" placeholder="How can we help?" required></textarea>
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label for="cMsg" style="display: block; font-weight: 700; font-size: 13.5px; margin-bottom: 6px; color: var(--text-primary);">How can we help you? *</label>
+          <textarea id="cMsg" name="message" rows="4" placeholder="Order inquiry, price inquiry, corporate hamper details..." required style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-light); font-size: 14px;"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary" style="align-self: flex-start;" data-tr="contact_btn_send">Send Message &rarr;</button>
+        <button type="submit" class="btn btn-launch-primary" style="width: 100%; justify-content: center; cursor: pointer;">
+          Send Message via WhatsApp &rarr;
+        </button>
       </form>
     </div>
 
-    <div class="reveal reveal-up">
-      <div class="glass-card contact-info-card tilt-card">
-        <h3 data-tr="contact_info_heading">Contact Info</h3>
+    <!-- Contact Info Cards -->
+    <div class="reveal">
+      <div class="glass-card contact-info-card tilt-card" style="background: #fff; padding: 36px; border-radius: 16px; border: 1.5px solid var(--border-light); box-shadow: 0 6px 25px rgba(0,0,0,0.04);">
+        <h3 style="font-family: var(--font-display); font-size: 22px; color: var(--forest-deep); margin-bottom: 22px;">Direct Contact Details</h3>
 
-        <div class="info-row">
-          <div class="ico"><i>&#128205;</i></div>
+        <div style="display: flex; gap: 14px; margin-bottom: 20px;">
+          <div style="font-size: 22px; color: var(--forest);">📍</div>
           <div>
-            <div class="label-small" data-tr="contact_info_address_label">Location</div>
-            <div class="value" data-tr="contact_info_address_val">SRG Stores, Mullamparappu, Erode, Tamil Nadu 638115</div>
+            <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Location &amp; Packing Unit</div>
+            <div style="font-size: 14.5px; color: var(--text-primary); font-weight: 600; margin-top: 2px;">
+              SRG Stores, Mullamparappu,<br>Erode, Tamil Nadu 638115
+            </div>
           </div>
         </div>
 
-        <div class="info-row">
-          <div class="ico"><i>&#128241;</i></div>
+        <div style="display: flex; gap: 14px; margin-bottom: 20px;">
+          <div style="font-size: 22px; color: var(--forest);">📱</div>
           <div>
-            <div class="label-small" data-tr="contact_info_phone_label">Phone</div>
-            <div class="value"><a href="tel:8494832492">8494832492</a></div>
+            <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Phone &amp; WhatsApp</div>
+            <div style="font-size: 15px; font-weight: 700; margin-top: 2px;">
+              <a href="tel:8494832492" style="color: var(--forest);">+91 84948 32492</a>
+            </div>
+            <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Mon – Sat, 9:00 AM to 7:00 PM</div>
           </div>
         </div>
 
-        <div class="info-row">
-          <div class="ico"><i>&#128231;</i></div>
+        <div style="display: flex; gap: 14px; margin-bottom: 24px;">
+          <div style="font-size: 22px; color: var(--forest);">✉️</div>
           <div>
-            <div class="label-small" data-tr="contact_info_email_label">Email</div>
-            <div class="value"><a href="mailto:karolgrovenuts@gmail.com">karolgrovenuts@gmail.com</a></div>
+            <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Official Email</div>
+            <div style="font-size: 14.5px; font-weight: 600; margin-top: 2px;">
+              <a href="mailto:karolgrovenuts@gmail.com" style="color: var(--forest);">karolgrovenuts@gmail.com</a>
+            </div>
           </div>
         </div>
 
-        <div class="map-frame">
-          <iframe src="https://maps.google.com/maps?q=srg%20stores%20Mullamparappu%2C%20Tamil%20Nadu%20638115&t=m&z=10&output=embed&iwloc=near" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Karol Grove location map"></iframe>
+        <div style="padding-top: 18px; border-top: 1px dashed var(--border-light); font-size: 12.5px; line-height: 1.6; color: var(--text-muted);">
+          <div><strong>GSTIN:</strong> 33JQUPK0008M1ZH</div>
+          <div><strong>FSSAI Lic. No.:</strong> 22421062000070</div>
         </div>
+      </div>
+
+      <!-- Quick WhatsApp Button Box -->
+      <div style="margin-top: 20px; background: #25D366; color: #fff; padding: 20px 24px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div>
+          <strong style="display: block; font-size: 15px;">Need an immediate response?</strong>
+          <span style="font-size: 13px; opacity: 0.95;">Message our customer support on WhatsApp</span>
+        </div>
+        <a href="https://wa.me/+918494832492" target="_blank" rel="noopener" style="background: #fff; color: #123020; font-weight: 800; font-size: 13px; padding: 10px 18px; border-radius: 20px; text-transform: uppercase;">
+          Chat Now &rarr;
+        </a>
       </div>
     </div>
 
   </div>
 </section>
 
-<footer class="site-footer">
+<!-- Footer -->
+<footer class="site-footer-v2">
   <div class="container">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand">
-          <img src="assets/karol-grove-logo-full.png" alt="Karol Grove Premium Dry Fruits & Nuts" class="footer-logo-img">
-          <div class="footer-brand-text">
-            <span class="footer-brand-name">Karol Grove</span>
-            <span class="footer-brand-tagline">Premium Dry Fruits &amp; Nuts</span>
+    <div class="footer-v2-grid">
+      <!-- 1. Brand Info -->
+      <div class="footer-v2-col">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <img src="assets/karol-grove-icon.png" alt="Karol Grove" style="height: 44px; width: auto;">
+          <span style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: #FFFFFF;">Karol Grove</span>
+        </div>
+        <p>Karol Grove brings you premium, hand-picked dry fruits, nuts, seeds and natural sweeteners — freshly packed, honest prices, delivered to your doorstep.</p>
+        <p style="margin-top: 14px; font-size: 13px; color: var(--gold);">Official Website Launch: <strong>02 October 2026</strong></p>
+      </div>
+
+      <!-- 2. Shop -->
+      <div class="footer-v2-col">
+        <h4>SHOP</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="index.html#launch-offers">Launch Offers</a></li>
+          <li><a href="pricelist.html">Price List</a></li>
+          <li><a href="products.html#nuts">Nuts Varieties</a></li>
+          <li><a href="products.html#dates">Premium Dates</a></li>
+          <li><a href="products.html#dried-fruits">Dried Fruits</a></li>
+        </ul>
+      </div>
+
+      <!-- 3. Corporate -->
+      <div class="footer-v2-col">
+        <h4>CORPORATE</h4>
+        <ul>
+          <li><a href="corporate-gifts.html">Corporate Gifting</a></li>
+          <li><a href="corporate-gifts.html#quote">Request Quote</a></li>
+          <li><a href="corporate-gifts.html#branding">Custom Branding</a></li>
+          <li><a href="corporate-gifts.html#festival">Festival Gifting</a></li>
+          <li><a href="corporate-gifts.html#bulk">Bulk Orders</a></li>
+        </ul>
+      </div>
+
+      <!-- 4. Help -->
+      <div class="footer-v2-col">
+        <h4>HELP</h4>
+        <ul>
+          <li><a href="index.html#how-to-order">How to Order</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="https://wa.me/+918494832492" target="_blank" rel="noopener">WhatsApp Support</a></li>
+          <li><a href="about.html">Our Story</a></li>
+        </ul>
+      </div>
+
+      <!-- 5. Business Information -->
+      <div class="footer-v2-col">
+        <h4>BUSINESS INFO</h4>
+        <div class="footer-legal-badge">
+          <p><strong>Marketed &amp; Packed by:</strong><br>SRG Stores</p>
+          <p style="margin-top: 6px;"><strong>Location:</strong><br>Mullamparappu, Erode, Tamil Nadu 638115</p>
+          <p style="margin-top: 6px;"><strong>Phone &amp; WhatsApp:</strong><br>+91 84948 32492</p>
+          <p style="margin-top: 6px;"><strong>Email:</strong><br>karolgrovenuts@gmail.com</p>
+          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15);">
+            <p><strong>GSTIN:</strong> 33JQUPK0008M1ZH</p>
+            <p><strong>FSSAI Lic. No.:</strong> 22421062000070</p>
           </div>
         </div>
-        <p data-tr="footer_desc">Premium dry fruits, nuts, seeds and natural sweeteners — handpicked, honest, and delivered fresh to your door.</p>
-      </div>
-      <div class="footer-col">
-        <h4 data-tr="footer_links_title">Quick Links</h4>
-        <a href="index.html" data-tr="nav_home">Home</a>
-        <a href="products.html" data-tr="nav_products">Products</a>
-        <a href="pricelist.html" data-tr="nav_pricelist">Price List</a>
-        <a href="contact.html" data-tr="nav_contact">Contact</a>
-        <a href="about.html" data-tr="nav_about">About</a>
-      </div>
-      <div class="footer-col">
-        <h4 data-tr="footer_contact_title">Contact Us</h4>
-        <a href="mailto:karolgrovenuts@gmail.com">karolgrovenuts@gmail.com</a>
-        <a href="tel:8494832492">8494832492</a>
-        <a href="https://wa.me/+918494832492" target="_blank" rel="noopener" data-tr="cta_whatsapp">WhatsApp Order</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>&copy; 2026 Karol Grove. All rights reserved.</span>
-      <div class="legal-ids">
-        <span><strong data-tr="legal_packed_by">Marketed &amp; Packed by:</strong> SRG Stores</span>
-        <span><strong data-tr="legal_gstin">GSTIN:</strong> 33JQUPK0008M1ZH</span>
-        <span><strong data-tr="legal_fssai">FSSAI Lic. No.:</strong> 22421062000070</span>
-      </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-v2-bottom">
+      <div>&copy; 2026 Karol Grove. All rights reserved.</div>
+      <div>Official Launch Date: <strong>02 October 2026</strong> &bull; Up to 40% OFF Selected Products</div>
+      <div>Website: <a href="https://www.karolgrove.com">www.karolgrove.com</a></div>
     </div>
   </div>
 </footer>
 
-<!-- Floating WhatsApp Contact Button -->
 <a href="https://wa.me/918494832492?text=Hi%20Karol%20Grove%2C%20I%20would%20like%20to%20place%20an%20order." 
    class="floating-whatsapp" 
    target="_blank" 
@@ -163,6 +233,5 @@
   </svg>
 </a>
 
-<script src="assets/main.js" defer></script>
 </body>
 </html>

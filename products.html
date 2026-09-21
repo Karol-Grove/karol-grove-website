@@ -3,16 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Products — Karol Grove</title>
-<meta name="description" content="Browse Karol Grove's full collection of premium nuts, dried fruits, seeds, spices, sweeteners and gift packs.">
+<title>Products Catalog — Karol Grove | Premium Dry Fruits & Nuts</title>
+<meta name="description" content="Browse Karol Grove's full collection of premium nuts, dried fruits, dates, seeds, natural sweeteners and gift packs. Grand launch offers up to 40% off on 02 October 2026.">
 <link rel="icon" href="assets/karol-grove-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="assets/style.css">
-<script src="assets/translations.js" defer></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=20261002-v3">
+<script src="assets/prices.js" defer></script>
+<script src="assets/main.js?v=20261002-v3" defer></script>
 </head>
 <body>
-
-<canvas id="vfx-canvas"></canvas>
 
 <header class="site-header">
   <div class="header-inner">
@@ -24,86 +25,116 @@
       </div>
     </a>
     <nav class="main-nav">
-      <a href="index.html" data-tr="nav_home">Home</a>
-      <a href="products.html" class="active" data-tr="nav_products">Products</a>
-      <a href="pricelist.html" data-tr="nav_pricelist">Price List</a>
-      <a href="contact.html" data-tr="nav_contact">Contact</a>
-      <a href="about.html" data-tr="nav_about">About</a>
+      <a href="index.html">Home</a>
+      <a href="products.html" class="active">Products</a>
+      <a href="#launch-offers">Launch Offers</a>
+      <a href="corporate-gifts.html">Corporate Gifting</a>
+      <a href="pricelist.html">Price List</a>
+      <a href="contact.html">Contact</a>
     </nav>
-    <a class="header-cta" href="https://wa.me/+918494832492" target="_blank" rel="noopener"><span data-tr="cta_whatsapp">Order on WhatsApp</span> &rarr;</a>
-    <button class="nav-toggle" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="header-actions-group">
+      <button class="header-cart-btn" onclick="toggleCartDrawer(true)" aria-label="Shopping Cart">
+        <span class="cart-icon-symbol">🛒</span>
+        <span class="cart-text">Cart</span>
+        <span class="badge cart-badge">0</span>
+      </button>
+      <a class="header-cta" href="https://wa.me/+918494832492" target="_blank" rel="noopener">WhatsApp Order &rarr;</a>
+      <button class="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
   <div class="mobile-nav" id="mobileNav">
-    <a href="index.html" data-tr="nav_home">Home</a>
-    <a href="products.html" class="active" data-tr="nav_products">Products</a>
-    <a href="pricelist.html" data-tr="nav_pricelist">Price List</a>
-    <a href="contact.html" data-tr="nav_contact">Contact</a>
-    <a href="about.html" data-tr="nav_about">About</a>
+    <a href="index.html">Home</a>
+    <a href="products.html" class="active">Products</a>
+    <a href="#launch-offers">Launch Offers</a>
+    <a href="corporate-gifts.html">Corporate Gifting</a>
+    <a href="pricelist.html">Price List</a>
+    <a href="contact.html">Contact</a>
+    <a href="https://wa.me/+918494832492" target="_blank" rel="noopener" style="color:var(--forest); font-weight:700;">💬 Order on WhatsApp</a>
   </div>
 </header>
 
-<section class="page-header">
-  <div class="container reveal reveal-up">
-    <span class="eyebrow" data-tr="page_header_eyebrow">Our Collections</span>
-    <h1 data-tr="page_header_title">Everything from the grove.</h1>
-    <p data-tr="page_header_desc">Hand-picked nuts, dried fruits, seeds, spices and natural sweeteners — every item sourced for freshness and flavor.</p>
+<section class="page-header" style="background: linear-gradient(135deg, #0E3B2E 0%, #082119 100%); color: #fff; padding: 70px 20px 50px; text-align: center;">
+  <div class="container reveal">
+    <span class="launch-badge-pill" style="margin-bottom: 12px;">GRAND WEBSITE LAUNCH &bull; 02 OCTOBER 2026</span>
+    <h1 style="font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.5rem); color: #fff; margin-bottom: 12px;">Premium Product Collections</h1>
+    <p style="font-size: 16px; color: #D3E0D8; max-width: 680px; margin: 0 auto 20px;">Explore hand-picked nuts, dried fruits, dates, healthy seeds and gift packs — honest pricing, vacuum-sealed packaging, and easy WhatsApp checkout.</p>
+    <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+      <a href="#launch-offers" class="btn btn-launch-primary" style="padding: 12px 28px; font-size: 14px;">🔥 Up to 40% OFF Launch Offers</a>
+      <a href="pricelist.html" class="btn btn-launch-secondary" style="padding: 12px 24px; font-size: 14px;">View Current Price List &rarr;</a>
+    </div>
   </div>
 </section>
 
-<section class="category-banners-section">
+<!-- Dedicated Launch Offers Banner on Products Page -->
+<section class="container" id="launch-offers" style="margin-top: 40px;">
+  <div class="launch-offers-banner reveal" style="margin-bottom: 30px;">
+    <div class="launch-offers-banner-text">
+      <span class="launch-badge-pill">🔥 SPECIAL LAUNCH CAMPAIGN</span>
+      <h2>Up to <span>40% OFF</span> on Selected Products</h2>
+      <p>Official Website Launch on <strong>02 October 2026</strong>. Add your favorite packs to the cart and send your pre-filled order directly to WhatsApp for prompt confirmation and dispatch.</p>
+    </div>
+    <div>
+      <a href="https://wa.me/+918494832492?text=Hi%20Karol%20Grove%2C%20I%20would%20like%20to%20enquire%20about%20your%20Grand%20Launch%20Offers." target="_blank" rel="noopener" class="btn btn-launch-primary">
+        Enquire on WhatsApp &rarr;
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Category Visual Banners Grid -->
+<section class="category-banners-section" style="padding: 20px 0 40px;">
   <div class="container">
     <div class="category-banners-grid">
       
       <!-- Card 1: Nuts -->
-      <div class="category-banner-card reveal reveal-up">
+      <div class="category-banner-card reveal">
         <img src="assets/category-nuts.png" alt="Imported Premium Nuts" class="banner-image">
         <div class="banner-text-panel">
-          <span class="banner-tagline" data-tr="nuts_tagline">Discover Our Favorites</span>
-          <h2 class="banner-title" data-tr="nuts_title">Imported Premium Nuts</h2>
-          <button class="banner-btn" data-category="nuts" data-tr="nuts_btn">Explore Nuts</button>
+          <span class="banner-tagline">Crisp &amp; Nutrient-Rich</span>
+          <h2 class="banner-title">Premium Nuts</h2>
+          <button class="banner-btn" data-category="nuts">Explore Nuts</button>
         </div>
       </div>
 
       <!-- Card 2: Dates -->
-      <div class="category-banner-card reveal reveal-up">
+      <div class="category-banner-card reveal">
         <img src="assets/category-dates.png" alt="Premium Dates" class="banner-image">
         <div class="banner-text-panel">
-          <span class="banner-tagline" data-tr="dates_tagline">Our Sweet Selection</span>
-          <h2 class="banner-title" data-tr="dates_title">Premium Dates</h2>
-          <button class="banner-btn" data-category="dates" data-tr="dates_btn">Explore Dates</button>
+          <span class="banner-tagline">Natural Sweetness</span>
+          <h2 class="banner-title">Select Dates</h2>
+          <button class="banner-btn" data-category="dates">Explore Dates</button>
         </div>
       </div>
 
       <!-- Card 3: Dry Fruits -->
-      <div class="category-banner-card reveal reveal-up">
+      <div class="category-banner-card reveal">
         <img src="assets/category-dryfruits.png" alt="Fresh Dry Fruits" class="banner-image">
         <div class="banner-text-panel">
-          <span class="banner-tagline" data-tr="dryfruits_tagline">Nature's Goodness</span>
-          <h2 class="banner-title" data-tr="dryfruits_title">Fresh Dry Fruits</h2>
-          <button class="banner-btn" data-category="dried-fruits" data-tr="dryfruits_btn">Explore Dry Fruits</button>
+          <span class="banner-tagline">Handpicked Harvests</span>
+          <h2 class="banner-title">Dried Fruits</h2>
+          <button class="banner-btn" data-category="dried-fruits">Explore Dry Fruits</button>
         </div>
       </div>
 
       <!-- Card 4: Seeds -->
-      <div class="category-banner-card reveal reveal-up">
+      <div class="category-banner-card reveal">
         <img src="assets/category-seeds.png" alt="Nutritious Seeds" class="banner-image">
         <div class="banner-text-panel">
-          <span class="banner-tagline" data-tr="seeds_tagline">Power Packed Seeds</span>
-          <h2 class="banner-title" data-tr="seeds_title">Nutritious Seeds</h2>
-          <button class="banner-btn" data-category="seeds" data-tr="seeds_btn">Explore Seeds</button>
+          <span class="banner-tagline">Daily Nutrition</span>
+          <h2 class="banner-title">Healthy Seeds</h2>
+          <button class="banner-btn" data-category="seeds">Explore Seeds</button>
         </div>
       </div>
 
-
-      <!-- Card 6: Gifts -->
-      <div class="category-banner-card reveal reveal-up">
+      <!-- Card 5: Gifts -->
+      <div class="category-banner-card reveal">
         <img src="assets/category-gifts.png" alt="Special Gifts" class="banner-image">
         <div class="banner-text-panel">
-          <span class="banner-tagline" data-tr="gifts_tagline">For Every Occasion</span>
-          <h2 class="banner-title" data-tr="gifts_title">Special Gifts</h2>
-          <button class="banner-btn" data-category="mixed" data-tr="gifts_btn">Explore Gifts</button>
+          <span class="banner-tagline">Celebrations &amp; Gifting</span>
+          <h2 class="banner-title">Gift Hampers</h2>
+          <button class="banner-btn" data-category="mixed">Explore Gifts</button>
         </div>
       </div>
 
@@ -111,180 +142,181 @@
   </div>
 </section>
 
+<!-- Main Products Section with Filter & Search -->
 <section class="section" id="products-section">
   <div class="container">
 
-    <div class="cat-nav-wrapper reveal reveal-up">
+    <div class="cat-nav-wrapper reveal">
       <div class="search-box-wrapper">
         <span class="search-icon">🔍</span>
         <input type="text" id="product-search" placeholder="Search dry fruits, nuts, seeds, benefits...">
       </div>
       <nav class="cat-nav">
-        <button class="cat-tab active" data-category="all" data-tr="tab_all">All Products</button>
-        <button class="cat-tab" data-category="nuts" data-tr="tab_nuts">Nuts Varieties</button>
-        <button class="cat-tab" data-category="dates" data-tr="tab_dates">Premium Dates</button>
-        <button class="cat-tab" data-category="dried-fruits" data-tr="tab_dryfruits">Dried Fruits</button>
-        <button class="cat-tab" data-category="seeds" data-tr="tab_seeds">Healthy Seeds</button>
-        <button class="cat-tab" data-category="mixed" data-tr="tab_mixed">Gifts &amp; Mixed</button>
-        <button class="cat-tab" data-category="other" data-tr="tab_other">Other Products</button>
+        <button class="cat-tab active" data-category="all">All Products</button>
+        <button class="cat-tab" data-category="nuts">Nuts Varieties</button>
+        <button class="cat-tab" data-category="dates">Premium Dates</button>
+        <button class="cat-tab" data-category="dried-fruits">Dried Fruits</button>
+        <button class="cat-tab" data-category="seeds">Healthy Seeds</button>
+        <button class="cat-tab" data-category="mixed">Gifts &amp; Mixed</button>
+        <button class="cat-tab" data-category="other">Natural Sweeteners &amp; Spices</button>
       </nav>
     </div>
 
     <!-- NUTS -->
     <div class="product-category" id="nuts">
-      <div class="cat-head"><h2>&#129372; Nuts Varieties</h2><div class="line"></div></div>
+      <div class="cat-head"><h2>🌰 Nuts Varieties</h2><div class="line"></div></div>
       <div class="product-grid">
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-almonds.png" alt="Almonds" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Top Seller</span>
           </div>
           <div class="product-card-body">
             <h3>Almonds</h3>
-            <p>Rich in Vitamin E, good for heart health, helps brain development.</p>
+            <p>Rich in Vitamin E, supports heart wellness and daily energy.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-cashews.png" alt="Cashews" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Top Seller</span>
           </div>
           <div class="product-card-body">
             <h3>Cashews</h3>
-            <p>High in healthy fats, supports bone health, tasty snack.</p>
+            <p>Grade-A whole cashews with natural buttery flavor and healthy fats.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-pistachios.png" alt="Pistachios" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Crunchy</span>
           </div>
           <div class="product-card-body">
             <h3>Pistachios</h3>
-            <p>Good for weight management, rich in antioxidants.</p>
+            <p>Roasted and lightly salted pistachios packed with antioxidants.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-walnuts.png" alt="Walnuts" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Omega-3</span>
           </div>
           <div class="product-card-body">
             <h3>Walnuts</h3>
-            <p>Improves memory, heart-friendly, Omega-3 rich.</p>
+            <p>Premium halves rich in plant-based Omega-3 fatty acids for brain health.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-pepper-cashews.png" alt="Pepper Cashews" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Spiced</span>
           </div>
           <div class="product-card-body">
             <h3>Pepper Cashews</h3>
-            <p>Boosts energy and immunity, supports heart health with healthy fats, and adds a spicy twist.</p>
+            <p>Whole roasted cashews seasoned with freshly crushed black pepper.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-chilli-cashews.png" alt="Chilli Cashews" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Spiced</span>
           </div>
           <div class="product-card-body">
             <h3>Chilli Cashews</h3>
-            <p>Rich in protein and healthy fats, boosts energy, and offers a spicy crunchy treat.</p>
+            <p>Crispy cashews seasoned with mild red chilli for an energizing snack.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-pistachios.png" alt="Salted Pistachios" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Roasted</span>
           </div>
           <div class="product-card-body">
             <h3>Salted Pistachios</h3>
-            <p>Improves heart health, supports weight control, boosts immunity, and provides lasting energy.</p>
+            <p>Golden-roasted in-shell pistachios with a hint of salt.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
@@ -294,72 +326,71 @@
 
     <!-- DATES -->
     <div class="product-category" id="dates">
-      <div class="cat-head"><h2>&#127815; Premium Dates</h2><div class="line"></div></div>
+      <div class="cat-head"><h2>🌴 Premium Dates</h2><div class="line"></div></div>
       <div class="product-grid">
 
-
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
-            <img src="assets/product-dates-premium.png" alt="Dates" class="product-card-img">
-            <span class="label">Benefits</span>
+            <img src="assets/product-dates-premium.png" alt="Medjool Dates" class="product-card-img">
+            <span class="label">Premium</span>
           </div>
           <div class="product-card-body">
-            <h3>Dates</h3>
-            <p>Natural energy booster, rich in fibre &amp; potassium.</p>
+            <h3>Medjool Dates (Premium)</h3>
+            <p>Large, luscious dates with rich caramel taste and natural fiber.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-dry-dates.png" alt="Dry Date" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Nutritious</span>
           </div>
           <div class="product-card-body">
-            <h3>Dry Date</h3>
-            <p>Boosts energy naturally, strengthens bones with calcium, and improves digestion.</p>
+            <h3>Dry Dates (Kharik)</h3>
+            <p>Traditional yellow dry dates packed with calcium, iron, and minerals.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-black-dates.png" alt="Black Date" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Iron-Rich</span>
           </div>
           <div class="product-card-body">
-            <h3>Black Date</h3>
-            <p>Rich in iron for healthy blood, boosts energy naturally, and supports digestion.</p>
+            <h3>Black Dates (Premium)</h3>
+            <p>Naturally soft and moist black dates, an ideal daily natural sweetener.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
@@ -369,291 +400,225 @@
 
     <!-- DRIED FRUITS -->
     <div class="product-category" id="dried-fruits">
-      <div class="cat-head"><h2>&#127815; Dried Fruits Varieties</h2><div class="line"></div></div>
+      <div class="cat-head"><h2>🍇 Dried Fruits Varieties</h2><div class="line"></div></div>
       <div class="product-grid">
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
-            <img src="assets/product-raisins.png" alt="Raisins" class="product-card-img">
-            <span class="label">Benefits</span>
+            <img src="assets/product-raisins.png" alt="Golden Raisins" class="product-card-img">
+            <span class="label">Sweet</span>
           </div>
           <div class="product-card-body">
-            <h3>Raisins</h3>
-            <p>Boosts iron levels, good for digestion &amp; skin health.</p>
+            <h3>Golden Raisins (Kishmish)</h3>
+            <p>Naturally sun-dried golden raisins, ideal for daily snacking and desserts.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-figs.png" alt="Dried Figs" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">High Fiber</span>
           </div>
           <div class="product-card-body">
-            <h3>Dried Figs</h3>
-            <p>Improves digestion, bone health, energy booster.</p>
+            <h3>Dried Figs (Anjeer)</h3>
+            <p>Jumbo dried figs rich in dietary fiber and essential minerals.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-apricots.png" alt="Apricots" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Vitamin A</span>
           </div>
           <div class="product-card-body">
-            <h3>Apricots</h3>
-            <p>Rich in Vitamin A, boosts immunity, good for skin.</p>
+            <h3>Dried Apricots (Jardalu)</h3>
+            <p>Naturally dried plump apricots supporting eye and skin health.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-dry-cherry.png" alt="Dried Cherry" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Tart &amp; Sweet</span>
           </div>
           <div class="product-card-body">
-            <h3>Dried Cherry</h3>
-            <p>Rich in antioxidants, improves digestion, supports heart health, and boosts immunity.</p>
+            <h3>Dried Cherries</h3>
+            <p>Rich in polyphenols and antioxidants, great in breakfast bowls and trail mix.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-dry-kiwi.png" alt="Dried Kiwi" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Vitamin C</span>
           </div>
           <div class="product-card-body">
-            <h3>Dried Kiwi</h3>
-            <p>Rich in Vitamin C, boosts immunity, aids digestion, and promotes healthy skin.</p>
+            <h3>Dried Kiwi Slices</h3>
+            <p>Zesty and nutritious dried kiwi slices offering natural immunity support.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-black-raisins.png" alt="Black Raisins" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Seedless</span>
           </div>
           <div class="product-card-body">
-            <h3>Black Raisins</h3>
-            <p>Boosts iron levels for better blood health, supports digestion, and improves skin &amp; hair.</p>
+            <h3>Black Raisins (Seedless)</h3>
+            <p>Deep-flavored black raisins loaded with natural iron and potassium.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-dry-strawberry.png" alt="Dry Strawberry" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Berry Favorite</span>
           </div>
           <div class="product-card-body">
-            <h3>Dry Strawberry</h3>
-            <p>Rich in antioxidants and Vitamin C that help boost immunity and improve skin health.</p>
+            <h3>Dried Strawberries</h3>
+            <p>Aromatic dried strawberries with vibrant flavor for healthy snacking.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-dry-amla.png" alt="Dry Amla" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Immunity</span>
           </div>
           <div class="product-card-body">
-            <h3>Dry Amla</h3>
-            <p>Rich in Vitamin C and antioxidants that boost immunity and support overall wellness.</p>
+            <h3>Dried Amla</h3>
+            <p>Traditional Indian gooseberry dried to retain potent natural Vitamin C.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
-          <div class="product-img-wrapper">
-            <img src="assets/product-honey-amla.png" alt="Honey Amla" class="product-card-img">
-            <span class="label">Benefits</span>
-          </div>
-          <div class="product-card-body">
-            <h3>Honey Amla</h3>
-            <p>Blends nutrient-rich Indian gooseberries with pure honey, creating a sweet, healthy treat.</p>
-            <div class="product-selector">
-              <div class="variant-wrapper">
-                <span>Select Variant:</span>
-                <select class="variant-select">
-                  <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
-                  <option value="1kg">1kg</option>
-                </select>
-              </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card product-card tilt-card reveal reveal-up">
-          <div class="product-img-wrapper">
-            <img src="assets/product-dry-mango.png" alt="Dry Mango" class="product-card-img">
-            <span class="label">Benefits</span>
-          </div>
-          <div class="product-card-body">
-            <h3>Dry Mango</h3>
-            <p>Rich in vitamins A &amp; C, boosts immunity, and improves digestion.</p>
-            <div class="product-selector">
-              <div class="variant-wrapper">
-                <span>Select Variant:</span>
-                <select class="variant-select">
-                  <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
-                  <option value="1kg">1kg</option>
-                </select>
-              </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card product-card tilt-card reveal reveal-up">
-          <div class="product-img-wrapper">
-            <img src="assets/product-dry-pineapple.png" alt="Dried Pineapple" class="product-card-img">
-            <span class="label">Benefits</span>
-          </div>
-          <div class="product-card-body">
-            <h3>Dried Pineapple</h3>
-            <p>Supports digestion with natural enzymes, boosts immunity, and provides instant energy.</p>
-            <div class="product-selector">
-              <div class="variant-wrapper">
-                <span>Select Variant:</span>
-                <select class="variant-select">
-                  <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
-                  <option value="1kg">1kg</option>
-                </select>
-              </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-dry-blueberry.png" alt="Dry Blueberry" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Antioxidant</span>
           </div>
           <div class="product-card-body">
-            <h3>Dry Blueberry</h3>
-            <p>Packed with antioxidants, supports heart and brain health, and boosts immunity.</p>
+            <h3>Dried Blueberries</h3>
+            <p>Premium plump dried blueberries supporting heart and cognitive health.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-dry-cranberry.png" alt="Dry Cranberry" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Whole Berries</span>
           </div>
           <div class="product-card-body">
-            <h3>Dry Cranberry</h3>
-            <p>Supports urinary tract health, rich in antioxidants, and boosts immunity.</p>
+            <h3>Dried Cranberries</h3>
+            <p>Whole dried cranberries offering tartness, wellness, and baking versatility.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
@@ -663,203 +628,137 @@
 
     <!-- SEEDS -->
     <div class="product-category" id="seeds">
-      <div class="cat-head"><h2>&#127793; Seed Varieties</h2><div class="line"></div></div>
+      <div class="cat-head"><h2>🌱 Healthy Seed Varieties</h2><div class="line"></div></div>
       <div class="product-grid">
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-pumpkin-seeds.png" alt="Pumpkin Seeds" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Protein Rich</span>
           </div>
           <div class="product-card-body">
-            <h3>Pumpkin Seeds</h3>
-            <p>Rich in protein, magnesium, and zinc; supports heart and bone health; boosts immunity.</p>
+            <h3>Pumpkin Seeds (Raw)</h3>
+            <p>Nutrient-rich seeds with high zinc and magnesium for daily fitness.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
-          <div class="product-img-wrapper">
-            <img src="assets/product-cucumber-seeds.png" alt="Cucumber Seeds" class="product-card-img">
-            <span class="label">Benefits</span>
-          </div>
-          <div class="product-card-body">
-            <h3>Cucumber Seeds</h3>
-            <p>Helps in cooling the body, supports digestion, and improves skin health.</p>
-            <div class="product-selector">
-              <div class="variant-wrapper">
-                <span>Select Variant:</span>
-                <select class="variant-select">
-                  <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
-                  <option value="1kg">1kg</option>
-                </select>
-              </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card product-card tilt-card reveal reveal-up">
-          <div class="product-img-wrapper">
-            <img src="assets/product-flax-seeds.png" alt="Flax Seeds" class="product-card-img">
-            <span class="label">Benefits</span>
-          </div>
-          <div class="product-card-body">
-            <h3>Flax Seeds</h3>
-            <p>Contains antioxidants that support heart health, may aid digestion, and help control cholesterol.</p>
-            <div class="product-selector">
-              <div class="variant-wrapper">
-                <span>Select Variant:</span>
-                <select class="variant-select">
-                  <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
-                  <option value="1kg">1kg</option>
-                </select>
-              </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-chia-seeds.png" alt="Chia Seeds" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Superfood</span>
           </div>
           <div class="product-card-body">
-            <h3>Chia Seeds</h3>
-            <p>Rich in omega-3, fiber, and protein; supports weight management; boosts digestive health.</p>
+            <h3>Chia Seeds (Organic)</h3>
+            <p>Rich in soluble fiber, calcium, and plant Omega-3 for digestive health.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
+          <div class="product-img-wrapper">
+            <img src="assets/product-flax-seeds.png" alt="Flax Seeds" class="product-card-img">
+            <span class="label">Cardio Wellness</span>
+          </div>
+          <div class="product-card-body">
+            <h3>Flax Seeds (Organic)</h3>
+            <p>Packed with lignans and fiber supporting healthy cholesterol balance.</p>
+            <div class="product-selector">
+              <div class="variant-wrapper">
+                <span>Select Variant:</span>
+                <select class="variant-select">
+                  <option value="250gm">250gm</option>
+                  <option value="500gm" selected>500gm</option>
+                  <option value="1kg">1kg</option>
+                </select>
+              </div>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-sunflower-seeds.png" alt="Sunflower Seeds" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Nutty</span>
           </div>
           <div class="product-card-body">
-            <h3>Sunflower Seeds</h3>
-            <p>Packed with vitamin E and antioxidants, supports heart health, and improves skin glow.</p>
+            <h3>Sunflower Seeds (Raw)</h3>
+            <p>Crunchy raw kernel seeds loaded with Vitamin E and healthy fats.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-sabja-seeds.png" alt="Sabja Seeds" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Cooling</span>
           </div>
           <div class="product-card-body">
-            <h3>Sabja Seeds</h3>
-            <p>Natural body coolant, rich in fiber for digestion, and helps in weight management.</p>
+            <h3>Basil Seeds (Sabja)</h3>
+            <p>Natural body coolant for refreshing faloodas, drinks, and hydration.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-watermelon-seeds.png" alt="Watermelon Seeds" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Nutritious</span>
           </div>
           <div class="product-card-body">
             <h3>Watermelon Seeds</h3>
-            <p>High in protein and magnesium, supports heart health, and boosts energy naturally.</p>
+            <p>High protein roasted kernel seeds for healthy mid-day crunch.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card product-card tilt-card reveal reveal-up">
-          <div class="product-img-wrapper">
-            <img src="assets/product-pepper.png" alt="Pepper Seeds" class="product-card-img">
-            <span class="label">Benefits</span>
-          </div>
-          <div class="product-card-body">
-            <h3>Pepper Seeds</h3>
-            <p>Improves digestion, enhances metabolism, and strengthens immunity with natural antioxidants.</p>
-            <div class="product-selector">
-              <div class="variant-wrapper">
-                <span>Select Variant:</span>
-                <select class="variant-select">
-                  <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
-                  <option value="1kg">1kg</option>
-                </select>
-              </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card product-card tilt-card reveal reveal-up">
-          <div class="product-img-wrapper">
-            <img src="assets/product-cardamom.png" alt="Cardamom Seeds" class="product-card-img">
-            <span class="label">Benefits</span>
-          </div>
-          <div class="product-card-body">
-            <h3>Cardamom Seeds</h3>
-            <p>Aids digestion, freshens breath, and supports respiratory health.</p>
-            <div class="product-selector">
-              <div class="variant-wrapper">
-                <span>Select Variant:</span>
-                <select class="variant-select">
-                  <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
-                  <option value="1kg">1kg</option>
-                </select>
-              </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
@@ -867,96 +766,95 @@
       </div>
     </div>
 
-
-    <!-- MIXED & GIFTS -->
+    <!-- GIFTS & MIXED -->
     <div class="product-category" id="mixed">
-      <div class="cat-head"><h2>&#127873; Special Gifts &amp; Mixed Items</h2><div class="line"></div></div>
+      <div class="cat-head"><h2>🎁 Gift Hampers &amp; Mixed Packs</h2><div class="line"></div></div>
       <div class="product-grid">
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
-            <img src="assets/karol-grove-pouch-hd.jpg" alt="Karol Grove Deluxe Harvest Mix" class="product-card-img">
-            <span class="label">Benefits</span>
+            <img src="assets/karol-grove-pouch-hd.jpg" alt="Deluxe Harvest Mix" class="product-card-img">
+            <span class="label">Signature</span>
           </div>
           <div class="product-card-body">
             <h3>Karol Grove Deluxe Harvest Mix</h3>
-            <p>Our signature premium stand-up zipper pouch packed with a select blend of almonds, cashews, pistachios, walnuts, raisins, and dates. Perfect for daily nutrition and gifting.</p>
+            <p>Our flagship ziplock pouch blending almonds, cashews, pistachios, walnuts, and raisins.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
-            <img src="assets/product-gift-box.png" alt="Festive Dry Fruits Box" class="product-card-img">
-            <span class="label">Benefits</span>
+            <img src="assets/product-gift-box.png" alt="Festive Gift Hamper" class="product-card-img">
+            <span class="label">Celebration</span>
           </div>
           <div class="product-card-body">
-            <h3>Festive Dry Fruits Box</h3>
-            <p>An elegant assortment box containing walnuts, premium dates, and dried apricots. A thoughtful and healthy gift pack.</p>
+            <h3>Premium Festive Gift Hamper</h3>
+            <p>Curated 4-in-1 celebration gift box featuring dry fruits, nuts, and exotic berries.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-nuts-mixed.png" alt="Nuts Mixed" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Protein Mix</span>
           </div>
           <div class="product-card-body">
-            <h3>Nuts Mixed</h3>
-            <p>Power-packed with protein, healthy fats, and antioxidants; supports heart health.</p>
+            <h3>Mixed Crunchy Nuts</h3>
+            <p>Perfect ratio of almonds, cashews, pistachios, and walnuts for everyday energy.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-seeds.png" alt="Seed Mixed" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Wellness</span>
           </div>
           <div class="product-card-body">
-            <h3>Seed Mixed</h3>
-            <p>Rich in protein, fiber, and omega-3; supports heart health, digestion, and immunity.</p>
+            <h3>Healthy Seeds &amp; Mix Pack</h3>
+            <p>Wholesome combination of chia, flax, sunflower, and pumpkin seeds.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
@@ -964,139 +862,139 @@
       </div>
     </div>
 
-    <!-- OTHER -->
+    <!-- OTHER: SWEETENERS & SPICES -->
     <div class="product-category" id="other">
-      <div class="cat-head"><h2>&#127855; Other Products</h2><div class="line"></div></div>
+      <div class="cat-head"><h2>🍯 Natural Sweeteners &amp; Spices</h2><div class="line"></div></div>
       <div class="product-grid">
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
+          <div class="product-img-wrapper">
+            <img src="assets/product-honey.png" alt="Pure Organic Honey" class="product-card-img">
+            <span class="label">Pure</span>
+          </div>
+          <div class="product-card-body">
+            <h3>Pure Organic Honey</h3>
+            <p>Unpasteurized natural honey directly bottled to retain vital enzymes and aroma.</p>
+            <div class="product-selector">
+              <div class="variant-wrapper">
+                <span>Select Variant:</span>
+                <select class="variant-select">
+                  <option value="250gm">250gm</option>
+                  <option value="500gm" selected>500gm</option>
+                  <option value="1kg">1kg</option>
+                </select>
+              </div>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-honey.png" alt="Palm Sugar" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Unrefined</span>
           </div>
           <div class="product-card-body">
             <h3>Palm Sugar</h3>
-            <p>Natural sweetener rich in iron, boosts energy, and supports digestion.</p>
+            <p>Low glycemic natural palm sugar rich in minerals, iron, and potassium.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
-          <div class="product-img-wrapper">
-            <img src="assets/product-honey.png" alt="Honey" class="product-card-img">
-            <span class="label">Benefits</span>
-          </div>
-          <div class="product-card-body">
-            <h3>Honey</h3>
-            <p>Natural energy booster, strengthens immunity, and soothes throat &amp; digestion.</p>
-            <div class="product-selector">
-              <div class="variant-wrapper">
-                <span>Select Variant:</span>
-                <select class="variant-select">
-                  <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
-                  <option value="1kg">1kg</option>
-                </select>
-              </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card product-card tilt-card reveal reveal-up">
-          <div class="product-img-wrapper">
-            <img src="assets/product-honey.png" alt="Brown Sugar" class="product-card-img">
-            <span class="label">Benefits</span>
-          </div>
-          <div class="product-card-body">
-            <h3>Brown Sugar</h3>
-            <p>Provides quick energy, contains minerals, and is a healthier substitute for refined sugar.</p>
-            <div class="product-selector">
-              <div class="variant-wrapper">
-                <span>Select Variant:</span>
-                <select class="variant-select">
-                  <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
-                  <option value="1kg">1kg</option>
-                </select>
-              </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-honey.png" alt="Palm Candy" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Traditional</span>
           </div>
           <div class="product-card-body">
-            <h3>Palm Candy</h3>
-            <p>Natural coolant, soothes throat and cough, and provides instant energy.</p>
+            <h3>Palm Candy (Panakarkandu)</h3>
+            <p>Traditional palm candy soothing for throat, cough, and digestive comfort.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
             <img src="assets/product-honey.png" alt="Almond Gum" class="product-card-img">
-            <span class="label">Benefits</span>
+            <span class="label">Natural Coolant</span>
           </div>
           <div class="product-card-body">
-            <h3>Almond Gum</h3>
-            <p>Natural body coolant, improves digestion, and boosts immunity &amp; strength.</p>
+            <h3>Almond Gum (Badam Pisin)</h3>
+            <p>Natural plant gum widely used as a body coolant in summer beverages.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
                   <option value="250gm">250gm</option>
-                  <option value="500gm">500gm</option>
+                  <option value="500gm" selected>500gm</option>
                   <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card product-card tilt-card reveal reveal-up">
+        <div class="glass-card product-card tilt-card reveal">
           <div class="product-img-wrapper">
-            <img src="assets/product-seeds.png" alt="Country Chicken Egg" class="product-card-img">
-            <span class="label">Benefits</span>
+            <img src="assets/product-cardamom.png" alt="Cardamom Seeds" class="product-card-img">
+            <span class="label">Aromatic</span>
           </div>
           <div class="product-card-body">
-            <h3>Country Chicken Egg</h3>
-            <p>Rich in protein, boosts immunity, and strengthens bones &amp; muscles.</p>
+            <h3>Green Cardamom (Elaichi)</h3>
+            <p>Fragrant, handpicked green cardamom pods for teas, desserts, and curries.</p>
             <div class="product-selector">
               <div class="variant-wrapper">
                 <span>Select Variant:</span>
                 <select class="variant-select">
-                  <option value="6 Eggs">6 Eggs</option>
-                  <option value="12 Eggs (1 Dozen)">12 Eggs (1 Dozen)</option>
-                  <option value="30 Eggs">30 Eggs</option>
+                  <option value="250gm">250gm</option>
+                  <option value="500gm" selected>500gm</option>
+                  <option value="1kg">1kg</option>
                 </select>
               </div>
-              <button class="add-to-order-btn" data-tr="add_to_order">🛒 Add to WhatsApp Order</button>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card product-card tilt-card reveal">
+          <div class="product-img-wrapper">
+            <img src="assets/product-pepper.png" alt="Black Pepper" class="product-card-img">
+            <span class="label">Bold Spice</span>
+          </div>
+          <div class="product-card-body">
+            <h3>Black Pepper</h3>
+            <p>Bold, pungent black peppercorns that enhance flavor and support digestion.</p>
+            <div class="product-selector">
+              <div class="variant-wrapper">
+                <span>Select Variant:</span>
+                <select class="variant-select">
+                  <option value="250gm">250gm</option>
+                  <option value="500gm" selected>500gm</option>
+                  <option value="1kg">1kg</option>
+                </select>
+              </div>
+              <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
             </div>
           </div>
         </div>
@@ -1107,46 +1005,81 @@
   </div>
 </section>
 
-<footer class="site-footer">
+<!-- Footer -->
+<footer class="site-footer-v2">
   <div class="container">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand">
-          <img src="assets/karol-grove-logo-full.png" alt="Karol Grove Premium Dry Fruits & Nuts" class="footer-logo-img">
-          <div class="footer-brand-text">
-            <span class="footer-brand-name">Karol Grove</span>
-            <span class="footer-brand-tagline">Premium Dry Fruits &amp; Nuts</span>
+    <div class="footer-v2-grid">
+      <!-- 1. Brand Info -->
+      <div class="footer-v2-col">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <img src="assets/karol-grove-icon.png" alt="Karol Grove" style="height: 44px; width: auto;">
+          <span style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: #FFFFFF;">Karol Grove</span>
+        </div>
+        <p>Karol Grove brings you premium, hand-picked dry fruits, nuts, seeds and natural sweeteners — freshly packed, honest prices, delivered to your doorstep.</p>
+        <p style="margin-top: 14px; font-size: 13px; color: var(--gold);">Official Website Launch: <strong>02 October 2026</strong></p>
+      </div>
+
+      <!-- 2. Shop -->
+      <div class="footer-v2-col">
+        <h4>SHOP</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="#launch-offers">Launch Offers</a></li>
+          <li><a href="pricelist.html">Price List</a></li>
+          <li><a href="#nuts">Nuts Varieties</a></li>
+          <li><a href="#dates">Premium Dates</a></li>
+          <li><a href="#dried-fruits">Dried Fruits</a></li>
+        </ul>
+      </div>
+
+      <!-- 3. Corporate -->
+      <div class="footer-v2-col">
+        <h4>CORPORATE</h4>
+        <ul>
+          <li><a href="corporate-gifts.html">Corporate Gifting</a></li>
+          <li><a href="corporate-gifts.html#quote">Request Quote</a></li>
+          <li><a href="corporate-gifts.html#branding">Custom Branding</a></li>
+          <li><a href="corporate-gifts.html#festival">Festival Gifting</a></li>
+          <li><a href="corporate-gifts.html#bulk">Bulk Orders</a></li>
+        </ul>
+      </div>
+
+      <!-- 4. Help -->
+      <div class="footer-v2-col">
+        <h4>HELP</h4>
+        <ul>
+          <li><a href="index.html#how-to-order">How to Order</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="https://wa.me/+918494832492" target="_blank" rel="noopener">WhatsApp Support</a></li>
+          <li><a href="about.html">Our Story</a></li>
+        </ul>
+      </div>
+
+      <!-- 5. Business Information -->
+      <div class="footer-v2-col">
+        <h4>BUSINESS INFO</h4>
+        <div class="footer-legal-badge">
+          <p><strong>Marketed &amp; Packed by:</strong><br>SRG Stores</p>
+          <p style="margin-top: 6px;"><strong>Location:</strong><br>Mullamparappu, Erode, Tamil Nadu 638115</p>
+          <p style="margin-top: 6px;"><strong>Phone &amp; WhatsApp:</strong><br>+91 84948 32492</p>
+          <p style="margin-top: 6px;"><strong>Email:</strong><br>karolgrovenuts@gmail.com</p>
+          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15);">
+            <p><strong>GSTIN:</strong> 33JQUPK0008M1ZH</p>
+            <p><strong>FSSAI Lic. No.:</strong> 22421062000070</p>
           </div>
         </div>
-        <p data-tr="footer_desc">Premium dry fruits, nuts, seeds and natural sweeteners — handpicked, honest, and delivered fresh to your door.</p>
-      </div>
-      <div class="footer-col">
-        <h4 data-tr="footer_links_title">Quick Links</h4>
-        <a href="index.html" data-tr="nav_home">Home</a>
-        <a href="products.html" data-tr="nav_products">Products</a>
-        <a href="pricelist.html" data-tr="nav_pricelist">Price List</a>
-        <a href="contact.html" data-tr="nav_contact">Contact</a>
-        <a href="about.html" data-tr="nav_about">About</a>
-      </div>
-      <div class="footer-col">
-        <h4 data-tr="footer_contact_title">Contact Us</h4>
-        <a href="mailto:karolgrovenuts@gmail.com">karolgrovenuts@gmail.com</a>
-        <a href="tel:8494832492">8494832492</a>
-        <a href="https://wa.me/+918494832492" target="_blank" rel="noopener" data-tr="cta_whatsapp">WhatsApp Order</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>&copy; 2026 Karol Grove. All rights reserved.</span>
-      <div class="legal-ids">
-        <span><strong data-tr="legal_packed_by">Marketed &amp; Packed by:</strong> SRG Stores</span>
-        <span><strong data-tr="legal_gstin">GSTIN:</strong> 33JQUPK0008M1ZH</span>
-        <span><strong data-tr="legal_fssai">FSSAI Lic. No.:</strong> 22421062000070</span>
-      </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-v2-bottom">
+      <div>&copy; 2026 Karol Grove. All rights reserved.</div>
+      <div>Official Launch Date: <strong>02 October 2026</strong> &bull; Up to 40% OFF Selected Products</div>
+      <div>Website: <a href="https://www.karolgrove.com">www.karolgrove.com</a></div>
     </div>
   </div>
 </footer>
 
-<!-- Floating WhatsApp Contact Button -->
 <a href="https://wa.me/918494832492?text=Hi%20Karol%20Grove%2C%20I%20would%20like%20to%20place%20an%20order." 
    class="floating-whatsapp" 
    target="_blank" 
@@ -1158,6 +1091,5 @@
   </svg>
 </a>
 
-<script src="assets/main.js" defer></script>
 </body>
 </html>

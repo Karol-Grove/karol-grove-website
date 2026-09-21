@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | Karol Grove</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css?v=20261002-v3">
+    <style>
+        body { background: var(--color-bg); padding: 40px; }
+        .admin-container { max-width: 1200px; margin: 0 auto; background: #fff; border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-soft); }
+        body.dark-mode .admin-container { background: var(--color-dark-card); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        body.dark-mode .admin-header { border-color: rgba(255,255,255,0.1); }
+        
+        .auth-section { display: flex; gap: 20px; background: rgba(200, 167, 90, 0.1); padding: 24px; border-radius: var(--radius-md); margin-bottom: 40px; }
+        .auth-section input { flex: 1; padding: 12px 20px; border: 1px solid var(--glass-border); border-radius: var(--radius-sm); font-family: var(--font-body); outline:none; }
+        
+        .editable-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        .editable-table th, .editable-table td { padding: 12px 16px; border: 1px solid rgba(0,0,0,0.05); text-align: left; }
+        body.dark-mode .editable-table th, body.dark-mode .editable-table td { border-color: rgba(255,255,255,0.05); }
+        .editable-table th { background: var(--color-primary); color: #fff; }
+        .editable-table input { width: 100%; padding: 8px; border: 1px solid transparent; background: transparent; font-family: var(--font-body); color: var(--color-text); }
+        body.dark-mode .editable-table input { color: var(--color-dark-text); }
+        .editable-table input:focus { border-color: var(--color-secondary); background: rgba(200, 167, 90, 0.05); outline: none; }
+        
+        .status-msg { margin-top: 20px; padding: 16px; border-radius: var(--radius-sm); font-weight: 600; display: none; }
+        .status-msg.success { background: #d4edda; color: #155724; display: block; }
+        .status-msg.error { background: #f8d7da; color: #721c24; display: block; }
+    </style>
+</head>
+<body>
+    <!-- Password Protection Overlay -->
+    <div id="admin-login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--color-bg); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+        <i class="fa-solid fa-lock" style="font-size: 3rem; color: var(--color-primary); margin-bottom: 20px;"></i>
+        <h2 style="margin-bottom: 20px; font-family: var(--font-heading);">Admin Authentication</h2>
+        <input type="password" id="admin-password-input" placeholder="Enter Admin Password" style="padding: 15px; width: 300px; border: 1px solid var(--glass-border); border-radius: var(--radius-sm); margin-bottom: 20px; font-size: 1rem; text-align: center; background: var(--color-dark-card); color: white;">
+        <button id="admin-login-btn" class="admin-btn" style="width: 300px;">Unlock Portal</button>
+        <p id="admin-login-error" style="color: #e74c3c; margin-top: 15px; display: none;">Incorrect Password</p>
+    </div>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h2>Karol Grove Admin Portal</h2>
+            <button class="btn btn-secondary" id="dark-mode-toggle" style="padding: 10px 20px;">Toggle Dark Mode</button>
+        </div>
+
+        <div class="auth-section">
+            <div style="flex:1;">
+                <label style="display:block; margin-bottom:8px; font-weight:600;">GitHub Repository (e.g., username/repo)</label>
+                <input type="text" id="github-repo" placeholder="pravieen/karol-grove-website">
+            </div>
+            <div style="flex:1;">
+                <label style="display:block; margin-bottom:8px; font-weight:600;">Personal Access Token (PAT)</label>
+                <input type="password" id="github-pat" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+            </div>
+            <div style="display:flex; align-items:flex-end;">
+                <button class="btn btn-primary" id="sync-btn">Git Sync Prices</button>
+            </div>
+        </div>
+
+        <div id="status" class="status-msg"></div>
+
+        <table class="editable-table" id="price-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Product Name</th>
+                    <th>250g Price (₹)</th>
+                    <th>500g Price (₹)</th>
+                    <th>1kg Price (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Populated by JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Load the prices data -->
+    <script src="assets/prices.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Password Protection Logic
+            const overlay = document.getElementById('admin-login-overlay');
+            const passInput = document.getElementById('admin-password-input');
+            const loginBtn = document.getElementById('admin-login-btn');
+            const errorMsg = document.getElementById('admin-login-error');
+
+            if (sessionStorage.getItem('admin_unlocked') === 'true') {
+                overlay.style.display = 'none';
+            }
+
+            const checkPassword = () => {
+                if (passInput.value === 'karoladmin') {
+                    sessionStorage.setItem('admin_unlocked', 'true');
+                    overlay.style.display = 'none';
+                } else {
+                    errorMsg.style.display = 'block';
+                    passInput.value = '';
+                }
+            };
+
+            loginBtn.addEventListener('click', checkPassword);
+            passInput.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') checkPassword();
+            });
+
+            // Dark Mode toggle
+            const darkModeBtn = document.getElementById('dark-mode-toggle');
+            darkModeBtn.addEventListener('click', () => document.body.classList.toggle('dark-mode'));
+
+            const tableBody = document.querySelector('#price-table tbody');
+            const products = window.priceListData || [];
+
+            // Render Table
+            products.forEach((p, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" value="${p.category}" data-index="${index}" data-field="category"></td>
+                    <td><input type="text" value="${p.name}" data-index="${index}" data-field="name"></td>
+                    <td><input type="text" value="${p.price250g}" data-index="${index}" data-field="price250g"></td>
+                    <td><input type="text" value="${p.price500g}" data-index="${index}" data-field="price500g"></td>
+                    <td><input type="text" value="${p.price1kg}" data-index="${index}" data-field="price1kg"></td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            // Handle Input Changes
+            tableBody.addEventListener('input', (e) => {
+                if(e.target.tagName === 'INPUT') {
+                    const index = e.target.getAttribute('data-index');
+                    const field = e.target.getAttribute('data-field');
+                    products[index][field] = e.target.value;
+                }
+            });
+
+            // Restore credentials
+            if(localStorage.getItem('kg_repo')) {
+                document.getElementById('github-repo').value = localStorage.getItem('kg_repo');
+            }
+            if(localStorage.getItem('kg_pat')) {
+                document.getElementById('github-pat').value = localStorage.getItem('kg_pat');
+            }
+
+            // Git Sync Logic
+            document.getElementById('sync-btn').addEventListener('click', async () => {
+                const repo = document.getElementById('github-repo').value.trim();
+                const pat = document.getElementById('github-pat').value.trim();
+                const statusDiv = document.getElementById('status');
+
+                if(!repo || !pat) {
+                    statusDiv.className = 'status-msg error';
+                    statusDiv.innerText = 'Error: Please provide both Repository and PAT.';
+                    return;
+                }
+
+                // Save credentials for next time
+                localStorage.setItem('kg_repo', repo);
+                localStorage.setItem('kg_pat', pat);
+
+                statusDiv.className = 'status-msg';
+                statusDiv.innerText = 'Syncing to GitHub...';
+                statusDiv.style.display = 'block';
+                statusDiv.style.background = '#e2e3e5';
+                statusDiv.style.color = '#383d41';
+
+                try {
+                    // 1. Generate JS content
+                    const jsContent = `/**\n * Karol Grove — Weekly Price List Data\n */\n\nwindow.priceListData = ${JSON.stringify(products, null, 2)};\n`;
+                    const encodedContent = btoa(unescape(encodeURIComponent(jsContent)));
+
+                    // 2. Get current SHA of prices.js
+                    const apiUrl = `https://api.github.com/repos/${repo}/contents/assets/prices.js`;
+                    const getRes = await fetch(apiUrl, {
+                        headers: { 'Authorization': `token ${pat}` }
+                    });
+                    
+                    let sha = '';
+                    if(getRes.ok) {
+                        const data = await getRes.json();
+                        sha = data.sha;
+                    }
+
+                    // 3. Commit and Push
+                    const putRes = await fetch(apiUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${pat}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: 'Admin Portal: Updated prices.js',
+                            content: encodedContent,
+                            sha: sha || undefined
+                        })
+                    });
+
+                    if(putRes.ok) {
+                        statusDiv.className = 'status-msg success';
+                        statusDiv.innerText = 'Successfully synced prices to GitHub! The live website will update shortly.';
+                    } else {
+                        const errData = await putRes.json();
+                        throw new Error(errData.message || 'Failed to push to GitHub');
+                    }
+
+                } catch(err) {
+                    statusDiv.className = 'status-msg error';
+                    statusDiv.innerText = `Sync Failed: ${err.message}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

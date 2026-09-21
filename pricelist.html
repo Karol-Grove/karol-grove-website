@@ -3,18 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Price List — Karol Grove</title>
-<meta name="description" content="Check the current pricing catalog for premium almonds, cashews, pistachios, dates, healthy seeds and gift packs from Karol Grove.">
+<title>Current Price List — Karol Grove | Transparent Product Pricing</title>
+<meta name="description" content="Check current retail and bulk prices for premium almonds, cashews, pistachios, dates, seeds, natural sweeteners and gift hampers at Karol Grove.">
 <link rel="icon" href="assets/karol-grove-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="assets/style.css">
-<script src="assets/translations.js" defer></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=20261002-v3">
+<script src="assets/prices.js"></script>
+<script src="assets/pricelist-handler.js" defer></script>
+<script src="assets/main.js?v=20261002-v3" defer></script>
 </head>
 <body>
 
-<canvas id="vfx-canvas"></canvas>
-
-<!-- Admin Toolbar (Sticky top, visible only in admin mode) -->
+<!-- Admin Toolbar (Sticky top, visible in admin mode) -->
 <div class="admin-toolbar" id="admin-toolbar">
   <div class="admin-toolbar-inner">
     <div class="admin-status">
@@ -24,40 +26,10 @@
     <div class="admin-actions">
       <button id="admin-add-row-btn" class="admin-btn admin-btn-secondary">➕ Add Item</button>
       <button id="admin-save-btn" class="admin-btn admin-btn-primary">💾 Save Locally</button>
-      <button id="admin-download-btn" class="admin-btn admin-btn-secondary" title="Download updated prices.js to replace locally">📥 Download prices.js</button>
-      <button id="admin-sync-btn" class="admin-btn admin-btn-primary" style="background: var(--forest); border-color: var(--gold);" title="Sync changes directly to GitHub repository">🔄 Sync to GitHub</button>
+      <button id="admin-download-btn" class="admin-btn admin-btn-secondary" title="Download updated prices.js">📥 Download prices.js</button>
       <button id="admin-reset-btn" class="admin-btn admin-btn-danger">Discard Edits</button>
       <button onclick="exitAdminMode()" class="admin-btn admin-btn-secondary">Exit Portal</button>
     </div>
-  </div>
-  
-  <!-- GitHub Sync Panel (Toggled by Sync Button) -->
-  <div id="github-sync-panel" class="container" style="display: none; background: rgba(0,0,0,0.65); padding: 25px; border-radius: 12px; border: 1.5px solid var(--gold); margin-top: 15px; margin-bottom: 5px;">
-    <h4 style="color: var(--gold); font-family: var(--font-display); font-size: 18px; margin-bottom: 10px;">Direct GitHub Synchronizer</h4>
-    <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 20px;">Commit and push your current price edits directly to your GitHub repository. Once committed, GitHub Pages will automatically compile and redeploy the live website in 1-2 minutes.</p>
-    <div class="admin-form-group">
-      <label for="gh-username" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px;">GitHub Username / Repo Owner</label>
-      <input type="text" id="gh-username" class="admin-editable-input" style="max-width: 400px;" placeholder="e.g. karolgroveowner">
-    </div>
-    <div class="admin-form-group">
-      <label for="gh-repo" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px;">Repository Name</label>
-      <input type="text" id="gh-repo" class="admin-editable-input" style="max-width: 400px;" placeholder="e.g. karol-grove-website">
-    </div>
-    <div class="admin-form-group">
-      <label for="gh-path" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px;">Prices File Path in Repo</label>
-      <input type="text" id="gh-path" class="admin-editable-input" style="max-width: 400px;" placeholder="e.g. assets/prices.js">
-      <small style="color: var(--text-muted); font-size: 11px; display: block; margin-top: 4px;">Typically assets/prices.js (or karol-grove/assets/prices.js depending on repository setup).</small>
-    </div>
-    <div class="admin-form-group">
-      <label for="gh-pat" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px;">GitHub Personal Access Token (PAT)</label>
-      <input type="password" id="gh-pat" class="admin-editable-input" style="max-width: 400px;" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
-      <small style="color: var(--text-muted); font-size: 11px; display: block; margin-top: 4px;">Token must have 'repo' scope permissions. Stored safely only within your local browser storage.</small>
-    </div>
-    <div style="display: flex; gap: 10px; margin-top: 20px;">
-      <button id="gh-sync-now-btn" class="admin-btn admin-btn-primary">Sync Now</button>
-      <button id="gh-sync-cancel-btn" class="admin-btn admin-btn-secondary">Cancel</button>
-    </div>
-    <div id="gh-sync-status" style="margin-top: 15px; font-weight: 600; font-size: 13px;"></div>
   </div>
 </div>
 
@@ -71,137 +43,188 @@
       </div>
     </a>
     <nav class="main-nav">
-      <a href="index.html" data-tr="nav_home">Home</a>
-      <a href="products.html" data-tr="nav_products">Products</a>
-      <a href="pricelist.html" class="active" data-tr="nav_pricelist">Price List</a>
-      <a href="contact.html" data-tr="nav_contact">Contact</a>
-      <a href="about.html" data-tr="nav_about">About</a>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="index.html#launch-offers">Launch Offers</a>
+      <a href="corporate-gifts.html">Corporate Gifting</a>
+      <a href="pricelist.html" class="active">Price List</a>
+      <a href="contact.html">Contact</a>
     </nav>
-    <a class="header-cta" href="https://wa.me/+918494832492" target="_blank" rel="noopener"><span data-tr="cta_whatsapp">Order on WhatsApp</span> &rarr;</a>
-    <button class="nav-toggle" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="header-actions-group">
+      <button class="header-cart-btn" onclick="toggleCartDrawer(true)" aria-label="Shopping Cart">
+        <span class="cart-icon-symbol">🛒</span>
+        <span class="cart-text">Cart</span>
+        <span class="badge cart-badge">0</span>
+      </button>
+      <a class="header-cta" href="https://wa.me/+918494832492" target="_blank" rel="noopener">WhatsApp Order &rarr;</a>
+      <button class="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
   <div class="mobile-nav" id="mobileNav">
-    <a href="index.html" data-tr="nav_home">Home</a>
-    <a href="products.html" data-tr="nav_products">Products</a>
-    <a href="pricelist.html" class="active" data-tr="nav_pricelist">Price List</a>
-    <a href="contact.html" data-tr="nav_contact">Contact</a>
-    <a href="about.html" data-tr="nav_about">About</a>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="index.html#launch-offers">Launch Offers</a>
+    <a href="corporate-gifts.html">Corporate Gifting</a>
+    <a href="pricelist.html" class="active">Price List</a>
+    <a href="contact.html">Contact</a>
+    <a href="https://wa.me/+918494832492" target="_blank" rel="noopener" style="color:var(--forest); font-weight:700;">💬 Order on WhatsApp</a>
   </div>
 </header>
 
-<section class="page-header">
-  <div class="container reveal reveal-up">
-    <span class="eyebrow" data-tr="price_list_eyebrow">Weekly Price List</span>
-    <h1 data-tr="price_list_title">Our Current Prices</h1>
-    <p data-tr="price_list_desc">Explore prices and order directly via WhatsApp or download our price catalog.</p>
+<section class="page-header" style="background: linear-gradient(135deg, #0E3B2E 0%, #082119 100%); color: #fff; padding: 70px 20px 50px; text-align: center;">
+  <div class="container reveal">
+    <span class="launch-badge-pill">TRANSPARENT PRODUCT PRICING</span>
+    <h1 style="font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.5rem); color: #fff; margin-bottom: 12px;">CURRENT PRICES AVAILABLE ONLINE</h1>
+    <p style="font-size: 16px; color: #D3E0D8; max-width: 680px; margin: 0 auto 16px;">
+      Explore updated retail and bulk prices across our complete collection. Click on any price tag below to add that item and pack size directly to your cart for WhatsApp checkout.
+    </p>
+    <div style="font-size: 13.5px; color: var(--gold);">Grand Launch Event: <strong>02 October 2026</strong> &bull; Up to 40% OFF Selected Products</div>
   </div>
 </section>
 
-<section class="pricelist-section">
+<section class="pricelist-section" style="padding: 50px 0 80px;">
   <div class="container">
     
     <!-- Local Edits Banner -->
     <div class="local-edits-banner" id="local-edits-banner">
-      <span>💡 Showing local updates made in this browser. Overwrite `prices.js` or Sync to GitHub to apply permanently.</span>
+      <span>💡 Showing local updates made in this browser.</span>
       <button onclick="handleResetLocal()" class="admin-btn admin-btn-danger" style="padding: 6px 12px; font-size: 11px;">Reset Defaults</button>
     </div>
 
     <!-- Price List Visitor Guide Banner -->
-    <div class="visitor-guide-banner reveal reveal-up">
-      <div class="guide-icon">💡</div>
-      <div class="guide-text">
-        <strong>Easy Ordering</strong>: Click any price badge (like <span class="price-val-demo">🛒 ₹450</span>) in the table below to add that item and package size directly to your WhatsApp order!
+    <div class="visitor-guide-banner reveal" style="background: var(--cream); border: 1px solid rgba(216, 147, 42, 0.3); border-radius: 12px; padding: 18px 24px; display: flex; align-items: center; gap: 14px; margin-bottom: 30px;">
+      <div class="guide-icon" style="font-size: 24px;">💡</div>
+      <div class="guide-text" style="font-size: 14.5px; color: var(--forest-deep);">
+        <strong>Instant 1-Click Add</strong>: Click any price badge (e.g. <span class="price-val-demo" style="background: var(--forest); color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;">🛒 ₹430</span>) in the table below to add that product and size directly to your WhatsApp basket!
       </div>
     </div>
 
     <!-- Search and Actions Toolbar -->
-    <div class="pricelist-toolbar reveal reveal-up">
+    <div class="pricelist-toolbar reveal">
       <div class="search-filter-box">
         <div class="search-input-wrapper">
           <span class="search-icon">🔍</span>
-          <input type="text" id="pricelist-search" data-tr-placeholder="search_items_placeholder" placeholder="Search items...">
+          <input type="text" id="pricelist-search" placeholder="Search nuts, dates, seeds, gift packs...">
         </div>
       </div>
       <div class="action-buttons">
-        <button id="btn-download-csv" class="action-btn btn-excel" data-tr="download_csv">
-          <span>📊</span> Download Excel/CSV
+        <button id="btn-download-csv" class="action-btn btn-excel">
+          <span>📊</span> Download CSV
         </button>
-        <button id="btn-download-pdf" class="action-btn btn-pdf" data-tr="download_pdf">
+        <button id="btn-download-pdf" class="action-btn btn-pdf">
           <span>🖨️</span> Print / Save PDF
         </button>
       </div>
     </div>
 
     <!-- Category Filters Navigation -->
-    <div class="cat-filters reveal reveal-up" id="pricelist-filter-tabs">
+    <div class="cat-filters reveal" id="pricelist-filter-tabs" style="margin-bottom: 24px;">
       <!-- Generated dynamically in pricelist-handler.js -->
     </div>
 
     <!-- Pricing Table Container -->
-    <div class="pricelist-table-container reveal reveal-up">
+    <div class="pricelist-table-container reveal">
       <div class="pricelist-table-wrapper">
         <table class="pricelist-table">
           <thead>
             <tr>
-              <th data-tr="col_category" style="width: 20%;">Category</th>
-              <th data-tr="col_item_name" style="width: 50%;">Item Name</th>
-              <th data-tr="col_250gm" style="width: 10%;">250g Price</th>
-              <th data-tr="col_500gm" style="width: 10%;">500g Price</th>
-              <th data-tr="col_1kg" style="width: 10%;">1kg Price</th>
+              <th style="width: 20%;">Category</th>
+              <th style="width: 44%;">Item Name</th>
+              <th style="width: 12%; text-align: center;">250g Price</th>
+              <th style="width: 12%; text-align: center;">500g Price</th>
+              <th style="width: 12%; text-align: center;">1kg Price</th>
             </tr>
           </thead>
           <tbody id="pricelist-table-body">
-            <!-- Dynamically populated from JS -->
+            <!-- Dynamically populated from prices.js -->
           </tbody>
         </table>
       </div>
     </div>
     
-    <!-- Admin Portal Login Footer Button -->
-    <div class="admin-login-footer reveal reveal-up">
-      <span class="admin-login-link" onclick="openAdminLogin()" data-tr="admin_portal_btn">Admin Portal</span>
+    <!-- Admin Portal Login Link -->
+    <div class="admin-login-footer reveal" style="text-align: center; margin-top: 35px;">
+      <span class="admin-login-link" onclick="openAdminLogin()" style="font-size: 12px; color: var(--text-muted); text-decoration: underline; cursor: pointer;">
+        🔒 Admin Price Update Portal
+      </span>
     </div>
 
   </div>
 </section>
 
-<footer class="site-footer">
+<!-- Footer -->
+<footer class="site-footer-v2">
   <div class="container">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand">
-          <img src="assets/karol-grove-logo-full.png" alt="Karol Grove Premium Dry Fruits & Nuts" class="footer-logo-img">
-          <div class="footer-brand-text">
-            <span class="footer-brand-name">Karol Grove</span>
-            <span class="footer-brand-tagline">Premium Dry Fruits &amp; Nuts</span>
+    <div class="footer-v2-grid">
+      <!-- 1. Brand Info -->
+      <div class="footer-v2-col">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <img src="assets/karol-grove-icon.png" alt="Karol Grove" style="height: 44px; width: auto;">
+          <span style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: #FFFFFF;">Karol Grove</span>
+        </div>
+        <p>Karol Grove brings you premium, hand-picked dry fruits, nuts, seeds and natural sweeteners — freshly packed, honest prices, delivered to your doorstep.</p>
+        <p style="margin-top: 14px; font-size: 13px; color: var(--gold);">Official Website Launch: <strong>02 October 2026</strong></p>
+      </div>
+
+      <!-- 2. Shop -->
+      <div class="footer-v2-col">
+        <h4>SHOP</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="index.html#launch-offers">Launch Offers</a></li>
+          <li><a href="pricelist.html">Price List</a></li>
+          <li><a href="products.html#nuts">Nuts Varieties</a></li>
+          <li><a href="products.html#dates">Premium Dates</a></li>
+          <li><a href="products.html#dried-fruits">Dried Fruits</a></li>
+        </ul>
+      </div>
+
+      <!-- 3. Corporate -->
+      <div class="footer-v2-col">
+        <h4>CORPORATE</h4>
+        <ul>
+          <li><a href="corporate-gifts.html">Corporate Gifting</a></li>
+          <li><a href="corporate-gifts.html#quote">Request Quote</a></li>
+          <li><a href="corporate-gifts.html#branding">Custom Branding</a></li>
+          <li><a href="corporate-gifts.html#festival">Festival Gifting</a></li>
+          <li><a href="corporate-gifts.html#bulk">Bulk Orders</a></li>
+        </ul>
+      </div>
+
+      <!-- 4. Help -->
+      <div class="footer-v2-col">
+        <h4>HELP</h4>
+        <ul>
+          <li><a href="index.html#how-to-order">How to Order</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="https://wa.me/+918494832492" target="_blank" rel="noopener">WhatsApp Support</a></li>
+          <li><a href="about.html">Our Story</a></li>
+        </ul>
+      </div>
+
+      <!-- 5. Business Information -->
+      <div class="footer-v2-col">
+        <h4>BUSINESS INFO</h4>
+        <div class="footer-legal-badge">
+          <p><strong>Marketed &amp; Packed by:</strong><br>SRG Stores</p>
+          <p style="margin-top: 6px;"><strong>Location:</strong><br>Mullamparappu, Erode, Tamil Nadu 638115</p>
+          <p style="margin-top: 6px;"><strong>Phone &amp; WhatsApp:</strong><br>+91 84948 32492</p>
+          <p style="margin-top: 6px;"><strong>Email:</strong><br>karolgrovenuts@gmail.com</p>
+          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15);">
+            <p><strong>GSTIN:</strong> 33JQUPK0008M1ZH</p>
+            <p><strong>FSSAI Lic. No.:</strong> 22421062000070</p>
           </div>
         </div>
-        <p data-tr="footer_desc">Premium dry fruits, nuts, seeds and natural sweeteners — handpicked, honest, and delivered fresh to your door.</p>
-      </div>
-      <div class="footer-col">
-        <h4 data-tr="footer_links_title">Quick Links</h4>
-        <a href="index.html" data-tr="nav_home">Home</a>
-        <a href="products.html" data-tr="nav_products">Products</a>
-        <a href="pricelist.html" data-tr="nav_pricelist">Price List</a>
-        <a href="contact.html" data-tr="nav_contact">Contact</a>
-        <a href="about.html" data-tr="nav_about">About</a>
-      </div>
-      <div class="footer-col">
-        <h4 data-tr="footer_contact_title">Contact Us</h4>
-        <a href="mailto:karolgrovenuts@gmail.com">karolgrovenuts@gmail.com</a>
-        <a href="tel:8494832492">8494832492</a>
-        <a href="https://wa.me/+918494832492" target="_blank" rel="noopener" data-tr="cta_whatsapp">WhatsApp Order</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>&copy; 2026 Karol Grove. All rights reserved.</span>
-      <div class="legal-ids">
-        <span><strong data-tr="legal_packed_by">Marketed &amp; Packed by:</strong> SRG Stores</span>
-        <span><strong data-tr="legal_gstin">GSTIN:</strong> 33JQUPK0008M1ZH</span>
-        <span><strong data-tr="legal_fssai">FSSAI Lic. No.:</strong> 22421062000070</span>
-      </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-v2-bottom">
+      <div>&copy; 2026 Karol Grove. All rights reserved.</div>
+      <div>Official Launch Date: <strong>02 October 2026</strong> &bull; Up to 40% OFF Selected Products</div>
+      <div>Website: <a href="https://www.karolgrove.com">www.karolgrove.com</a></div>
     </div>
   </div>
 </footer>
@@ -233,11 +256,6 @@
     </form>
   </div>
 </div>
-
-<!-- Scripts -->
-<script src="assets/prices.js"></script>
-<script src="assets/pricelist-handler.js" defer></script>
-<script src="assets/main.js" defer></script>
 
 </body>
 </html>
