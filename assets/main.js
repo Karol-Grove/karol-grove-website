@@ -375,32 +375,88 @@ function initOrderBuilder() {
     updateCartCounters();
   });
 
-  // Attach event listeners to all Add to Order buttons
-  const addButtons = document.querySelectorAll('.add-to-order-btn');
-  addButtons.forEach(btn => {
+  // Connect header cart buttons and triggers
+  document.querySelectorAll('.header-cart-btn, [data-toggle-cart]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      const productCard = btn.closest('.product-card');
-      if (!productCard) return;
-
-      const productName = productCard.querySelector('h3').textContent.trim();
-      const variantSelect = productCard.querySelector('.variant-select');
-      const selectedVariant = variantSelect ? variantSelect.value : 'Default';
-
-      addToCart(productName, selectedVariant, 1);
-      
-      // Visual feedback on button
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '✨ Added!';
-      btn.style.background = 'var(--gradient-gold)';
-      btn.style.color = 'var(--forest-deep)';
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.style.background = '';
-        btn.style.color = '';
-      }, 1000);
+      toggleCartDrawer(true);
     });
   });
+
+  // Attach event listeners to all Add to Order buttons
+  const attachAddButtons = () => {
+    const addButtons = document.querySelectorAll('.add-to-order-btn');
+    addButtons.forEach(btn => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "true";
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const productCard = btn.closest('.product-card');
+        if (!productCard) return;
+
+        const productName = productCard.querySelector('h3').textContent.trim();
+        const variantSelect = productCard.querySelector('.variant-select');
+        const selectedVariant = variantSelect ? variantSelect.value : 'Default';
+
+        addToCart(productName, selectedVariant, 1);
+        
+        // Visual feedback on button
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✨ Added!';
+        btn.style.background = 'var(--gradient-gold)';
+        btn.style.color = 'var(--forest-deep)';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          btn.style.color = '';
+        }, 1000);
+      });
+    });
+  };
+  attachAddButtons();
+  window.attachAddButtons = attachAddButtons;
+
+  // Initialize Corporate Quote Forms
+  const initCorporateForms = () => {
+    const forms = document.querySelectorAll('#corporateQuoteForm, .corp-quick-form');
+    forms.forEach(form => {
+      if (form.dataset.bound) return;
+      form.dataset.bound = "true";
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const companyInput = form.querySelector('[name="company"]') || form.querySelector('#corpCompany');
+        const nameInput = form.querySelector('[name="name"]') || form.querySelector('#corpName');
+        const mobileInput = form.querySelector('[name="mobile"]') || form.querySelector('#corpMobile');
+        const emailInput = form.querySelector('[name="email"]') || form.querySelector('#corpEmail');
+        const qtyInput = form.querySelector('[name="quantity"]') || form.querySelector('#corpQty');
+        const budgetInput = form.querySelector('[name="budget"]') || form.querySelector('#corpBudget');
+        const notesInput = form.querySelector('[name="notes"]') || form.querySelector('#corpNotes');
+
+        const company = companyInput ? companyInput.value.trim() : '';
+        const contactName = nameInput ? nameInput.value.trim() : '';
+        const mobile = mobileInput ? mobileInput.value.trim() : '';
+        const email = emailInput ? emailInput.value.trim() : '';
+        const qty = qtyInput ? qtyInput.value.trim() : '';
+        const budget = budgetInput ? budgetInput.value.trim() : '';
+        const notes = notesInput ? notesInput.value.trim() : '';
+
+        let msg = `Hello Karol Grove! I would like to request a quotation for Corporate Gifting:\n\n`;
+        if (company) msg += `🏢 *Company:* ${company}\n`;
+        if (contactName) msg += `👤 *Contact Person:* ${contactName}\n`;
+        if (mobile) msg += `📱 *Mobile:* ${mobile}\n`;
+        if (email) msg += `📧 *Email:* ${email}\n`;
+        if (qty) msg += `📦 *Estimated Quantity:* ${qty}\n`;
+        if (budget) msg += `💰 *Target Budget per Hamper:* ${budget}\n`;
+        if (notes) msg += `📝 *Notes/Requirements:* ${notes}\n`;
+        msg += `\nPlease share your catalog and bulk corporate pricing. Thank you!`;
+
+        const waUrl = `https://wa.me/+918494832492?text=${encodeURIComponent(msg)}`;
+        window.open(waUrl, '_blank');
+        form.reset();
+      });
+    });
+  };
+  initCorporateForms();
 
   // Export functions globally to allow HTML inline handlers
   window.addToCart = addToCart;
@@ -485,24 +541,31 @@ function initOrderBuilder() {
       drawer.innerHTML = `
         <div class="drawer-header">
           <h3>Your WhatsApp Order Basket</h3>
-          <button class="close-drawer" onclick="toggleCartDrawer(false)">&times;</button>
+          <button class="close-drawer" onclick="toggleCartDrawer(false)" aria-label="Close Cart">&times;</button>
         </div>
         <div class="drawer-body" id="drawer-items-list">
           <!-- Items will render here -->
         </div>
         <div class="drawer-footer">
-          <div class="footer-summary" style="margin-bottom: 8px;">
+          <div class="footer-summary" style="margin-bottom: 6px;">
             <span>Total Items:</span>
             <strong id="drawer-total-count">0</strong>
           </div>
-          <div class="footer-summary" style="margin-bottom: 18px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 10px;">
-            <span>Total Value:</span>
-            <strong id="drawer-total-price">₹0</strong>
+          <div class="footer-summary" style="margin-bottom: 6px;">
+            <span>Subtotal:</span>
+            <strong id="drawer-subtotal-price">₹0</strong>
           </div>
-          <button class="btn btn-primary btn-block" onclick="sendWhatsAppOrder()">
-            Order on WhatsApp &rarr;
+          <div class="footer-summary" style="margin-bottom: 18px; border-top: 1px dashed rgba(0,0,0,0.15); padding-top: 10px;">
+            <span style="font-weight: 700; color: var(--forest-deep);">Estimated Total:</span>
+            <strong id="drawer-total-price" style="font-size: 20px; color: var(--gold-deep);">₹0</strong>
+          </div>
+          <button class="btn btn-primary btn-block" style="width: 100%; margin-bottom: 10px; font-weight: 800; padding: 14px 20px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="sendWhatsAppOrder()">
+            <span>Proceed to WhatsApp Order</span> &rarr;
           </button>
-          <button class="btn btn-clear btn-block" onclick="clearCart()">Clear Basket</button>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary btn-block" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;" onclick="toggleCartDrawer(false)">Continue Shopping</button>
+            <button class="btn btn-clear btn-block" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;" onclick="clearCart()">Clear Basket</button>
+          </div>
         </div>
       `;
       document.body.appendChild(drawer);
@@ -535,6 +598,7 @@ function initOrderBuilder() {
     const list = document.getElementById('drawer-items-list');
     const totalEl = document.getElementById('drawer-total-count');
     const totalValEl = document.getElementById('drawer-total-price');
+    const subtotalValEl = document.getElementById('drawer-subtotal-price');
     if (!list) return;
 
     if (cart.length === 0) {
@@ -545,6 +609,7 @@ function initOrderBuilder() {
         </div>
       `;
       totalEl.textContent = '0';
+      if (subtotalValEl) subtotalValEl.textContent = '₹0';
       if (totalValEl) totalValEl.textContent = '₹0';
       return;
     }
@@ -585,6 +650,7 @@ function initOrderBuilder() {
 
     list.innerHTML = itemsHtml;
     totalEl.textContent = totalItems;
+    if (subtotalValEl) subtotalValEl.textContent = `₹${totalPrice}`;
     if (totalValEl) totalValEl.textContent = `₹${totalPrice}`;
   }
 
