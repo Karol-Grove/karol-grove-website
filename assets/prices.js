@@ -1,6 +1,6 @@
 /**
  * Karol Grove — Weekly Price List Data
- * This file contains the default list of products and their prices.
+ * Updated dynamically via Karol Grove Admin Portal
  */
 
 window.priceListData = [
@@ -46,3 +46,5 @@ window.priceListData = [
   { category: "Gift Packs", name: "Healthy Seeds & Mix Gift Pack", price250g: 399, price500g: 749, price1kg: 1399 },
   { category: "Gift Packs", name: "Corporate Premium Wood Box", price250g: "", price500g: 1250, price1kg: 2200 }
 ];
+
+window.KG_PRICES = window.priceListData;
