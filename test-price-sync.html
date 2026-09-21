@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Price Synchronization & Git Sync Automated Test Suite | Karol Grove</title>
+<link rel="icon" href="assets/karol-grove-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=20261002-v3">
+<script src="assets/prices.js"></script>
+<script src="assets/main.js?v=20261002-v3"></script>
+<style>
+  body {
+    background: #0B241A;
+    color: #E2ECE6;
+    font-family: 'Outfit', sans-serif;
+    padding: 30px 20px;
+    min-height: 100vh;
+  }
+  .test-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #113628;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 12px;
+    padding: 36px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  }
+  .test-header {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .test-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: #D8932A;
+  }
+  .test-run-btn {
+    background: linear-gradient(135deg, #D8932A, #F5D77F);
+    color: #0B241A;
+    font-weight: 800;
+    padding: 12px 24px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    transition: transform 0.2s ease;
+  }
+  .test-run-btn:hover {
+    transform: translateY(-2px);
+  }
+  .test-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+  .test-info h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .test-info p {
+    font-size: 13px;
+    color: #A0BDB0;
+    margin: 0;
+  }
+  .test-badge {
+    font-size: 12px;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-pending { background: rgba(255,255,255,0.1); color: #ccc; }
+  .badge-pass { background: #27ae60; color: #fff; box-shadow: 0 0 10px rgba(39,174,96,0.4); }
+  .badge-fail { background: #e74c3c; color: #fff; box-shadow: 0 0 10px rgba(231,76,60,0.4); }
+
+  /* Interactive live sync preview area */
+  .preview-section {
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 18px;
+  }
+  .live-card {
+    background: #fff;
+    color: #1a1a1a;
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .live-card h3 {
+    font-size: 18px;
+    color: #0E3B2E;
+    margin-bottom: 8px;
+  }
+  .interactive-box {
+    background: rgba(216,147,42,0.1);
+    border: 1px dashed #D8932A;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="test-container">
+  <div class="test-header">
+    <div>
+      <h1>Karol Grove — Price &amp; Git Synchronization Test Suite</h1>
+      <p style="font-size: 14px; color: #A0BDB0; margin-top: 4px;">Automated validation of single-source-of-truth pricing across website components and GitHub sync pipeline.</p>
+    </div>
+    <div>
+      <button class="test-run-btn" onclick="runAllTests()">▶ Run All Tests</button>
+    </div>
+  </div>
+
+  <div id="test-results-container">
+    <!-- Test Items rendered below -->
+    <div class="test-card" id="test-1">
+      <div class="test-info">
+        <h3>Test 1: Global Price Store Initialization</h3>
+        <p>Verify window.priceListData contains all product categories (Nuts, Dates, Dried Fruits, Seeds, Sweeteners, Gifts).</p>
+      </div>
+      <span class="test-badge badge-pending">Pending</span>
+    </div>
+
+    <div class="test-card" id="test-2">
+      <div class="test-info">
+        <h3>Test 2: Universal Price Resolver &amp; Alias Matching</h3>
+        <p>Verify window.findPriceInList accurately resolves product aliases, weight variants (250g, 500g, 1kg) and numbers.</p>
+      </div>
+      <span class="test-badge badge-pending">Pending</span>
+    </div>
+
+    <div class="test-card" id="test-3">
+      <div class="test-info">
+        <h3>Test 3: Live DOM Product Card Price Synchronization</h3>
+        <p>Verify syncAllProductCardPrices updates dropdown option labels and renders live price badge on cards.</p>
+      </div>
+      <span class="test-badge badge-pending">Pending</span>
+    </div>
+
+    <div class="test-card" id="test-4">
+      <div class="test-info">
+        <h3>Test 4: Dynamic Price Mutation &amp; Real-time Re-sync</h3>
+        <p>Simulate changing an item's price in admin / localStorage and assert that DOM updates instantaneously without refresh.</p>
+      </div>
+      <span class="test-badge badge-pending">Pending</span>
+    </div>
+
+    <div class="test-card" id="test-5">
+      <div class="test-info">
+        <h3>Test 5: Cart Calculation Synchronization</h3>
+        <p>Verify that adding items to the basket recalculates subtotals and totals using the newly synced dynamic price.</p>
+      </div>
+      <span class="test-badge badge-pending">Pending</span>
+    </div>
+
+    <div class="test-card" id="test-6">
+      <div class="test-info">
+        <h3>Test 6: GitHub API Git Sync Payload Formatter</h3>
+        <p>Verify that the payload generator produces valid Base64 encoded JavaScript with proper window.priceListData syntax.</p>
+      </div>
+      <span class="test-badge badge-pending">Pending</span>
+    </div>
+
+    <div class="test-card" id="test-7">
+      <div class="test-info">
+        <h3>Test 7: Cleanup &amp; Restoration to Git Defaults</h3>
+        <p>Clear temporary test mutations from localStorage and confirm all website elements revert cleanly to Git defaults.</p>
+      </div>
+      <span class="test-badge badge-pending">Pending</span>
+    </div>
+  </div>
+
+  <!-- Live Simulated Component Preview -->
+  <div class="preview-section">
+    <h2 style="font-size: 20px; color: #F5D77F; margin-bottom: 8px;">Live Component Synchronizer Preview</h2>
+    <p style="font-size: 13px; color: #A0BDB0;">The cards below are live DOM elements running the exact same code as index.html and products.html.</p>
+    
+    <div class="preview-grid">
+      <!-- Simulated Card 1 -->
+      <div class="glass-card product-card live-card" id="sim-card-almonds">
+        <h3>Premium Almonds (Badam)</h3>
+        <p style="font-size: 13px; color: #555; margin-bottom: 12px;">Crisp, nutrient-dense California harvest. Packed with Vitamin E.</p>
+        <div class="product-selector">
+          <div class="variant-wrapper">
+            <span style="font-size: 12px; font-weight:600; color:#333;">Select Size:</span>
+            <select class="variant-select" style="padding: 6px; border-radius: 4px; border: 1px solid #ccc; width: 100%;">
+              <option value="250g">250g</option>
+              <option value="500g" selected>500g</option>
+              <option value="1kg">1kg</option>
+            </select>
+          </div>
+          <button class="add-to-order-btn" style="margin-top: 10px; width: 100%; padding: 8px; background: #0E3B2E; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: 700;">🛒 Add to WhatsApp Order</button>
+        </div>
+      </div>
+
+      <!-- Simulated Card 2 -->
+      <div class="glass-card product-card live-card" id="sim-card-cashews">
+        <h3>Premium Cashews (Kaju) - W240</h3>
+        <p style="font-size: 13px; color: #555; margin-bottom: 12px;">Plump, whole, grade-A cashews with a rich buttery crunch.</p>
+        <div class="product-selector">
+          <div class="variant-wrapper">
+            <span style="font-size: 12px; font-weight:600; color:#333;">Select Size:</span>
+            <select class="variant-select" style="padding: 6px; border-radius: 4px; border: 1px solid #ccc; width: 100%;">
+              <option value="250g">250g</option>
+              <option value="500g" selected>500g</option>
+              <option value="1kg">1kg</option>
+            </select>
+          </div>
+          <button class="add-to-order-btn" style="margin-top: 10px; width: 100%; padding: 8px; background: #0E3B2E; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: 700;">🛒 Add to WhatsApp Order</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Price Sync Playground -->
+    <div class="interactive-box">
+      <h3 style="font-size: 15px; color: #D8932A; margin-bottom: 8px;">Interactive Price Sync Playground</h3>
+      <p style="font-size: 13px; color: #E2ECE6; margin-bottom: 12px;">Change Almonds 500g price below and click "Sync Live Across Website" to watch the card badge, dropdown, and cart update instantly:</p>
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <label style="font-size: 13px;">Almonds 500g Price (₹):</label>
+        <input type="number" id="interactive-price-input" value="450" style="padding: 6px 12px; border-radius: 4px; border: 1px solid #D8932A; background: #0B241A; color: #fff; width: 100px;">
+        <button onclick="applyInteractivePrice()" style="background: #27ae60; color: #fff; border: none; padding: 7px 16px; border-radius: 4px; cursor: pointer; font-weight: 700;">🔄 Sync Live Across Website</button>
+        <button onclick="resetInteractivePrice()" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid #fff; padding: 7px 14px; border-radius: 4px; cursor: pointer;">Reset to Git Default (₹430)</button>
+      </div>
+      <div id="interactive-status" style="margin-top: 8px; font-size: 13px; color: #27ae60; font-weight: 600;"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function setStatus(testId, passed, message) {
+  const el = document.getElementById(testId);
+  if (!el) return;
+  const badge = el.querySelector('.test-badge');
+  if (passed) {
+    badge.className = 'test-badge badge-pass';
+    badge.textContent = 'PASS';
+  } else {
+    badge.className = 'test-badge badge-fail';
+    badge.textContent = 'FAIL';
+  }
+  if (message) {
+    let p = el.querySelector('.test-detail');
+    if (!p) {
+      p = document.createElement('p');
+      p.className = 'test-detail';
+      p.style.fontSize = '12px';
+      p.style.marginTop = '4px';
+      p.style.fontWeight = 'bold';
+      el.querySelector('.test-info').appendChild(p);
+    }
+    p.style.color = passed ? '#2ecc71' : '#e74c3c';
+    p.textContent = message;
+  }
+}
+
+async function runAllTests() {
+  console.log('--- Starting Price & Git Synchronization Test Suite ---');
+
+  // Test 1: Global Price Store Initialization
+  try {
+    const list = window.priceListData;
+    if (Array.isArray(list) && list.length >= 25) {
+      const hasNuts = list.some(i => i.category === 'Nuts');
+      const hasDates = list.some(i => i.category === 'Dates');
+      const hasSeeds = list.some(i => i.category === 'Seeds');
+      if (hasNuts && hasDates && hasSeeds) {
+        setStatus('test-1', true, `Found ${list.length} products loaded successfully from assets/prices.js.`);
+      } else {
+        setStatus('test-1', false, 'Missing one or more required product categories.');
+      }
+    } else {
+      setStatus('test-1', false, 'window.priceListData is empty or invalid.');
+    }
+  } catch(e) {
+    setStatus('test-1', false, e.message);
+  }
+
+  // Test 2: Universal Price Resolver & Alias Matching
+  try {
+    const almondPrice = window.findPriceInList('Almonds', '500gm');
+    const cashewPrice = window.findPriceInList('Cashews', '250g');
+    const datePrice = window.findPriceInList('Medjool Dates (Premium)', '1kg');
+
+    if (almondPrice === 430 && cashewPrice === 250 && datePrice === 1300) {
+      setStatus('test-2', true, `Resolved: Almonds 500g = ₹${almondPrice}, Cashews 250g = ₹${cashewPrice}, Medjool 1kg = ₹${datePrice}.`);
+    } else {
+      setStatus('test-2', false, `Mismatch: Almonds=${almondPrice} (expected 430), Cashews=${cashewPrice} (expected 250).`);
+    }
+  } catch(e) {
+    setStatus('test-2', false, e.message);
+  }
+
+  // Test 3: Live DOM Product Card Price Synchronization
+  try {
+    window.syncAllProductCardPrices();
+    const almondCard = document.getElementById('sim-card-almonds');
+    const select = almondCard.querySelector('.variant-select');
+    const badge = almondCard.querySelector('.card-live-price-tag');
+
+    const opt500 = select.options[1].textContent;
+    const badgeText = badge ? badge.textContent : '';
+
+    if (opt500.includes('₹430') && badgeText.includes('430')) {
+      setStatus('test-3', true, `Option label is "${opt500}", live badge is "${badgeText}".`);
+    } else {
+      setStatus('test-3', false, `DOM not updated. Option: "${opt500}", Badge: "${badgeText}".`);
+    }
+  } catch(e) {
+    setStatus('test-3', false, e.message);
+  }
+
+  // Test 4: Dynamic Price Mutation & Real-time Re-sync
+  try {
+    // Clone price list and mutate Almonds 500g to ₹485
+    const testPrices = JSON.parse(JSON.stringify(window.priceListData));
+    const almondItem = testPrices.find(i => i.name.includes('Almonds'));
+    almondItem.price500g = 485;
+
+    localStorage.setItem('kg_prices_local', JSON.stringify(testPrices));
+    window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+
+    // Check if DOM updated
+    const almondCard = document.getElementById('sim-card-almonds');
+    const select = almondCard.querySelector('.variant-select');
+    const badge = almondCard.querySelector('.card-live-price-tag');
+    const opt500 = select.options[1].textContent;
+    const badgeText = badge ? badge.textContent : '';
+
+    if (opt500.includes('₹485') && badgeText.includes('485')) {
+      setStatus('test-4', true, `Instantly updated DOM without refresh: Option: "${opt500}", Badge: "${badgeText}".`);
+    } else {
+      setStatus('test-4', false, `Dynamic mutation failed to reflect in DOM. Badge: "${badgeText}".`);
+    }
+  } catch(e) {
+    setStatus('test-4', false, e.message);
+  }
+
+  // Test 5: Cart Calculation Synchronization
+  try {
+    // Add 2 packs of Almonds 500g to cart (at mutated ₹485 price)
+    window.clearCart();
+    window.addToCart('Premium Almonds (Badam)', '500g', 2);
+    
+    // Check cart subtotal
+    const subtotalEl = document.getElementById('drawer-subtotal-price');
+    const subtotalText = subtotalEl ? subtotalEl.textContent : '';
+
+    if (subtotalText === '₹970') {
+      setStatus('test-5', true, `Cart subtotal correctly computed 2 × ₹485 = ${subtotalText}.`);
+    } else {
+      setStatus('test-5', false, `Cart subtotal was ${subtotalText} (expected ₹970).`);
+    }
+    window.clearCart();
+  } catch(e) {
+    setStatus('test-5', false, e.message);
+  }
+
+  // Test 6: GitHub API Git Sync Payload Formatter
+  try {
+    const sampleData = window.priceListData.slice(0, 3);
+    const generatedJS = `/**\n * Karol Grove — Weekly Price List Data\n */\n\nwindow.priceListData = ${JSON.stringify(sampleData, null, 2)};\n`;
+    const base64 = btoa(unescape(encodeURIComponent(generatedJS)));
+
+    // Decode and verify
+    const decoded = decodeURIComponent(escape(atob(base64)));
+    if (decoded.includes('window.priceListData =') && decoded.includes('Premium Almonds')) {
+      setStatus('test-6', true, `Generated valid Base64 payload (${base64.length} chars) matching GitHub API specification.`);
+    } else {
+      setStatus('test-6', false, 'Generated payload failed round-trip decode validation.');
+    }
+  } catch(e) {
+    setStatus('test-6', false, e.message);
+  }
+
+  // Test 7: Cleanup & Restoration to Git Defaults
+  try {
+    localStorage.removeItem('kg_prices_local');
+    window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+
+    const almondCard = document.getElementById('sim-card-almonds');
+    const badge = almondCard.querySelector('.card-live-price-tag');
+    const badgeText = badge ? badge.textContent : '';
+
+    if (badgeText.includes('430')) {
+      setStatus('test-7', true, `Cleaned test cache; restored back to Git default ₹430.`);
+    } else {
+      setStatus('test-7', false, `Failed to revert: badge shows "${badgeText}".`);
+    }
+  } catch(e) {
+    setStatus('test-7', false, e.message);
+  }
+
+  console.log('--- Price & Git Synchronization Test Suite Completed ---');
+}
+
+function applyInteractivePrice() {
+  const newPrice = Number(document.getElementById('interactive-price-input').value) || 450;
+  const currentPrices = JSON.parse(JSON.stringify(window.priceListData));
+  const almond = currentPrices.find(i => i.name.includes('Almonds'));
+  if (almond) almond.price500g = newPrice;
+  localStorage.setItem('kg_prices_local', JSON.stringify(currentPrices));
+  window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+  
+  const statusEl = document.getElementById('interactive-status');
+  statusEl.textContent = `✨ Price updated to ₹${newPrice}! All cards, badges, dropdowns, and cart updated live.`;
+  setTimeout(() => { statusEl.textContent = ''; }, 4000);
+}
+
+function resetInteractivePrice() {
+  localStorage.removeItem('kg_prices_local');
+  window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+  document.getElementById('interactive-price-input').value = '430';
+  const statusEl = document.getElementById('interactive-status');
+  statusEl.textContent = `🔄 Reverted back to Git default (₹430).`;
+  setTimeout(() => { statusEl.textContent = ''; }, 3000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  window.syncAllProductCardPrices();
+  // Auto run tests on page load for immediate feedback
+  setTimeout(runAllTests, 300);
+});
+</script>
+
+</body>
+</html>

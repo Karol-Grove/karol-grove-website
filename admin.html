@@ -54,8 +54,10 @@
                 <label style="display:block; margin-bottom:8px; font-weight:600;">Personal Access Token (PAT)</label>
                 <input type="password" id="github-pat" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
             </div>
-            <div style="display:flex; align-items:flex-end;">
+            <div style="display:flex; align-items:flex-end; gap: 10px; flex-wrap: wrap;">
                 <button class="btn btn-primary" id="sync-btn">Git Sync Prices</button>
+                <button class="btn btn-secondary" id="save-local-btn" style="background:#2b6e4e; color:#fff; border:none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-weight:700;">💾 Save Local Preview</button>
+                <button class="btn" id="reset-local-btn" style="background:#c0392b; color:#fff; border:none; padding: 12px 18px; border-radius: 4px; cursor: pointer; font-weight:700;">🔄 Reset to Defaults</button>
             </div>
         </div>
 
@@ -111,27 +113,72 @@
             darkModeBtn.addEventListener('click', () => document.body.classList.toggle('dark-mode'));
 
             const tableBody = document.querySelector('#price-table tbody');
-            const products = window.priceListData || [];
+            let products = [];
 
-            // Render Table
-            products.forEach((p, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><input type="text" value="${p.category}" data-index="${index}" data-field="category"></td>
-                    <td><input type="text" value="${p.name}" data-index="${index}" data-field="name"></td>
-                    <td><input type="text" value="${p.price250g}" data-index="${index}" data-field="price250g"></td>
-                    <td><input type="text" value="${p.price500g}" data-index="${index}" data-field="price500g"></td>
-                    <td><input type="text" value="${p.price1kg}" data-index="${index}" data-field="price1kg"></td>
-                `;
-                tableBody.appendChild(tr);
-            });
+            function loadProducts() {
+                const cached = localStorage.getItem('kg_prices_local');
+                if (cached) {
+                    try {
+                        products = JSON.parse(cached);
+                    } catch(e) {
+                        products = window.priceListData ? JSON.parse(JSON.stringify(window.priceListData)) : [];
+                    }
+                } else {
+                    products = window.priceListData ? JSON.parse(JSON.stringify(window.priceListData)) : [];
+                }
+            }
+
+            function renderTableRows() {
+                tableBody.innerHTML = '';
+                products.forEach((p, index) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><input type="text" value="${p.category || ''}" data-index="${index}" data-field="category"></td>
+                        <td><input type="text" value="${p.name || ''}" data-index="${index}" data-field="name"></td>
+                        <td><input type="text" value="${p.price250g !== undefined ? p.price250g : ''}" data-index="${index}" data-field="price250g"></td>
+                        <td><input type="text" value="${p.price500g !== undefined ? p.price500g : ''}" data-index="${index}" data-field="price500g"></td>
+                        <td><input type="text" value="${p.price1kg !== undefined ? p.price1kg : ''}" data-index="${index}" data-field="price1kg"></td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            }
+
+            loadProducts();
+            renderTableRows();
 
             // Handle Input Changes
             tableBody.addEventListener('input', (e) => {
                 if(e.target.tagName === 'INPUT') {
-                    const index = e.target.getAttribute('data-index');
+                    const index = parseInt(e.target.getAttribute('data-index'), 10);
                     const field = e.target.getAttribute('data-field');
-                    products[index][field] = e.target.value;
+                    const val = e.target.value.trim();
+                    if (field.startsWith('price')) {
+                        products[index][field] = val === '' ? '' : (isNaN(Number(val)) ? val : Number(val));
+                    } else {
+                        products[index][field] = val;
+                    }
+                }
+            });
+
+            // Save Local Preview Button
+            document.getElementById('save-local-btn').addEventListener('click', () => {
+                localStorage.setItem('kg_prices_local', JSON.stringify(products));
+                window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+                const statusDiv = document.getElementById('status');
+                statusDiv.className = 'status-msg success';
+                statusDiv.innerText = '✅ Saved locally! All open website pages (Home, Products, Cart) updated immediately.';
+            });
+
+            // Reset to Defaults Button
+            document.getElementById('reset-local-btn').addEventListener('click', () => {
+                if(confirm('Are you sure you want to reset all local edits back to Git defaults?')) {
+                    localStorage.removeItem('kg_prices_local');
+                    loadProducts();
+                    renderTableRows();
+                    window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+                    const statusDiv = document.getElementById('status');
+                    statusDiv.className = 'status-msg success';
+                    statusDiv.innerText = '🔄 Reset to original Git defaults.';
                 }
             });
 
@@ -160,45 +207,61 @@
                 localStorage.setItem('kg_pat', pat);
 
                 statusDiv.className = 'status-msg';
-                statusDiv.innerText = 'Syncing to GitHub...';
+                statusDiv.innerText = '🔄 Syncing to GitHub repository...';
                 statusDiv.style.display = 'block';
                 statusDiv.style.background = '#e2e3e5';
                 statusDiv.style.color = '#383d41';
 
                 try {
                     // 1. Generate JS content
-                    const jsContent = `/**\n * Karol Grove — Weekly Price List Data\n */\n\nwindow.priceListData = ${JSON.stringify(products, null, 2)};\n`;
+                    const jsContent = `/**\n * Karol Grove — Weekly Price List Data\n * Automatically synced via Karol Grove Admin Portal\n */\n\nwindow.priceListData = ${JSON.stringify(products, null, 2)};\n`;
                     const encodedContent = btoa(unescape(encodeURIComponent(jsContent)));
 
-                    // 2. Get current SHA of prices.js
-                    const apiUrl = `https://api.github.com/repos/${repo}/contents/assets/prices.js`;
-                    const getRes = await fetch(apiUrl, {
-                        headers: { 'Authorization': `token ${pat}` }
+                    // 2. Determine file path and SHA
+                    let filePath = 'assets/prices.js';
+                    let apiUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
+                    let getRes = await fetch(apiUrl, {
+                        headers: { 'Authorization': `token ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
                     });
                     
                     let sha = '';
-                    if(getRes.ok) {
+                    if (getRes.status === 404) {
+                        // Try fallback path if repo has subfolder
+                        const fallbackPath = 'karol-grove/assets/prices.js';
+                        const fallbackRes = await fetch(`https://api.github.com/repos/${repo}/contents/${fallbackPath}`, {
+                            headers: { 'Authorization': `token ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
+                        });
+                        if (fallbackRes.ok) {
+                            filePath = fallbackPath;
+                            apiUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
+                            const data = await fallbackRes.json();
+                            sha = data.sha;
+                        }
+                    } else if (getRes.ok) {
                         const data = await getRes.json();
                         sha = data.sha;
                     }
 
-                    // 3. Commit and Push
+                    // 3. Commit and Push via GitHub API
                     const putRes = await fetch(apiUrl, {
                         method: 'PUT',
                         headers: {
                             'Authorization': `token ${pat}`,
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
                         },
                         body: JSON.stringify({
-                            message: 'Admin Portal: Updated prices.js',
+                            message: 'Admin Portal: Updated prices.js across website',
                             content: encodedContent,
                             sha: sha || undefined
                         })
                     });
 
                     if(putRes.ok) {
+                        localStorage.setItem('kg_prices_local', JSON.stringify(products));
+                        window.dispatchEvent(new CustomEvent('kg_prices_changed'));
                         statusDiv.className = 'status-msg success';
-                        statusDiv.innerText = 'Successfully synced prices to GitHub! The live website will update shortly.';
+                        statusDiv.innerText = '✨ Successfully synced prices to GitHub! The live website and GitHub Pages will deploy this change.';
                     } else {
                         const errData = await putRes.json();
                         throw new Error(errData.message || 'Failed to push to GitHub');
