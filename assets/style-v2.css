@@ -78,7 +78,7 @@ body {
   position: relative;
 }
 
-/* Nut Drizzle VFX Canvas */
+/* Nut Drizzle VFX Canvas - Background Ambient Layer */
 #vfx-canvas {
   position: fixed;
   top: 0;
@@ -86,7 +86,7 @@ body {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 50;
+  z-index: 1; /* Background ambient layer */
   display: block !important;
 }
 

@@ -78,7 +78,7 @@ body {
   position: relative;
 }
 
-/* Nut Drizzle VFX Canvas */
+/* Nut Drizzle VFX Canvas - Background Ambient Layer */
 #vfx-canvas {
   position: fixed;
   top: 0;
@@ -86,7 +86,7 @@ body {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 50; /* Sits above backgrounds and cards, below sticky header (100) and drawer (1000) */
+  z-index: 1; /* Background ambient layer: sits behind hero text, cards, buttons and headers */
   display: block !important;
 }
 
@@ -673,11 +673,11 @@ nav.main-nav a.active::after {
    Feature Strip & Sections
    ========================================================================== */
 .feature-strip {
+  position: relative;
+  z-index: 10;
   border-top: 1px solid var(--border-light);
   border-bottom: 1px solid var(--border-light);
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: #FFFFFF;
   padding: 36px 0;
 }
 
@@ -4776,7 +4776,7 @@ footer.site-footer {
   height: 100%;
   object-fit: cover;
   opacity: 0.85; /* Clearly visible, vivid high definition video */
-  z-index: 1;
+  z-index: 0;
   filter: saturate(1.12) brightness(0.92);
 }
 
@@ -4788,7 +4788,7 @@ footer.site-footer {
   height: 100%;
   /* Balanced cinematic vignette: keeps background video crisp & clear while ensuring gold/white copy pops */
   background: radial-gradient(circle at center, rgba(9, 38, 29, 0.38) 0%, rgba(5, 20, 15, 0.78) 100%);
-  z-index: 2;
+  z-index: 0;
   pointer-events: none;
 }
 
@@ -4829,9 +4829,19 @@ footer.site-footer {
 
 .hero-launch-content {
   position: relative;
-  z-index: 3;
+  z-index: 10; /* Strictly above background canvas (z-index: 1) */
   max-width: 860px;
   margin: 0 auto;
+}
+
+.hero-launch-actions {
+  position: relative;
+  z-index: 11;
+}
+
+.hero-launch-actions .btn {
+  position: relative;
+  z-index: 12;
 }
 
 .launch-pill-eyebrow {

@@ -122,7 +122,7 @@ function initCanvasParticles() {
       this.speedY = Math.random() * 0.7 + 0.6; // Drizzles downward smoothly
       // 0 = Almond, 1 = Cashew, 2 = Raisin, 3 = Walnut, 4 = Pistachio
       this.type = Math.floor(Math.random() * 5);
-      this.alpha = Math.random() * 0.25 + 0.6; // Clearly visible & playful
+      this.alpha = Math.random() * 0.25 + 0.35; // Ambient background translucency
       this.angle = Math.random() * Math.PI * 2;
       this.spin = Math.random() * 0.016 - 0.008; // Subtle rotation
     }
