@@ -638,31 +638,31 @@ function initOrderBuilder() {
       drawer.className = 'order-drawer';
       drawer.innerHTML = `
         <div class="drawer-header">
-          <h3>Your WhatsApp Order Basket</h3>
-          <button class="close-drawer" onclick="toggleCartDrawer(false)" aria-label="Close Cart">&times;</button>
+          <h3 style="color: #123020; font-weight: 800; margin: 0; font-size: 19px;">Your WhatsApp Order Basket</h3>
+          <button class="close-drawer" onclick="toggleCartDrawer(false)" aria-label="Close Cart" style="color: #64756a; background: none; border: none; font-size: 32px; cursor: pointer; line-height: 1;">&times;</button>
         </div>
         <div class="drawer-body" id="drawer-items-list">
           <!-- Items will render here -->
         </div>
         <div class="drawer-footer">
-          <div class="footer-summary" style="margin-bottom: 6px;">
-            <span>Total Items:</span>
-            <strong id="drawer-total-count">0</strong>
+          <div class="footer-summary" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="color: #123020 !important; font-weight: 700; font-size: 14.5px;">Total Items:</span>
+            <strong id="drawer-total-count" style="color: #b07314 !important; font-weight: 800; font-size: 16px;">0</strong>
           </div>
-          <div class="footer-summary" style="margin-bottom: 6px;">
-            <span>Subtotal:</span>
-            <strong id="drawer-subtotal-price">₹0</strong>
+          <div class="footer-summary" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="color: #123020 !important; font-weight: 700; font-size: 14.5px;">Subtotal:</span>
+            <strong id="drawer-subtotal-price" style="color: #b07314 !important; font-weight: 800; font-size: 16px;">₹0</strong>
           </div>
-          <div class="footer-summary" style="margin-bottom: 18px; border-top: 1px dashed rgba(0,0,0,0.15); padding-top: 10px;">
-            <span style="font-weight: 700; color: var(--forest-deep);">Estimated Total:</span>
-            <strong id="drawer-total-price" style="font-size: 20px; color: var(--gold-deep);">₹0</strong>
+          <div class="footer-summary" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-top: 1px dashed rgba(18,48,32,0.18); padding-top: 12px;">
+            <span style="font-weight: 800; font-size: 16px; color: #123020 !important;">Estimated Total:</span>
+            <strong id="drawer-total-price" style="font-size: 21px; color: #b07314 !important; font-weight: 900;">₹0</strong>
           </div>
-          <button class="btn btn-primary btn-block" style="width: 100%; margin-bottom: 10px; font-weight: 800; padding: 14px 20px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="sendWhatsAppOrder()">
+          <button class="btn btn-primary btn-block" style="width: 100%; margin-bottom: 10px; font-weight: 800; padding: 14px 20px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; background: #123020; color: #ffffff;" onclick="sendWhatsAppOrder()">
             <span>Proceed to WhatsApp Order</span> &rarr;
           </button>
           <div style="display: flex; gap: 10px;">
-            <button class="btn btn-secondary btn-block" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;" onclick="toggleCartDrawer(false)">Continue Shopping</button>
-            <button class="btn btn-clear btn-block" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;" onclick="clearCart()">Clear Basket</button>
+            <button class="btn btn-secondary btn-block" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; background: #ffffff; color: #123020; border: 1.5px solid #E9ECEF;" onclick="toggleCartDrawer(false)">Continue Shopping</button>
+            <button class="btn btn-clear btn-block" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; background: #ffffff; color: #a84250; border: 1.5px solid #E9ECEF;" onclick="clearCart()">Clear Basket</button>
           </div>
         </div>
       `;
@@ -703,7 +703,7 @@ function initOrderBuilder() {
       list.innerHTML = `
         <div class="empty-cart-state">
           <span class="ico">🍃</span>
-          <p>Your basket is empty. Add premium dry fruits, nuts & seeds from the catalog to build your WhatsApp order!</p>
+          <p style="color: #3b5c47; font-size: 14.5px; line-height: 1.6;">Your basket is empty. Add premium dry fruits, nuts & seeds from the catalog to build your WhatsApp order!</p>
         </div>
       `;
       totalEl.textContent = '0';
@@ -727,20 +727,20 @@ function initOrderBuilder() {
         const itemTotal = price * item.quantity;
         totalPrice += itemTotal;
         priceDisplay = ` &bull; ₹${price}`;
-        qtyDisplay = `${item.quantity} <span style="font-size: 11px; color: var(--text-secondary); font-weight: normal;">(₹${itemTotal})</span>`;
+        qtyDisplay = `${item.quantity} <span style="font-size: 11.5px; color: #3b5c47; font-weight: 600;">(₹${itemTotal})</span>`;
       }
 
       itemsHtml += `
-        <div class="cart-item-row">
-          <div class="item-info">
-            <h4>${item.name}</h4>
-            <span class="variant">${item.variant}${priceDisplay}</span>
+        <div class="cart-item-row" style="background: #ffffff; padding: 14px 16px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(18, 48, 32, 0.08); display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+          <div class="item-info" style="flex: 1;">
+            <h4 style="color: #123020 !important; font-size: 15px; font-weight: 800; margin: 0 0 3px; line-height: 1.3;">${item.name}</h4>
+            <span class="variant" style="color: #b07314 !important; font-size: 12px; font-weight: 700; text-transform: uppercase;">${item.variant}${priceDisplay}</span>
           </div>
-          <div class="item-controls">
-            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', -1)">-</button>
-            <span class="qty">${qtyDisplay}</span>
-            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', 1)">+</button>
-            <button class="remove" onclick="removeFromCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}')">&times;</button>
+          <div class="item-controls" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', -1)" aria-label="Decrease quantity" style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #226b42 !important; background: #ffffff !important; color: #123020 !important; font-size: 16px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; line-height: 1;">-</button>
+            <span class="qty" style="color: #123020 !important; font-size: 14px; font-weight: 800; min-width: 20px; text-align: center;">${qtyDisplay}</span>
+            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', 1)" aria-label="Increase quantity" style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #226b42 !important; background: #ffffff !important; color: #123020 !important; font-size: 16px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; line-height: 1;">+</button>
+            <button class="remove" onclick="removeFromCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}')" aria-label="Remove item" style="background: none !important; border: none !important; color: #782631 !important; font-size: 22px; cursor: pointer; margin-left: 4px; line-height: 1;">&times;</button>
           </div>
         </div>
       `;

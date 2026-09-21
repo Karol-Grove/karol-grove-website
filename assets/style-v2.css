@@ -1915,33 +1915,35 @@ footer.site-footer {
 }
 
 .item-info h4 {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
+  color: #123020 !important;
   margin-bottom: 2px;
 }
 
 .item-info .variant {
-  font-size: 11px;
-  color: var(--gold);
+  font-size: 12px;
+  color: #b07314 !important;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .item-controls {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .item-controls button {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 1px solid var(--border-light);
-  background: rgba(255,255,255,0.03);
-  color: var(--text-primary);
-  font-size: 14px;
-  font-weight: 700;
+  border: 1.5px solid #226b42 !important;
+  background: #ffffff !important;
+  color: #123020 !important;
+  font-size: 15px;
+  font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1949,47 +1951,55 @@ footer.site-footer {
 }
 
 .item-controls button:hover {
-  border-color: var(--gold);
-  color: var(--gold);
+  background: #226b42 !important;
+  color: #ffffff !important;
+  border-color: #226b42 !important;
 }
 
 .item-controls .qty {
-  font-size: 13.5px;
-  font-weight: 700;
-  min-width: 18px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #123020 !important;
+  min-width: 20px;
   text-align: center;
 }
 
 .item-controls button.remove {
-  background: none;
-  border: none;
-  color: var(--text-muted);
+  background: none !important;
+  border: none !important;
+  color: #782631 !important;
   font-size: 20px;
   margin-left: 8px;
 }
 
 .item-controls button.remove:hover {
-  color: var(--berry);
+  color: #c0392b !important;
 }
 
 .drawer-footer {
-  padding: 24px;
-  border-top: 1px solid var(--border-light);
-  background: rgba(18, 48, 32, 0.03); /* Soft forest green overlay */
+  padding: 20px 24px;
+  border-top: 1.5px solid rgba(18, 48, 32, 0.08);
+  background: #ffffff;
 }
 
 .footer-summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
-  font-size: 14px;
-  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-size: 14.5px;
+  color: #123020 !important;
+}
+
+.footer-summary span {
+  color: #123020 !important;
+  font-weight: 700;
 }
 
 .footer-summary strong {
-  font-size: 18px;
-  color: var(--gold);
+  font-size: 16px;
+  font-weight: 800;
+  color: #b07314 !important;
 }
 
 /* ==========================================================================
