@@ -78,7 +78,7 @@ body {
   position: relative;
 }
 
-/* Nut Drizzle VFX Canvas - Background Ambient Layer */
+/* Nut Drizzle VFX Canvas - Pure Background Ambient Layer */
 #vfx-canvas {
   position: fixed;
   top: 0;
@@ -86,8 +86,19 @@ body {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 1; /* Background ambient layer */
+  z-index: 0; /* Pure background: strictly behind all images, videos, cards and text */
   display: block !important;
+}
+
+img,
+video,
+picture,
+.product-img-wrapper,
+.product-card,
+.glass-card,
+.tilt-card {
+  position: relative;
+  z-index: 2; /* Never allow drizzling particles over images, videos or product cards */
 }
 
 img {

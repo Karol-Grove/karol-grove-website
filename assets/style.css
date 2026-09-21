@@ -78,7 +78,7 @@ body {
   position: relative;
 }
 
-/* Nut Drizzle VFX Canvas - Background Ambient Layer */
+/* Nut Drizzle VFX Canvas - Pure Background Ambient Layer */
 #vfx-canvas {
   position: fixed;
   top: 0;
@@ -86,8 +86,19 @@ body {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 1; /* Background ambient layer: sits behind hero text, cards, buttons and headers */
+  z-index: 0; /* Pure background: strictly behind all images, videos, cards and text */
   display: block !important;
+}
+
+img,
+video,
+picture,
+.product-img-wrapper,
+.product-card,
+.glass-card,
+.tilt-card {
+  position: relative;
+  z-index: 2; /* Never allow drizzling particles over images, videos or product cards */
 }
 
 img {
@@ -4758,6 +4769,7 @@ footer.site-footer {
 /* Launch Hero Rework — High Visibility Video Background */
 .hero-launch-wrapper {
   position: relative;
+  z-index: 2; /* Sits strictly in front of background canvas (z-index: 0) */
   min-height: 85vh;
   display: flex;
   align-items: center;
@@ -4776,7 +4788,7 @@ footer.site-footer {
   height: 100%;
   object-fit: cover;
   opacity: 0.85; /* Clearly visible, vivid high definition video */
-  z-index: 0;
+  z-index: 1;
   filter: saturate(1.12) brightness(0.92);
 }
 
@@ -4788,7 +4800,7 @@ footer.site-footer {
   height: 100%;
   /* Balanced cinematic vignette: keeps background video crisp & clear while ensuring gold/white copy pops */
   background: radial-gradient(circle at center, rgba(9, 38, 29, 0.38) 0%, rgba(5, 20, 15, 0.78) 100%);
-  z-index: 0;
+  z-index: 2;
   pointer-events: none;
 }
 
