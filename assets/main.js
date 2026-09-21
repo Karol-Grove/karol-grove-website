@@ -40,27 +40,46 @@ function initMobileNav() {
    Canvas Particles VFX
    ========================================================================== */
 function initCanvasParticles() {
-  const canvas = document.getElementById('vfx-canvas');
-  if (!canvas) return;
+  let canvas = document.getElementById('vfx-canvas');
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.id = 'vfx-canvas';
+    document.body.prepend(canvas);
+  }
 
   const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
   let particles = [];
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
-  const mouse = { x: null, y: null, radius: 160 };
+  const mouse = { x: null, y: null, radius: 150 };
 
   window.addEventListener('resize', () => {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
+    init();
   });
 
   window.addEventListener('mousemove', (e) => {
-    mouse.x = e.x;
-    mouse.y = e.y;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
   });
 
   window.addEventListener('mouseout', () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches.length > 0) {
+      mouse.x = e.touches[0].clientX;
+      mouse.y = e.touches[0].clientY;
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
     mouse.x = null;
     mouse.y = null;
   });
@@ -75,7 +94,6 @@ function initCanvasParticles() {
   ];
 
   const loadedImages = [];
-  let imagesLoaded = false;
   let loadedCount = 0;
 
   imageUrls.forEach((url, index) => {
@@ -84,33 +102,29 @@ function initCanvasParticles() {
     img.onload = () => {
       loadedImages[index] = img;
       loadedCount++;
-      if (loadedCount === imageUrls.length) {
-        imagesLoaded = true;
-      }
     };
     img.onerror = () => {
       console.warn('Failed to load particle image:', url);
-      loadedImages[index] = img;
-      loadedCount++;
-      if (loadedCount === imageUrls.length) {
-        imagesLoaded = true;
-      }
     };
   });
 
   class Particle {
     constructor() {
+      this.reset(true);
+    }
+
+    reset(initial = false) {
       this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      // Increased size range for clear, beautiful display of cartoon characters (20px to 38px)
-      this.size = Math.random() * 18 + 20; 
-      this.speedX = Math.random() * 0.3 - 0.15;
-      this.speedY = Math.random() * 0.8 + 0.4; // Drizzles downward slowly and elegantly
+      this.y = initial ? Math.random() * height : -50;
+      // Crisp, cute size for cartoon dry fruit characters (22px to 38px radius)
+      this.size = Math.random() * 16 + 22; 
+      this.speedX = Math.random() * 0.4 - 0.2;
+      this.speedY = Math.random() * 0.7 + 0.6; // Drizzles downward smoothly
       // 0 = Almond, 1 = Cashew, 2 = Raisin, 3 = Walnut, 4 = Pistachio
       this.type = Math.floor(Math.random() * 5);
-      this.alpha = Math.random() * 0.35 + 0.35; // Translucent and subtle
+      this.alpha = Math.random() * 0.25 + 0.6; // Clearly visible & playful
       this.angle = Math.random() * Math.PI * 2;
-      this.spin = Math.random() * 0.015 - 0.0075; // Subtle rotate
+      this.spin = Math.random() * 0.016 - 0.008; // Subtle rotation
     }
 
     update() {
@@ -119,33 +133,30 @@ function initCanvasParticles() {
       this.angle += this.spin;
 
       // Wrap-around edges for drizzle
-      if (this.y > height + 40) {
-        this.y = -40;
-        this.x = Math.random() * width;
-        this.speedY = Math.random() * 0.8 + 0.4;
+      if (this.y > height + 50) {
+        this.reset(false);
       }
-      if (this.x < -40) this.x = width + 40;
-      if (this.x > width + 40) this.x = -40;
+      if (this.x < -50) this.x = width + 50;
+      if (this.x > width + 50) this.x = -50;
 
-      // Mouse interactive push
+      // Mouse and Touch interactive push
       if (mouse.x != null && mouse.y != null) {
         let dx = this.x - mouse.x;
         let dy = this.y - mouse.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < mouse.radius) {
           let force = (mouse.radius - distance) / mouse.radius;
-          let directionX = dx / distance;
-          let directionY = dy / distance;
-          this.x += directionX * force * 3.0;
-          this.y += directionY * force * 3.0;
+          let directionX = dx / (distance || 1);
+          let directionY = dy / (distance || 1);
+          this.x += directionX * force * 3.5;
+          this.y += directionY * force * 3.5;
         }
       }
     }
 
     draw() {
-      if (!imagesLoaded) return;
       const img = loadedImages[this.type];
-      if (!img) return;
+      if (!img || !img.complete || img.naturalWidth === 0) return;
 
       ctx.save();
       ctx.globalAlpha = this.alpha;
@@ -162,7 +173,7 @@ function initCanvasParticles() {
 
   function init() {
     particles = [];
-    const count = Math.min(45, Math.floor((width * height) / 35000));
+    const count = Math.min(36, Math.max(16, Math.floor((width * height) / 32000)));
     for (let i = 0; i < count; i++) {
       particles.push(new Particle());
     }
