@@ -898,6 +898,11 @@ function initContactForm() {
     }
   });
 
+  // If this form is configured for WhatsApp direct submission (no access_key), do not intercept with Web3Forms
+  if (!form.querySelector('input[name="access_key"]')) {
+    return;
+  }
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     
