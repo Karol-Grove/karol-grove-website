@@ -9,10 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261002-v4">
+<link rel="stylesheet" href="assets/style.css?v=20261002-v7">
 <script src="assets/prices.js"></script>
-<script src="assets/pricelist-handler.js?v=20261002-v4" defer></script>
-<script src="assets/main.js?v=20261002-v4" defer></script>
+<script src="assets/pricelist-handler.js?v=20261002-v4" defer></script><script src="assets/main.js?v=20261002-v7" defer></script>
 <style>
   /* Direct high-contrast override for Admin Toolbar buttons */
   #admin-toolbar .admin-btn-secondary,
@@ -22,6 +21,13 @@
     border: 1.5px solid rgba(255, 255, 255, 0.65) !important;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
     font-weight: 700 !important;
+  }
+  #admin-toolbar .admin-btn-primary,
+  .admin-toolbar .admin-btn-primary {
+    color: #0b1e15 !important;
+    background: linear-gradient(135deg, #f5d77f 0%, #d4af37 100%) !important;
+    border: 1.5px solid #ffe89e !important;
+    font-weight: 800 !important;
   }
   #admin-toolbar .admin-btn-secondary:hover,
   .admin-toolbar .admin-btn-secondary:hover {
@@ -47,6 +53,8 @@
 </style>
 </head>
 <body>
+
+<canvas id="vfx-canvas"></canvas>
 
 <!-- Admin Toolbar (Sticky top, visible in admin mode) -->
 <div class="admin-toolbar" id="admin-toolbar">
