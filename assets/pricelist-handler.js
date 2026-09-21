@@ -394,6 +394,12 @@ function initPriceList() {
     let path = document.getElementById('gh-path').value.trim() || 'assets/prices.js';
     const syncStatus = document.getElementById('gh-sync-status');
 
+    // Clean username if user pasted full URL
+    if (username.includes('github.com/')) {
+      username = username.split('github.com/')[1].trim();
+    }
+    username = username.replace(/^https?:\/\//i, '').replace(/^@/, '').replace(/\/+$/, '').trim();
+
     // Clean repo / username if user pasted full repo URL or owner/repo format
     if (repo.includes('github.com/')) {
       repo = repo.split('github.com/')[1].replace(/\.git$/, '').trim();
@@ -403,7 +409,6 @@ function initPriceList() {
       if (!username) username = parts[0];
       repo = parts[parts.length - 1];
     }
-    username = username.replace(/^@/, '');
     path = path.replace(/^\/+/, ''); // Remove leading slash
 
     // Clean PAT token
