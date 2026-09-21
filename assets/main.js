@@ -514,17 +514,19 @@ function initOrderBuilder() {
         const notes = notesInput ? notesInput.value.trim() : '';
 
         let msg = `Hello Karol Grove! I would like to request a quotation for Corporate Gifting:\n\n`;
-        if (company) msg += `🏢 *Company:* ${company}\n`;
+        if (company) msg += `🏢 *Company / Organization:* ${company}\n`;
         if (contactName) msg += `👤 *Contact Person:* ${contactName}\n`;
-        if (mobile) msg += `📱 *Mobile:* ${mobile}\n`;
-        if (email) msg += `📧 *Email:* ${email}\n`;
+        if (mobile) msg += `📱 *Mobile / WhatsApp:* ${mobile}\n`;
+        if (email) msg += `📧 *Send Quotation to Gmail/Email:* ${email}\n`;
+        if (budget) msg += `💰 *Selected Target Budget:* ${budget}\n`;
         if (qty) msg += `📦 *Estimated Quantity:* ${qty}\n`;
-        if (budget) msg += `💰 *Target Budget per Hamper:* ${budget}\n`;
         if (notes) msg += `📝 *Notes/Requirements:* ${notes}\n`;
-        msg += `\nPlease share your catalog and bulk corporate pricing. Thank you!`;
+        msg += `\nPlease email the customized quotation and corporate catalog to ${email}. Our team will wait for your contact. Thank you!`;
 
         const waUrl = `https://wa.me/+918494832492?text=${encodeURIComponent(msg)}`;
         window.open(waUrl, '_blank');
+        
+        alert(`✅ Thank you! Your quotation request for "${company || contactName}" has been received. We will send the customized quotation and catalog to your Gmail ID (${email || 'your email'}) and contact you shortly.`);
         form.reset();
       });
     });

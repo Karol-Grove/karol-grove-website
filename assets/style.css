@@ -4872,7 +4872,7 @@ footer.site-footer {
   margin-bottom: 12px;
 }
 
-/* 3-Step How to Order Stepper */
+/* 3-Step How to Order Stepper — Prominently Highlighted Numbers & Icons */
 .order-stepper-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -4883,39 +4883,103 @@ footer.site-footer {
 .order-stepper-card {
   background: #FFFFFF;
   border: 1.5px solid var(--border-light);
-  border-radius: 16px;
+  border-top: 5px solid var(--gold);
+  border-radius: 18px;
   padding: 36px 28px;
   position: relative;
-  transition: var(--transition-smooth);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+  transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 8px 25px rgba(14, 59, 46, 0.06);
 }
 
 .order-stepper-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-8px);
   border-color: var(--gold);
-  box-shadow: 0 15px 35px rgba(216, 147, 42, 0.12);
+  border-top-color: var(--gold-deep);
+  box-shadow: 0 20px 45px rgba(216, 147, 42, 0.18);
 }
 
-.stepper-num {
-  font-family: var(--font-display);
-  font-size: 38px;
-  font-weight: 900;
-  color: rgba(34, 107, 66, 0.2);
-  line-height: 1;
-  margin-bottom: 14px;
+.stepper-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+/* Highlighted Icon Medallion */
+.stepper-icon-highlight {
+  width: 68px;
+  height: 68px;
+  background: linear-gradient(135deg, #0E3B2E 0%, #1A5946 100%);
+  border: 2.5px solid var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(216, 147, 42, 0.35), 0 0 0 5px rgba(216, 147, 42, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+}
+
+.order-stepper-card:hover .stepper-icon-highlight {
+  transform: scale(1.1) rotate(6deg);
+  box-shadow: 0 12px 30px rgba(216, 147, 42, 0.5), 0 0 0 7px rgba(216, 147, 42, 0.22);
 }
 
 .stepper-icon {
-  font-size: 32px;
+  font-size: 28px;
+  width: 58px;
+  height: 58px;
+  background: rgba(34, 107, 66, 0.08);
+  border: 1.5px solid var(--forest);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 16px;
-  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.order-stepper-card:hover .stepper-icon {
+  transform: scale(1.08);
+}
+
+/* Highlighted Number & Step Badge */
+.stepper-number-highlight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.stepper-step-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+  background: rgba(216, 147, 42, 0.14);
+  padding: 3px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(216, 147, 42, 0.4);
+  margin-bottom: 4px;
+}
+
+.stepper-num-val {
+  font-family: var(--font-display);
+  font-size: 46px;
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, #F39C12 0%, #D8932A 50%, #B87314 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(216, 147, 42, 0.25));
 }
 
 .order-stepper-card h3 {
   font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--forest-deep);
   margin-bottom: 10px;
 }
 
@@ -4925,10 +4989,26 @@ footer.site-footer {
   line-height: 1.6;
 }
 
+/* Corporate Budget Pill & Quotation Notification */
+.corp-budget-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(34, 107, 66, 0.1);
+  color: var(--forest-deep);
+  border: 1.5px solid var(--forest);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  margin-top: 14px;
+}
+
 @media (max-width: 900px) {
   .order-stepper-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 24px;
   }
 }
 
