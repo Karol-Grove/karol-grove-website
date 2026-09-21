@@ -291,24 +291,45 @@
     <div class="order-stepper-grid">
       <!-- Step 01 -->
       <div class="order-stepper-card reveal">
-        <div class="stepper-num">01</div>
-        <div class="stepper-icon">🔍</div>
+        <div class="stepper-header-row">
+          <div class="stepper-icon-highlight" title="Browse Products">
+            <span>🔍</span>
+          </div>
+          <div class="stepper-number-highlight">
+            <span class="stepper-step-label">STEP</span>
+            <span class="stepper-num-val">01</span>
+          </div>
+        </div>
         <h3>01 — Browse Products</h3>
         <p>Choose your preferred dry fruits, nuts, seeds, and pack quantities from our online catalog.</p>
       </div>
 
       <!-- Step 02 -->
       <div class="order-stepper-card reveal" style="transition-delay: 0.1s;">
-        <div class="stepper-num">02</div>
-        <div class="stepper-icon">🛒</div>
+        <div class="stepper-header-row">
+          <div class="stepper-icon-highlight" title="Add to Cart">
+            <span>🛒</span>
+          </div>
+          <div class="stepper-number-highlight">
+            <span class="stepper-step-label">STEP</span>
+            <span class="stepper-num-val">02</span>
+          </div>
+        </div>
         <h3>02 — Add to Cart</h3>
         <p>Review your selected products and adjust quantities directly in your floating cart basket.</p>
       </div>
 
       <!-- Step 03 -->
       <div class="order-stepper-card reveal" style="transition-delay: 0.2s;">
-        <div class="stepper-num">03</div>
-        <div class="stepper-icon">💬</div>
+        <div class="stepper-header-row">
+          <div class="stepper-icon-highlight" title="Confirm on WhatsApp">
+            <span>💬</span>
+          </div>
+          <div class="stepper-number-highlight">
+            <span class="stepper-step-label">STEP</span>
+            <span class="stepper-num-val">03</span>
+          </div>
+        </div>
         <h3>03 — Confirm on WhatsApp</h3>
         <p>Send your order through WhatsApp for instant confirmation, delivery scheduling, and payment.</p>
       </div>
@@ -454,6 +475,10 @@
                 <label for="corpMobile">Mobile Number *</label>
                 <input type="tel" id="corpMobile" name="mobile" placeholder="e.g. 9876543210" required>
               </div>
+            </div>
+            <div>
+              <label for="corpEmail">Gmail / Official Email ID * (Quotation will be sent here)</label>
+              <input type="email" id="corpEmail" name="email" placeholder="e.g. yourname@gmail.com" required>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
               <div>
