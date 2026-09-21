@@ -12,7 +12,39 @@
 <link rel="stylesheet" href="assets/style.css?v=20261002-v4">
 <script src="assets/prices.js"></script>
 <script src="assets/pricelist-handler.js" defer></script>
-<script src="assets/main.js?v=20261002-v3" defer></script>
+<script src="assets/main.js?v=20261002-v4" defer></script>
+<style>
+  /* Direct high-contrast override for Admin Toolbar buttons */
+  #admin-toolbar .admin-btn-secondary,
+  .admin-toolbar .admin-btn-secondary {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+    font-weight: 700 !important;
+  }
+  #admin-toolbar .admin-btn-secondary:hover,
+  .admin-toolbar .admin-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.38) !important;
+    border-color: #ffffff !important;
+    color: #ffffff !important;
+  }
+  #admin-toolbar .admin-btn-sync,
+  .admin-toolbar .admin-btn-sync {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #16a085 0%, #0d6945 100%) !important;
+    border: 1.5px solid #2ecc71 !important;
+    font-weight: 800 !important;
+    box-shadow: 0 2px 10px rgba(46, 204, 113, 0.4) !important;
+  }
+  #admin-toolbar .admin-btn-danger,
+  .admin-toolbar .admin-btn-danger {
+    color: #ffffff !important;
+    background: rgba(231, 76, 60, 0.35) !important;
+    border: 1.5px solid #ff7675 !important;
+    font-weight: 700 !important;
+  }
+</style>
 </head>
 <body>
 
@@ -24,12 +56,12 @@
       <span>Admin Edit Mode Active</span>
     </div>
     <div class="admin-actions">
-      <button id="admin-add-row-btn" class="admin-btn admin-btn-secondary">➕ Add Item</button>
-      <button id="admin-save-btn" class="admin-btn admin-btn-primary">💾 Save Locally</button>
-      <button id="admin-download-btn" class="admin-btn admin-btn-secondary" title="Download updated prices.js">📥 Download prices.js</button>
-      <button id="admin-sync-btn" class="admin-btn admin-btn-sync" title="Sync changes directly to GitHub repository">🔄 Sync to GitHub</button>
-      <button id="admin-reset-btn" class="admin-btn admin-btn-danger">Discard Edits</button>
-      <button onclick="exitAdminMode()" class="admin-btn admin-btn-secondary">Exit Portal</button>
+      <button id="admin-add-row-btn" class="admin-btn admin-btn-secondary" style="color: #ffffff !important; background: rgba(255, 255, 255, 0.22) !important; border: 1.5px solid rgba(255, 255, 255, 0.65) !important; text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;">➕ Add Item</button>
+      <button id="admin-save-btn" class="admin-btn admin-btn-primary" style="color: #0b1e15 !important; background: linear-gradient(135deg, #f5d77f 0%, #d4af37 100%) !important; border: 1.5px solid #ffe89e !important; font-weight: 800 !important;">💾 Save Locally</button>
+      <button id="admin-download-btn" class="admin-btn admin-btn-secondary" style="color: #ffffff !important; background: rgba(255, 255, 255, 0.22) !important; border: 1.5px solid rgba(255, 255, 255, 0.65) !important; text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;" title="Download updated prices.js">📥 Download prices.js</button>
+      <button id="admin-sync-btn" class="admin-btn admin-btn-sync" style="color: #ffffff !important; background: linear-gradient(135deg, #16a085 0%, #0d6945 100%) !important; border: 1.5px solid #2ecc71 !important; font-weight: 800 !important;" title="Sync changes directly to GitHub repository">🔄 Sync to GitHub</button>
+      <button id="admin-reset-btn" class="admin-btn admin-btn-danger" style="color: #ffffff !important; background: rgba(231, 76, 60, 0.35) !important; border: 1.5px solid #ff7675 !important; font-weight: 700 !important; text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;">Discard Edits</button>
+      <button onclick="exitAdminMode()" class="admin-btn admin-btn-secondary" style="color: #ffffff !important; background: rgba(255, 255, 255, 0.22) !important; border: 1.5px solid rgba(255, 255, 255, 0.65) !important; text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;">Exit Portal</button>
     </div>
   </div>
 
