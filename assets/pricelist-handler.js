@@ -333,14 +333,14 @@ function initPriceList() {
     
     priceListData.forEach((item, index) => {
       const comma = index === priceListData.length - 1 ? '' : ',';
-      const p250 = item.price250g === '' ? '""' : item.price250g;
-      const p500 = item.price500g === '' ? '""' : item.price500g;
-      const p1kg = item.price1kg === '' ? '""' : item.price1kg;
+      const p250 = (item.price250g === '' || item.price250g === null || item.price250g === undefined) ? '""' : item.price250g;
+      const p500 = (item.price500g === '' || item.price500g === null || item.price500g === undefined) ? '""' : item.price500g;
+      const p1kg = (item.price1kg === '' || item.price1kg === null || item.price1kg === undefined) ? '""' : item.price1kg;
       
       content += `  { category: "${item.category}", name: "${item.name.replace(/"/g, '\\"')}", price250g: ${p250}, price500g: ${p500}, price1kg: ${p1kg} }${comma}\n`;
     });
     
-    content += `];\n`;
+    content += `];\n\nwindow.KG_PRICES = window.priceListData;\n`;
 
     const blob = new Blob([content], { type: 'application/javascript;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -388,11 +388,26 @@ function initPriceList() {
 
   // Save via GitHub API directly from the browser!
   async function handleGithubSync() {
-    const username = document.getElementById('gh-username').value.trim();
-    const repo = document.getElementById('gh-repo').value.trim();
-    const pat = document.getElementById('gh-pat').value.trim();
+    let username = document.getElementById('gh-username').value.trim();
+    let repo = document.getElementById('gh-repo').value.trim();
+    let pat = document.getElementById('gh-pat').value.trim();
     let path = document.getElementById('gh-path').value.trim() || 'assets/prices.js';
     const syncStatus = document.getElementById('gh-sync-status');
+
+    // Clean repo / username if user pasted full repo URL or owner/repo format
+    if (repo.includes('github.com/')) {
+      repo = repo.split('github.com/')[1].replace(/\.git$/, '').trim();
+    }
+    if (repo.includes('/')) {
+      const parts = repo.split('/');
+      if (!username) username = parts[0];
+      repo = parts[parts.length - 1];
+    }
+    username = username.replace(/^@/, '');
+    path = path.replace(/^\/+/, ''); // Remove leading slash
+
+    // Clean PAT token
+    pat = pat.replace(/^bearer\s+/i, '').replace(/^token\s+/i, '').trim();
 
     if (!username || !repo || !pat) {
       alert('Please fill out GitHub Username, Repository Name, and Personal Access Token (PAT).');
@@ -455,15 +470,15 @@ function initPriceList() {
       }
 
       // 2. Generate updated file contents
-      let fileContent = `/**\n * Karol Grove — Weekly Price List Data\n * This file contains the default list of products and their prices.\n */\n\nwindow.priceListData = [\n`;
+      let fileContent = `/**\n * Karol Grove — Weekly Price List Data\n * Updated dynamically via Karol Grove Admin Portal\n */\n\nwindow.priceListData = [\n`;
       priceListData.forEach((item, index) => {
         const comma = index === priceListData.length - 1 ? '' : ',';
-        const p250 = item.price250g === '' ? '""' : item.price250g;
-        const p500 = item.price500g === '' ? '""' : item.price500g;
-        const p1kg = item.price1kg === '' ? '""' : item.price1kg;
+        const p250 = (item.price250g === '' || item.price250g === null || item.price250g === undefined) ? '""' : item.price250g;
+        const p500 = (item.price500g === '' || item.price500g === null || item.price500g === undefined) ? '""' : item.price500g;
+        const p1kg = (item.price1kg === '' || item.price1kg === null || item.price1kg === undefined) ? '""' : item.price1kg;
         fileContent += `  { category: "${item.category}", name: "${item.name.replace(/"/g, '\\"')}", price250g: ${p250}, price500g: ${p500}, price1kg: ${p1kg} }${comma}\n`;
       });
-      fileContent += `];\n`;
+      fileContent += `];\n\nwindow.KG_PRICES = window.priceListData;\n`;
 
       // 3. PUT the content back in base64
       const base64Content = btoa(unescape(encodeURIComponent(fileContent)));

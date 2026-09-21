@@ -408,21 +408,33 @@ function initOrderBuilder() {
     });
   };
 
-  // Dynamic loader for prices.js
+  // Dynamic loader for prices.js — ensures fresh Git-synced prices bypass any browser/CDN cache
   function checkAndLoadPrices(callback) {
     const cached = localStorage.getItem('kg_prices_local');
-    if (cached || window.priceListData) {
+    // If admin has a local preview draft in this browser, use it immediately
+    if (cached) {
       if (callback) callback();
       return;
     }
+
+    // If static prices already exist, run initial callback immediately to avoid any UI flicker
+    let initialRendered = false;
+    if (window.priceListData && callback) {
+      callback();
+      initialRendered = true;
+    }
+
+    // Always fetch the freshest Git-synced prices.js using a timestamp to bypass browser cache
     const script = document.createElement('script');
     script.src = `assets/prices.js?t=${Date.now()}`;
     script.onload = () => {
-      if (callback) callback();
+      window.syncAllProductCardPrices();
+      if (typeof renderCartItems === 'function') renderCartItems();
+      if (!initialRendered && callback) callback();
     };
     script.onerror = () => {
-      console.error('Failed to load prices.js dynamically.');
-      if (callback) callback();
+      console.warn('Network issue fetching live prices.js, using static fallback.');
+      if (!initialRendered && callback) callback();
     };
     document.head.appendChild(script);
   }
