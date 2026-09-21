@@ -247,8 +247,8 @@ function initOrderBuilder() {
     return str.replace(/'/g, "\\'");
   }
 
-  // Lookup function to find the price of an item from the priceListData (including local storage cache)
-  function findPriceInList(name, variant) {
+  // Expose lookup function globally to find the price of an item from priceListData / local storage cache
+  window.findPriceInList = function(name, variant) {
     let priceListData = [];
     const cached = localStorage.getItem('kg_prices_local');
     if (cached) {
@@ -348,7 +348,65 @@ function initOrderBuilder() {
     }
 
     return found.price250g || found.price500g || found.price1kg || null;
-  }
+  };
+
+  // Helper alias for internal usage
+  const findPriceInList = window.findPriceInList;
+
+  // Real-time synchronization across all product cards on the page
+  window.syncAllProductCardPrices = function() {
+    const cards = document.querySelectorAll('.product-card');
+    if (!cards.length) return;
+
+    cards.forEach(card => {
+      const titleEl = card.querySelector('h3');
+      if (!titleEl) return;
+      const productName = titleEl.textContent.trim();
+      const select = card.querySelector('.variant-select');
+      if (!select) return;
+
+      // Update option label prices dynamically
+      Array.from(select.options).forEach(opt => {
+        const val = opt.value;
+        const price = window.findPriceInList(productName, val);
+        if (price) {
+          const cleanVal = val.replace(/gm$/i, 'g');
+          opt.textContent = `${cleanVal} — ₹${price}`;
+        }
+      });
+
+      // Insert or update live price badge
+      let priceTag = card.querySelector('.card-live-price-tag');
+      if (!priceTag) {
+        priceTag = document.createElement('div');
+        priceTag.className = 'card-live-price-tag';
+        const body = card.querySelector('.product-card-body');
+        const selector = card.querySelector('.product-selector');
+        if (body && selector) {
+          body.insertBefore(priceTag, selector);
+        }
+      }
+
+      const updatePriceDisplay = () => {
+        const currentVariant = select.value;
+        const currentPrice = window.findPriceInList(productName, currentVariant);
+        if (currentPrice) {
+          const cleanVar = currentVariant.replace(/gm$/i, 'g');
+          priceTag.innerHTML = `<span class="price-curr">₹</span><span class="price-val">${currentPrice}</span><span class="price-unit">/${cleanVar}</span>`;
+          priceTag.style.display = 'inline-flex';
+        } else {
+          priceTag.style.display = 'none';
+        }
+      };
+
+      updatePriceDisplay();
+
+      if (!select.dataset.priceBound) {
+        select.dataset.priceBound = "true";
+        select.addEventListener('change', updatePriceDisplay);
+      }
+    });
+  };
 
   // Dynamic loader for prices.js
   function checkAndLoadPrices(callback) {
@@ -373,6 +431,21 @@ function initOrderBuilder() {
   checkAndLoadPrices(() => {
     createCartUI();
     updateCartCounters();
+    window.syncAllProductCardPrices();
+  });
+
+  // Listen to cross-tab price updates (from Admin portal or Price List editor)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'kg_prices_local') {
+      window.syncAllProductCardPrices();
+      renderCartItems();
+    }
+  });
+
+  // Listen to in-tab price updates
+  window.addEventListener('kg_prices_changed', () => {
+    window.syncAllProductCardPrices();
+    renderCartItems();
   });
 
   // Connect header cart buttons and triggers
@@ -869,18 +942,45 @@ function initContactForm() {
 }
 
 /* ==========================================================================
-   Seamless Hero Video Loop Fix
+   Seamless Hero Video Loop & Auto-Play Guarantee
    ========================================================================== */
 function initHeroVideoLoop() {
   const heroVideo = document.querySelector('.hero-bg-video');
   if (!heroVideo) return;
 
+  // Guarantee browser autoplay compatibility
+  heroVideo.muted = true;
+  heroVideo.defaultMuted = true;
+  heroVideo.playsInline = true;
+  heroVideo.setAttribute('playsinline', '');
+  heroVideo.setAttribute('muted', '');
+
+  const startPlayback = () => {
+    const playPromise = heroVideo.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((e) => {
+        console.warn('Autoplay waiting for user gesture:', e);
+        const resumeOnTouchOrScroll = () => {
+          heroVideo.play().catch(() => {});
+          window.removeEventListener('click', resumeOnTouchOrScroll);
+          window.removeEventListener('scroll', resumeOnTouchOrScroll);
+          window.removeEventListener('touchstart', resumeOnTouchOrScroll);
+        };
+        window.addEventListener('click', resumeOnTouchOrScroll, { passive: true });
+        window.addEventListener('scroll', resumeOnTouchOrScroll, { passive: true });
+        window.addEventListener('touchstart', resumeOnTouchOrScroll, { passive: true });
+      });
+    }
+  };
+
+  startPlayback();
+
   // Ensure seamless looping without pause or frozen trailing frames.
-  // The video stream is 10s long; resetting slightly before stream end prevents browser loop stutter and track length mismatches.
   heroVideo.addEventListener('timeupdate', () => {
-    if (heroVideo.currentTime >= 9.95 || (heroVideo.duration && heroVideo.currentTime >= heroVideo.duration - 0.1)) {
+    if (heroVideo.currentTime >= 9.92 || (heroVideo.duration && heroVideo.currentTime >= heroVideo.duration - 0.15)) {
       heroVideo.currentTime = 0;
       heroVideo.play().catch(() => {});
     }
   });
 }
+

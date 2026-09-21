@@ -299,6 +299,7 @@ function initPriceList() {
   // Save changes locally (localStorage)
   function handleSaveLocal() {
     localStorage.setItem('kg_prices_local', JSON.stringify(priceListData));
+    window.dispatchEvent(new CustomEvent('kg_prices_changed'));
     if (localBanner) localBanner.style.display = 'flex';
     
     // Toggle admin view save status
@@ -312,13 +313,14 @@ function initPriceList() {
     }
     
     renderTable();
-    alert('Changes saved locally in your browser! Remember to download "prices.js" and overwrite the file in your codebase, or use GitHub Sync, to save them permanently for all users.');
+    alert('Changes saved locally in your browser! All open pages on the website have updated immediately. Remember to sync to GitHub or download prices.js to deploy permanently.');
   }
 
   // Reset local edits (clear localStorage)
   function handleResetLocal() {
     if (confirm('Are you sure you want to discard all local edits and restore the prices from prices.js? This cannot be undone.')) {
       localStorage.removeItem('kg_prices_local');
+      window.dispatchEvent(new CustomEvent('kg_prices_changed'));
       loadData();
       renderTable();
     }
@@ -494,6 +496,7 @@ function initPriceList() {
         localStorage.removeItem('kg_prices_local');
         loadData();
         renderTable();
+        window.dispatchEvent(new CustomEvent('kg_prices_changed'));
         // Close panel
         setTimeout(toggleGithubPanel, 2000);
       } else {
