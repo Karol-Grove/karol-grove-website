@@ -1,1429 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Portal — Karol Grove Price Management System</title>
-<link rel="icon" href="assets/karol-grove-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261002-v11">
-<script src="assets/prices.js"></script>
-
-<style>
-  :root {
-    --adm-forest: #0E3B2E;
-    --adm-forest-light: #165341;
-    --adm-gold: #C89A3C;
-    --adm-bg: #F4F7F5;
-    --adm-card: #FFFFFF;
-    --adm-text: #1C2E24;
-    --adm-muted: #64746B;
-    --adm-border: #D8E2DC;
-    --adm-danger: #D9534F;
-    --adm-success: #2E7D32;
-  }
-
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    padding: 0;
-    background: var(--adm-bg);
-    color: var(--adm-text);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    min-height: 100vh;
-  }
-
-  /* Secure Auth Gate Screen */
-  #admin-auth-gate {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background: linear-gradient(135deg, #0E3B2E 0%, #061A14 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999999;
-    padding: 20px;
-  }
-
-  .auth-card {
-    background: #FFFFFF;
-    border-radius: 18px;
-    padding: 40px 36px;
-    width: 100%;
-    max-width: 440px;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
-    text-align: center;
-    border: 1px solid rgba(255,255,255,0.2);
-  }
-
-  .auth-card img {
-    height: 52px;
-    margin-bottom: 16px;
-  }
-
-  .auth-card h2 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 24px;
-    color: #0E3B2E;
-    margin: 0 0 8px;
-  }
-
-  .auth-card p {
-    font-size: 13.5px;
-    color: #64746B;
-    margin: 0 0 24px;
-    line-height: 1.5;
-  }
-
-  .auth-input-group {
-    margin-bottom: 20px;
-    text-align: left;
-  }
-
-  .auth-input-group label {
-    display: block;
-    font-size: 11.5px;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: #0E3B2E;
-    margin-bottom: 6px;
-    letter-spacing: 0.5px;
-  }
-
-  .auth-input-group input {
-    width: 100%;
-    padding: 13px 16px;
-    border: 1.5px solid #D0D9D4;
-    border-radius: 8px;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .auth-input-group input:focus {
-    border-color: #0E3B2E;
-    box-shadow: 0 0 0 3px rgba(14,59,46,0.12);
-  }
-
-  .auth-btn {
-    width: 100%;
-    background: #0E3B2E;
-    color: #FFFFFF;
-    border: none;
-    padding: 14px;
-    border-radius: 8px;
-    font-weight: 800;
-    font-size: 15px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .auth-btn:hover { background: #165341; }
-
-  .auth-error {
-    background: #FDF2F2;
-    color: #D9534F;
-    padding: 10px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: 14px;
-    display: none;
-  }
-
-  /* Admin Main App Shell */
-  .admin-app {
-    display: flex;
-    min-height: 100vh;
-  }
-
-  /* Sidebar */
-  .admin-sidebar {
-    width: 260px;
-    background: #0E3B2E;
-    color: #FFFFFF;
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-  }
-
-  .sidebar-header {
-    padding: 24px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-
-  .sidebar-header img {
-    height: 40px;
-  }
-
-  .sidebar-header .brand-title {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    color: #FFFFFF;
-  }
-
-  .sidebar-header .badge-tag {
-    font-size: 10px;
-    background: #C89A3C;
-    color: #0E3B2E;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: 800;
-    text-transform: uppercase;
-  }
-
-  .sidebar-nav {
-    flex: 1;
-    padding: 20px 0;
-  }
-
-  .nav-btn {
-    width: 100%;
-    background: none;
-    border: none;
-    color: #CAD5CF;
-    padding: 13px 24px;
-    text-align: left;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: all 0.15s ease;
-  }
-
-  .nav-btn:hover {
-    color: #FFFFFF;
-    background: rgba(255,255,255,0.06);
-  }
-
-  .nav-btn.active {
-    color: #FFFFFF;
-    background: rgba(200, 154, 60, 0.2);
-    border-left: 4px solid #C89A3C;
-    font-weight: 700;
-  }
-
-  .sidebar-footer {
-    padding: 20px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-  }
-
-  .logout-btn {
-    width: 100%;
-    background: rgba(255,255,255,0.08);
-    color: #FFF;
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 13px;
-    transition: background 0.2s;
-  }
-  .logout-btn:hover {
-    background: rgba(217, 83, 79, 0.4);
-    border-color: #D9534F;
-  }
-
-  /* Admin Main Content */
-  .admin-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-  }
-
-  .admin-topbar {
-    background: #FFFFFF;
-    padding: 18px 32px;
-    border-bottom: 1px solid var(--adm-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .topbar-title h1 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 22px;
-    margin: 0;
-    color: var(--adm-text);
-  }
-
-  .topbar-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .btn-live-site {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: #0E3B2E;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 700;
-    background: #E8EFEA;
-    padding: 8px 16px;
-    border-radius: 6px;
-    transition: background 0.2s;
-  }
-  .btn-live-site:hover { background: #D8E4DC; }
-
-  .admin-content-pane {
-    padding: 32px;
-    flex: 1;
-  }
-
-  .tab-pane {
-    display: none;
-  }
-  .tab-pane.active {
-    display: block;
-  }
-
-  /* Action Buttons */
-  .btn-add-product {
-    background: linear-gradient(135deg, #0E3B2E 0%, #165341 100%);
-    color: #FFFFFF;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 800;
-    font-size: 14.5px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 14px rgba(14,59,46,0.25);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .btn-add-product:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(14,59,46,0.35);
-  }
-
-  /* Cards & Grid */
-  .admin-card {
-    background: var(--adm-card);
-    border: 1px solid var(--adm-border);
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-    margin-bottom: 24px;
-  }
-
-  /* Product Items List */
-  .product-row-card {
-    background: #FFFFFF;
-    border: 1px solid var(--adm-border);
-    border-radius: 12px;
-    padding: 18px 20px;
-    margin-bottom: 14px;
-    display: grid;
-    grid-template-columns: 70px 2fr 1.5fr 1.2fr 180px;
-    gap: 18px;
-    align-items: center;
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
-  }
-  .product-row-card:hover {
-    box-shadow: 0 4px 16px rgba(14, 59, 46, 0.08);
-    border-color: #C89A3C;
-  }
-  .product-row-card.disabled-item {
-    opacity: 0.65;
-    background: #F9FBFA;
-  }
-
-  .prod-thumb {
-    width: 64px;
-    height: 64px;
-    object-fit: contain;
-    border-radius: 8px;
-    background: #F4F7F5;
-    padding: 4px;
-    border: 1px solid #E5ECE7;
-  }
-
-  .prod-details h4 {
-    margin: 0 0 4px;
-    font-size: 16px;
-    font-weight: 700;
-    color: #0E3B2E;
-  }
-  .prod-details p {
-    margin: 0;
-    font-size: 12.5px;
-    color: #64746B;
-    line-height: 1.35;
-  }
-
-  .prod-cat-pill {
-    display: inline-block;
-    background: #E8EFEA;
-    color: #0E3B2E;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-top: 5px;
-  }
-
-  .prod-prices-summary {
-    font-size: 13px;
-    color: #1C2E24;
-    line-height: 1.4;
-  }
-  .prod-prices-summary span {
-    font-weight: 700;
-    color: #0E3B2E;
-  }
-
-  .prod-status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 6px;
-  }
-  .badge-available {
-    background: #E8F5E9;
-    color: #2E7D32;
-  }
-  .badge-disabled {
-    background: #FFEBEE;
-    color: #C62828;
-  }
-
-  .prod-actions {
-    display: flex;
-    gap: 6px;
-    justify-content: flex-end;
-    align-items: center;
-  }
-
-  .btn-action {
-    padding: 7px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 700;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .btn-action-edit {
-    background: #0E3B2E;
-    color: #FFFFFF;
-  }
-  .btn-action-edit:hover { background: #165341; }
-
-  .btn-action-toggle {
-    background: #E8EFEA;
-    color: #0E3B2E;
-    border-color: #D0DCD5;
-  }
-  .btn-action-toggle:hover { background: #D2E0D8; }
-
-  .btn-action-delete {
-    background: #FFF0F0;
-    color: #D9534F;
-    border-color: #F8D7D7;
-  }
-  .btn-action-delete:hover {
-    background: #D9534F;
-    color: #FFFFFF;
-  }
-
-  /* Direct Edit / Add Modal */
-  .modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(5px);
-    z-index: 99999999;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-  .modal-overlay.open {
-    display: flex;
-  }
-
-  .modal-content {
-    background: #FFFFFF;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 640px;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 32px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-    position: relative;
-  }
-
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--adm-border);
-  }
-
-  .modal-header h3 {
-    margin: 0;
-    font-family: 'Outfit', sans-serif;
-    font-size: 20px;
-    color: #0E3B2E;
-  }
-
-  .modal-close-btn {
-    background: none;
-    border: none;
-    font-size: 26px;
-    cursor: pointer;
-    color: #64746B;
-  }
-
-  .form-group {
-    margin-bottom: 16px;
-  }
-  .form-group label {
-    display: block;
-    font-size: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: #0E3B2E;
-    margin-bottom: 6px;
-    letter-spacing: 0.5px;
-  }
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1.5px solid #D0D9D4;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    border-color: #0E3B2E;
-  }
-
-  .form-row-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-
-  .pack-variants-box {
-    background: #F8FAF9;
-    border: 1px solid #D8E2DC;
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 16px;
-  }
-
-  .pack-variants-box h5 {
-    margin: 0 0 12px;
-    font-size: 13px;
-    font-weight: 800;
-    color: #0E3B2E;
-    text-transform: uppercase;
-  }
-
-  .variant-input-grid {
-    display: grid;
-    grid-template-columns: 90px 1fr 1fr;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .btn-save-modal {
-    width: 100%;
-    background: #0E3B2E;
-    color: #FFFFFF;
-    border: none;
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(14,59,46,0.2);
-    transition: background 0.2s;
-  }
-  .btn-save-modal:hover { background: #165341; }
-
-  /* Toast Notification */
-  #admin-toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #0E3B2E;
-    color: #FFFFFF;
-    padding: 12px 22px;
-    border-radius: 30px;
-    font-size: 14px;
-    font-weight: 700;
-    border: 1px solid #C89A3C;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    z-index: 100000000;
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  #admin-toast.show {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  @media (max-width: 900px) {
-    .admin-app { flex-direction: column; }
-    .admin-sidebar { width: 100%; }
-    .product-row-card {
-      grid-template-columns: 60px 1fr;
-      gap: 12px;
-    }
-    .prod-prices-summary, .prod-status-badge, .prod-actions {
-      grid-column: 1 / -1;
-    }
-    .prod-actions { justify-content: flex-start; }
-    .admin-content-pane { padding: 16px; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | Karol Grove</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css?v=20261002-v3">
+    <style>
+        body { background: var(--color-bg); padding: 40px; }
+        .admin-container { max-width: 1200px; margin: 0 auto; background: #fff; border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-soft); }
+        body.dark-mode .admin-container { background: var(--color-dark-card); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        body.dark-mode .admin-header { border-color: rgba(255,255,255,0.1); }
+        
+        .auth-section { display: flex; gap: 20px; background: rgba(200, 167, 90, 0.1); padding: 24px; border-radius: var(--radius-md); margin-bottom: 40px; }
+        .auth-section input { flex: 1; padding: 12px 20px; border: 1px solid var(--glass-border); border-radius: var(--radius-sm); font-family: var(--font-body); outline:none; }
+        
+        .editable-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        .editable-table th, .editable-table td { padding: 12px 16px; border: 1px solid rgba(0,0,0,0.05); text-align: left; }
+        body.dark-mode .editable-table th, body.dark-mode .editable-table td { border-color: rgba(255,255,255,0.05); }
+        .editable-table th { background: var(--color-primary); color: #fff; }
+        .editable-table input { width: 100%; padding: 8px; border: 1px solid transparent; background: transparent; font-family: var(--font-body); color: var(--color-text); }
+        body.dark-mode .editable-table input { color: var(--color-dark-text); }
+        .editable-table input:focus { border-color: var(--color-secondary); background: rgba(200, 167, 90, 0.05); outline: none; }
+        
+        .status-msg { margin-top: 20px; padding: 16px; border-radius: var(--radius-sm); font-weight: 600; display: none; }
+        .status-msg.success { background: #d4edda; color: #155724; display: block; }
+        .status-msg.error { background: #f8d7da; color: #721c24; display: block; }
+    </style>
 </head>
 <body>
-
-<!-- 1. Secure Authentication Screen -->
-<div id="admin-auth-gate">
-  <div class="auth-card">
-    <img src="assets/karol-grove-icon.png" alt="Karol Grove">
-    <h2>Admin Price Portal</h2>
-    <p>Sign in to manage product prices, stock availability, and catalog updates.</p>
-    <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
-      <div class="auth-input-group">
-        <label for="admin-pass-input">Password or Token</label>
-        <input type="password" id="admin-pass-input" placeholder="Enter password (karoladmin)..." required autocomplete="current-password">
-      </div>
-      <button type="submit" class="auth-btn">Sign In to Dashboard &rarr;</button>
-      <div id="admin-auth-error" class="auth-error">Incorrect password. Please try again.</div>
-    </form>
-    <div style="margin-top: 20px; font-size: 13px;">
-      <a href="pricelist.html" style="color: #64746B; text-decoration: none;">&larr; Back to Public Website</a>
-    </div>
-  </div>
-</div>
-
-<!-- 2. Admin Portal Application -->
-<div class="admin-app" id="admin-main-app" style="display: none;">
-
-  <!-- Sidebar Navigation -->
-  <aside class="admin-sidebar">
-    <div class="sidebar-header">
-      <img src="assets/karol-grove-icon.png" alt="Karol Grove">
-      <div>
-        <div class="brand-title">Karol Grove</div>
-        <span class="badge-tag">ADMIN PORTAL</span>
-      </div>
+    <!-- Password Protection Overlay -->
+    <div id="admin-login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--color-bg); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+        <i class="fa-solid fa-lock" style="font-size: 3rem; color: var(--color-primary); margin-bottom: 20px;"></i>
+        <h2 style="margin-bottom: 20px; font-family: var(--font-heading);">Admin Authentication</h2>
+        <input type="password" id="admin-password-input" placeholder="Enter Admin Password" style="padding: 15px; width: 300px; border: 1px solid var(--glass-border); border-radius: var(--radius-sm); margin-bottom: 20px; font-size: 1rem; text-align: center; background: var(--color-dark-card); color: white;">
+        <button id="admin-login-btn" class="admin-btn" style="width: 300px;">Unlock Portal</button>
+        <p id="admin-login-error" style="color: #e74c3c; margin-top: 15px; display: none;">Incorrect Password</p>
     </div>
 
-    <nav class="sidebar-nav">
-      <button class="nav-btn active" onclick="switchTab('products')">
-        <span>🏷️</span> Price List &amp; Products
-      </button>
-      <button class="nav-btn" onclick="switchTab('dashboard')">
-        <span>📊</span> Dashboard
-      </button>
-      <button class="nav-btn" onclick="switchTab('orders')">
-        <span>🛒</span> Orders
-      </button>
-      <button class="nav-btn" onclick="switchTab('enquiries')">
-        <span>💼</span> Corporate Enquiries
-      </button>
-      <button class="nav-btn" onclick="switchTab('settings')">
-        <span>⚙️</span> Settings &amp; Cloud Sync
-      </button>
-    </nav>
-
-    <div class="sidebar-footer">
-      <button class="logout-btn" onclick="handleAdminLogout()">🔒 Logout</button>
-    </div>
-  </aside>
-
-  <!-- Main Content Area -->
-  <main class="admin-main">
-    <header class="admin-topbar">
-      <div class="topbar-title">
-        <h1 id="page-title">Price List Management</h1>
-      </div>
-      <div class="topbar-actions">
-        <a href="pricelist.html" target="_blank" class="btn-live-site">
-          <span>👁️</span> View Live Price List &rarr;
-        </a>
-      </div>
-    </header>
-
-    <div class="admin-content-pane">
-
-      <!-- ========================================== -->
-      <!-- TAB: PRODUCTS & PRICE LIST (MAIN)           -->
-      <!-- ========================================== -->
-      <section id="tab-products" class="tab-pane active">
-        
-        <!-- Top Controls Bar -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
-          <div style="display: flex; gap: 12px; align-items: center; flex: 1; max-width: 440px;">
-            <input type="text" id="admin-search-input" placeholder="Search product name or category..." 
-                   oninput="handleAdminSearch(this.value)"
-                   style="width: 100%; padding: 11px 16px; border: 1.5px solid var(--adm-border); border-radius: 8px; font-size: 14px; outline: none;">
-          </div>
-
-          <div style="display: flex; gap: 12px; align-items: center;">
-            <button class="btn-add-product" onclick="openAddProductModal()">
-              <span>➕</span> ADD PRODUCT
-            </button>
-          </div>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h2>Karol Grove Admin Portal</h2>
+            <button class="btn btn-secondary" id="dark-mode-toggle" style="padding: 10px 20px;">Toggle Dark Mode</button>
         </div>
 
-        <!-- Category Filters -->
-        <div style="margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap;" id="admin-category-filters">
-          <!-- Populated dynamically -->
-        </div>
-
-        <!-- Product Cards Container -->
-        <div id="admin-products-list">
-          <!-- Populated dynamically -->
-        </div>
-
-      </section>
-
-      <!-- ========================================== -->
-      <!-- TAB: DASHBOARD                             -->
-      <!-- ========================================== -->
-      <section id="tab-dashboard" class="tab-pane">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 28px;">
-          <div class="admin-card" style="margin-bottom: 0;">
-            <div style="font-size: 12px; font-weight: 800; color: #64746B; text-transform: uppercase;">Total Products</div>
-            <div id="dash-total-items" style="font-size: 32px; font-weight: 800; color: #0E3B2E; margin-top: 6px;">0</div>
-          </div>
-          <div class="admin-card" style="margin-bottom: 0;">
-            <div style="font-size: 12px; font-weight: 800; color: #64746B; text-transform: uppercase;">In Stock</div>
-            <div id="dash-instock-items" style="font-size: 32px; font-weight: 800; color: #2E7D32; margin-top: 6px;">0</div>
-          </div>
-          <div class="admin-card" style="margin-bottom: 0;">
-            <div style="font-size: 12px; font-weight: 800; color: #64746B; text-transform: uppercase;">Categories</div>
-            <div id="dash-categories-count" style="font-size: 32px; font-weight: 800; color: #C89A3C; margin-top: 6px;">0</div>
-          </div>
-          <div class="admin-card" style="margin-bottom: 0;">
-            <div style="font-size: 12px; font-weight: 800; color: #64746B; text-transform: uppercase;">Cart Orders Placed</div>
-            <div id="dash-orders-count" style="font-size: 32px; font-weight: 800; color: #0E3B2E; margin-top: 6px;">0</div>
-          </div>
-        </div>
-
-        <div class="admin-card">
-          <h3 style="margin-top: 0; color: #0E3B2E; font-family: 'Outfit', sans-serif;">Live Synchronization Workflow</h3>
-          <p style="font-size: 14px; color: #64746B; line-height: 1.6;">
-            Whenever you change any price, pack size, availability, or add a product in this Admin Portal:
-          </p>
-          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 14px; font-weight: 700; font-size: 13px;">
-            <span style="background: #E8EFEA; color: #0E3B2E; padding: 8px 14px; border-radius: 6px;">1. EDIT IN ADMIN</span>
-            <span>&rarr;</span>
-            <span style="background: #E8EFEA; color: #0E3B2E; padding: 8px 14px; border-radius: 6px;">2. CLICK SAVE</span>
-            <span>&rarr;</span>
-            <span style="background: #E8EFEA; color: #0E3B2E; padding: 8px 14px; border-radius: 6px;">3. INSTANT LIVE SYNC</span>
-            <span>&rarr;</span>
-            <span style="background: #E8F5E9; color: #2E7D32; padding: 8px 14px; border-radius: 6px;">4. ALL USERS SEE NEW PRICE</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================== -->
-      <!-- TAB: ORDERS                                -->
-      <!-- ========================================== -->
-      <section id="tab-orders" class="tab-pane">
-        <div class="admin-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h3 style="margin: 0; color: #0E3B2E; font-family: 'Outfit', sans-serif;">Customer WhatsApp Orders</h3>
-            <button onclick="clearOrderHistory()" class="btn-action btn-action-delete">Clear History</button>
-          </div>
-          <div id="admin-orders-list">
-            <p style="color: #64746B; font-size: 14px;">No orders recorded yet. When customers click WhatsApp Checkout, orders are automatically recorded here.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================== -->
-      <!-- TAB: CORPORATE ENQUIRIES                   -->
-      <!-- ========================================== -->
-      <section id="tab-enquiries" class="tab-pane">
-        <div class="admin-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h3 style="margin: 0; color: #0E3B2E; font-family: 'Outfit', sans-serif;">Corporate Gifting Quotes &amp; Enquiries</h3>
-            <button onclick="clearEnquiriesHistory()" class="btn-action btn-action-delete">Clear Enquiries</button>
-          </div>
-          <div id="admin-enquiries-list">
-            <p style="color: #64746B; font-size: 14px;">No corporate quote submissions recorded yet.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================== -->
-      <!-- TAB: SETTINGS & CLOUD SYNC                 -->
-      <!-- ========================================== -->
-      <section id="tab-settings" class="tab-pane">
-        
-        <!-- Cloud Storage Sync Configuration -->
-        <div class="admin-card">
-          <h3 style="margin-top: 0; color: #0E3B2E; font-family: 'Outfit', sans-serif;">Cloud Database Synchronization</h3>
-          <p style="font-size: 13.5px; color: #64746B; line-height: 1.5; margin-bottom: 16px;">
-            By default, all price updates synchronize instantaneously across tabs and browser sessions. To synchronize live across different devices (e.g. mobile phone and office computer), you can connect any Cloud JSON endpoint (JSONBin, Firebase, Supabase, or REST KV store).
-          </p>
-          <div class="form-group">
-            <label for="cloud-db-url">Cloud Database API / Webhook Endpoint URL</label>
-            <input type="text" id="cloud-db-url" placeholder="https://api.jsonbin.io/v3/b/... or custom REST URL">
-          </div>
-          <button class="btn-add-product" onclick="saveCloudConfig()" style="font-size: 13.5px; padding: 10px 20px;">
-            💾 Save Cloud Sync Settings
-          </button>
-        </div>
-
-        <!-- Backup & Restore -->
-        <div class="admin-card">
-          <h3 style="margin-top: 0; color: #0E3B2E; font-family: 'Outfit', sans-serif;">Catalog Backup &amp; Restore</h3>
-          <p style="font-size: 13.5px; color: #64746B; margin-bottom: 16px;">
-            Export a full JSON backup of your current products and prices, or restore an earlier backup with 1 click.
-          </p>
-          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-            <button class="btn-action btn-action-toggle" onclick="exportCatalogBackup()" style="padding: 10px 18px; font-size: 13px;">
-              📥 Download Backup JSON
-            </button>
-            <label class="btn-action btn-action-toggle" style="padding: 10px 18px; font-size: 13px; cursor: pointer;">
-              📤 Restore From JSON
-              <input type="file" id="backup-file-input" accept=".json" style="display: none;" onchange="importCatalogBackup(event)">
-            </label>
-            <button class="btn-action btn-action-delete" onclick="handleFactoryReset()" style="padding: 10px 18px; font-size: 13px;">
-              🔄 Factory Reset to Default Prices
-            </button>
-          </div>
-        </div>
-
-        <!-- Optional GitHub Token Sync -->
-        <div class="admin-card">
-          <h3 style="margin-top: 0; color: #0E3B2E; font-family: 'Outfit', sans-serif;">Optional: Background GitHub Sync</h3>
-          <p style="font-size: 13.5px; color: #64746B; line-height: 1.5; margin-bottom: 16px;">
-            If hosting on GitHub Pages, entering your GitHub details allows the Admin Portal to commit price changes directly into the repository automatically when you click Save.
-          </p>
-          <div class="form-row-grid">
-            <div class="form-group">
-              <label for="gh-user">GitHub Username</label>
-              <input type="text" id="gh-user" placeholder="e.g. pravieen">
+        <div class="auth-section">
+            <div style="flex:1;">
+                <label style="display:block; margin-bottom:8px; font-weight:600;">GitHub Repository (e.g., username/repo)</label>
+                <input type="text" id="github-repo" placeholder="pravieen/karol-grove-website">
             </div>
-            <div class="form-group">
-              <label for="gh-repo">Repository Name</label>
-              <input type="text" id="gh-repo" placeholder="e.g. karol-grove-website">
+            <div style="flex:1;">
+                <label style="display:block; margin-bottom:8px; font-weight:600;">Personal Access Token (PAT)</label>
+                <input type="password" id="github-pat" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
             </div>
-          </div>
-          <div class="form-group">
-            <label for="gh-token">Personal Access Token (PAT)</label>
-            <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-          </div>
-          <button class="btn-action btn-action-toggle" onclick="saveGithubSettings()" style="padding: 10px 18px; font-size: 13px;">
-            Save GitHub Settings
-          </button>
+            <div style="display:flex; align-items:flex-end; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-primary" id="sync-btn">Git Sync Prices</button>
+                <button class="btn btn-secondary" id="save-local-btn" style="background:#2b6e4e; color:#fff; border:none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-weight:700;">💾 Save Local Preview</button>
+                <button class="btn" id="reset-local-btn" style="background:#c0392b; color:#fff; border:none; padding: 12px 18px; border-radius: 4px; cursor: pointer; font-weight:700;">🔄 Reset to Defaults</button>
+            </div>
         </div>
 
-      </section>
+        <div id="status" class="status-msg"></div>
 
+        <table class="editable-table" id="price-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Product Name</th>
+                    <th>250g Price (₹)</th>
+                    <th>500g Price (₹)</th>
+                    <th>1kg Price (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Populated by JS -->
+            </tbody>
+        </table>
     </div>
-  </main>
-</div>
 
-<!-- ========================================== -->
-<!-- MODAL: ADD / EDIT PRODUCT                  -->
-<!-- ========================================== -->
-<div class="modal-overlay" id="product-modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="modal-title">Edit Product</h3>
-      <button class="modal-close-btn" onclick="closeProductModal()">&times;</button>
-    </div>
-
-    <form id="product-form" onsubmit="handleProductFormSubmit(event)">
-      <input type="hidden" id="form-product-id">
-
-      <div class="form-group">
-        <label for="form-name">Product Name *</label>
-        <input type="text" id="form-name" placeholder="e.g. Cashew W180" required>
-      </div>
-
-      <div class="form-row-grid">
-        <div class="form-group">
-          <label for="form-category">Category *</label>
-          <select id="form-category" required>
-            <option value="Cashews">Cashews</option>
-            <option value="Almonds">Almonds</option>
-            <option value="Pistachios">Pistachios</option>
-            <option value="Raisins">Raisins</option>
-            <option value="Dates">Dates</option>
-            <option value="Seeds">Seeds</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="form-availability">Availability *</label>
-          <select id="form-availability" required>
-            <option value="available">In Stock (Available)</option>
-            <option value="disabled">Out of Stock (Disabled)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="form-image">Product Image Path / URL</label>
-        <input type="text" id="form-image" placeholder="assets/product-cashews.png">
-      </div>
-
-      <div class="form-group">
-        <label for="form-description">Short Description</label>
-        <textarea id="form-description" rows="2" placeholder="Brief factual description..."></textarea>
-      </div>
-
-      <!-- Pack Sizes & Prices (Multi-Pack Support) -->
-      <div class="pack-variants-box">
-        <h5>Pack Sizes, Prices &amp; MRP</h5>
-        
-        <div class="variant-input-grid">
-          <strong>250g Pack</strong>
-          <input type="number" id="form-price-250" placeholder="Price ₹ (e.g. 320)" step="any">
-          <input type="number" id="form-mrp-250" placeholder="MRP ₹ (e.g. 380)" step="any">
-        </div>
-
-        <div class="variant-input-grid">
-          <strong>500g Pack</strong>
-          <input type="number" id="form-price-500" placeholder="Price ₹ (e.g. 620)" step="any">
-          <input type="number" id="form-mrp-500" placeholder="MRP ₹ (e.g. 720)" step="any">
-        </div>
-
-        <div class="variant-input-grid">
-          <strong>1kg Pack</strong>
-          <input type="number" id="form-price-1kg" placeholder="Price ₹ (e.g. 1200)" step="any">
-          <input type="number" id="form-mrp-1kg" placeholder="MRP ₹ (e.g. 1400)" step="any">
-        </div>
-      </div>
-
-      <button type="submit" class="btn-save-modal" id="form-save-btn">
-        💾 SAVE CHANGES
-      </button>
-    </form>
-  </div>
-</div>
-
-<!-- Toast -->
-<div id="admin-toast">
-  <span>✅</span> <span id="toast-message">Price Updated! Live Website Synced.</span>
-</div>
-
-<script>
-  let activeTab = 'products';
-  let activeAdminCat = 'All';
-  let adminSearchQuery = '';
-
-  // 1. Authentication
-  function checkAuth() {
-    const isLogged = sessionStorage.getItem('kg_admin_logged_in') === 'true';
-    const gate = document.getElementById('admin-auth-gate');
-    const app = document.getElementById('admin-main-app');
-
-    if (isLogged) {
-      if (gate) gate.style.display = 'none';
-      if (app) app.style.display = 'flex';
-      renderAdminProducts();
-      updateDashboardMetrics();
-      loadSettings();
-      renderOrders();
-      renderEnquiries();
-    } else {
-      if (gate) gate.style.display = 'flex';
-      if (app) app.style.display = 'none';
-      const input = document.getElementById('admin-pass-input');
-      if (input) setTimeout(() => input.focus(), 100);
-    }
-  }
-
-  function handleAdminLogin(e) {
-    if (e) e.preventDefault();
-    const input = (document.getElementById('admin-pass-input').value || '').trim();
-    const err = document.getElementById('admin-auth-error');
-
-    // Accepts karoladmin, or github token ghp_..., or length >= 6
-    if (input === 'karoladmin' || input.startsWith('ghp_') || input.length >= 6) {
-      if (input.startsWith('ghp_')) {
-        localStorage.setItem('gh_pat', input);
-      }
-      sessionStorage.setItem('kg_admin_logged_in', 'true');
-      if (err) err.style.display = 'none';
-      checkAuth();
-      showToast('Admin Portal Unlocked');
-    } else {
-      if (err) err.style.display = 'block';
-    }
-  }
-
-  function handleAdminLogout() {
-    sessionStorage.removeItem('kg_admin_logged_in');
-    checkAuth();
-  }
-
-  // 2. Tab Navigation
-  function switchTab(tabId) {
-    activeTab = tabId;
-    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-
-    const activeNav = document.querySelector(`.nav-btn[onclick*="${tabId}"]`);
-    if (activeNav) activeNav.classList.add('active');
-
-    const pane = document.getElementById(`tab-${tabId}`);
-    if (pane) pane.classList.add('active');
-
-    const titles = {
-      products: 'Price List Management',
-      dashboard: 'Admin Dashboard',
-      orders: 'Customer WhatsApp Orders',
-      enquiries: 'Corporate Enquiries',
-      settings: 'Settings & Cloud Sync'
-    };
-    const titleEl = document.getElementById('page-title');
-    if (titleEl) titleEl.textContent = titles[tabId] || 'Admin Portal';
-
-    if (tabId === 'dashboard') updateDashboardMetrics();
-    if (tabId === 'orders') renderOrders();
-    if (tabId === 'enquiries') renderEnquiries();
-  }
-
-  // 3. Products Render
-  function renderAdminProducts() {
-    const listContainer = document.getElementById('admin-products-list');
-    if (!listContainer) return;
-
-    const catalog = (window.KG_STORE && window.KG_STORE.getAll) ? window.KG_STORE.getAll() : (window.getLiveCatalog ? window.getLiveCatalog() : []);
-    
-    // Render Category filter buttons
-    renderCategoryFilters(catalog);
-
-    // Filter
-    const filtered = catalog.filter(item => {
-      const catMatch = (activeAdminCat === 'All') || (item.category === activeAdminCat);
-      const q = adminSearchQuery.toLowerCase().trim();
-      const nameMatch = !q || (item.name && item.name.toLowerCase().includes(q)) || (item.category && item.category.toLowerCase().includes(q));
-      return catMatch && nameMatch;
-    });
-
-    if (filtered.length === 0) {
-      listContainer.innerHTML = `
-        <div style="text-align: center; padding: 50px 20px; background: #FFFFFF; border-radius: 12px; border: 1px dashed var(--adm-border);">
-          <div style="font-size: 36px; margin-bottom: 8px;">🔍</div>
-          <h4 style="color: #0E3B2E; margin: 0 0 6px;">No products match your search</h4>
-          <p style="color: #64746B; font-size: 13.5px; margin: 0;">Try adjusting your query or category selection.</p>
-        </div>
-      `;
-      return;
-    }
-
-    let html = '';
-    filtered.forEach(item => {
-      const isAvailable = (item.availability !== 'disabled' && item.availability !== 'out_of_stock');
-      const imgSrc = item.image || 'assets/karol-grove-pouch.png';
-      
-      // Price summary
-      const p250 = (item.price250g !== undefined && item.price250g !== '') ? `₹${item.price250g}` : '-';
-      const p500 = (item.price500g !== undefined && item.price500g !== '') ? `₹${item.price500g}` : '-';
-      const p1kg = (item.price1kg !== undefined && item.price1kg !== '') ? `₹${item.price1kg}` : '-';
-
-      html += `
-        <div class="product-row-card ${!isAvailable ? 'disabled-item' : ''}" id="prod-row-${item.id}">
-          <img src="${imgSrc}" class="prod-thumb" alt="${item.name}" onerror="this.src='assets/karol-grove-pouch.png'">
-          
-          <div class="prod-details">
-            <h4>${item.name}</h4>
-            <p>${item.description || 'No description provided'}</p>
-            <span class="prod-cat-pill">${item.category || 'Other'}</span>
-          </div>
-
-          <div class="prod-prices-summary">
-            <div>250g: <span>${p250}</span></div>
-            <div>500g: <span>${p500}</span></div>
-            <div>1kg: <span>${p1kg}</span></div>
-          </div>
-
-          <div>
-            <span class="prod-status-badge ${isAvailable ? 'badge-available' : 'badge-disabled'}">
-              ${isAvailable ? '● In Stock' : '✕ Disabled'}
-            </span>
-          </div>
-
-          <div class="prod-actions">
-            <button class="btn-action btn-action-edit" onclick="openEditProductModal('${item.id}')">✏️ EDIT</button>
-            <button class="btn-action btn-action-toggle" onclick="toggleProductStock('${item.id}')">
-              ${isAvailable ? 'DISABLE' : 'ENABLE'}
-            </button>
-            <button class="btn-action btn-action-delete" onclick="deleteProductItem('${item.id}')">🗑️</button>
-          </div>
-        </div>
-      `;
-    });
-
-    listContainer.innerHTML = html;
-  }
-
-  function renderCategoryFilters(catalog) {
-    const container = document.getElementById('admin-category-filters');
-    if (!container) return;
-
-    const cats = ['All', 'Cashews', 'Almonds', 'Pistachios', 'Raisins', 'Dates', 'Seeds', 'Other'];
-    let html = '';
-    cats.forEach(c => {
-      const active = (activeAdminCat === c) ? 'background:#0E3B2E; color:#FFF; border-color:#0E3B2E;' : 'background:#FFF; color:#1C2E24; border-color:#D0DCD5;';
-      html += `
-        <button onclick="setAdminCategory('${c}')" 
-                style="padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 700; border: 1.5px solid; cursor: pointer; transition: all 0.15s; ${active}">
-          ${c}
-        </button>
-      `;
-    });
-    container.innerHTML = html;
-  }
-
-  function setAdminCategory(cat) {
-    activeAdminCat = cat;
-    renderAdminProducts();
-  }
-
-  function handleAdminSearch(val) {
-    adminSearchQuery = val;
-    renderAdminProducts();
-  }
-
-  // 4. Edit / Add Modal Operations
-  function openAddProductModal() {
-    document.getElementById('modal-title').textContent = '➕ Add New Product';
-    document.getElementById('form-save-btn').textContent = '💾 SAVE PRODUCT';
-    document.getElementById('form-product-id').value = '';
-    document.getElementById('form-name').value = '';
-    document.getElementById('form-category').value = 'Cashews';
-    document.getElementById('form-availability').value = 'available';
-    document.getElementById('form-image').value = 'assets/product-cashews.png';
-    document.getElementById('form-description').value = '';
-    document.getElementById('form-price-250').value = '';
-    document.getElementById('form-mrp-250').value = '';
-    document.getElementById('form-price-500').value = '';
-    document.getElementById('form-mrp-500').value = '';
-    document.getElementById('form-price-1kg').value = '';
-    document.getElementById('form-mrp-1kg').value = '';
-
-    document.getElementById('product-modal').classList.add('open');
-  }
-
-  function openEditProductModal(id) {
-    const item = window.KG_STORE ? window.KG_STORE.getById(id) : null;
-    if (!item) return;
-
-    document.getElementById('modal-title').textContent = `✏️ Edit: ${item.name}`;
-    document.getElementById('form-save-btn').textContent = '💾 SAVE CHANGES';
-    document.getElementById('form-product-id').value = item.id;
-    document.getElementById('form-name').value = item.name || '';
-    document.getElementById('form-category').value = item.category || 'Other';
-    document.getElementById('form-availability').value = (item.availability === 'disabled' || item.availability === 'out_of_stock') ? 'disabled' : 'available';
-    document.getElementById('form-image').value = item.image || '';
-    document.getElementById('form-description').value = item.description || '';
-    
-    document.getElementById('form-price-250').value = (item.price250g !== undefined) ? item.price250g : '';
-    document.getElementById('form-mrp-250').value = (item.mrp250g !== undefined) ? item.mrp250g : (item.mrp || '');
-    document.getElementById('form-price-500').value = (item.price500g !== undefined) ? item.price500g : '';
-    document.getElementById('form-mrp-500').value = (item.mrp500g !== undefined) ? item.mrp500g : '';
-    document.getElementById('form-price-1kg').value = (item.price1kg !== undefined) ? item.price1kg : '';
-    document.getElementById('form-mrp-1kg').value = (item.mrp1kg !== undefined) ? item.mrp1kg : '';
-
-    document.getElementById('product-modal').classList.add('open');
-  }
-
-  function closeProductModal() {
-    document.getElementById('product-modal').classList.remove('open');
-  }
-
-  async function handleProductFormSubmit(e) {
-    e.preventDefault();
-    const id = document.getElementById('form-product-id').value.trim();
-    const name = document.getElementById('form-name').value.trim();
-    const category = document.getElementById('form-category').value;
-    const availability = document.getElementById('form-availability').value;
-    const image = document.getElementById('form-image').value.trim();
-    const description = document.getElementById('form-description').value.trim();
-
-    const p250 = document.getElementById('form-price-250').value.trim();
-    const mrp250 = document.getElementById('form-mrp-250').value.trim();
-    const p500 = document.getElementById('form-price-500').value.trim();
-    const mrp500 = document.getElementById('form-mrp-500').value.trim();
-    const p1kg = document.getElementById('form-price-1kg').value.trim();
-    const mrp1kg = document.getElementById('form-mrp-1kg').value.trim();
-
-    const productData = {
-      id: id || ('prod-' + Date.now().toString(36)),
-      name,
-      category,
-      availability,
-      image: image || 'assets/karol-grove-pouch.png',
-      description,
-      price250g: p250 !== '' ? parseFloat(p250) : '',
-      mrp250g: mrp250 !== '' ? parseFloat(mrp250) : '',
-      price500g: p500 !== '' ? parseFloat(p500) : '',
-      mrp500g: mrp500 !== '' ? parseFloat(mrp500) : '',
-      price1kg: p1kg !== '' ? parseFloat(p1kg) : '',
-      mrp1kg: mrp1kg !== '' ? parseFloat(mrp1kg) : ''
-    };
-
-    // Save product directly into KG_STORE
-    if (window.KG_STORE) {
-      await window.KG_STORE.saveProduct(productData);
-    }
-
-    closeProductModal();
-    renderAdminProducts();
-    updateDashboardMetrics();
-    showToast(`✅ "${name}" saved! Live website updated instantly.`);
-  }
-
-  async function toggleProductStock(id) {
-    if (window.KG_STORE) {
-      const newStatus = await window.KG_STORE.toggleAvailability(id);
-      renderAdminProducts();
-      updateDashboardMetrics();
-      showToast(newStatus === 'available' ? 'Product enabled (In Stock)' : 'Product disabled (Out of Stock)');
-    }
-  }
-
-  async function deleteProductItem(id) {
-    const item = window.KG_STORE ? window.KG_STORE.getById(id) : null;
-    const name = item ? item.name : 'this item';
-    if (confirm(`Are you sure you want to delete "${name}" from the live price list?`)) {
-      if (window.KG_STORE) {
-        await window.KG_STORE.deleteProduct(id);
-      }
-      renderAdminProducts();
-      updateDashboardMetrics();
-      showToast(`🗑️ "${name}" deleted.`);
-    }
-  }
-
-  // 5. Dashboard Metrics
-  function updateDashboardMetrics() {
-    const catalog = (window.KG_STORE && window.KG_STORE.getAll) ? window.KG_STORE.getAll() : [];
-    const inStock = catalog.filter(i => (i.availability !== 'disabled' && i.availability !== 'out_of_stock')).length;
-    const cats = new Set(catalog.map(i => i.category || 'Other')).size;
-    
-    const orders = JSON.parse(localStorage.getItem('kg_order_history') || '[]');
-
-    const totalEl = document.getElementById('dash-total-items');
-    if (totalEl) totalEl.textContent = catalog.length;
-
-    const stockEl = document.getElementById('dash-instock-items');
-    if (stockEl) stockEl.textContent = inStock;
-
-    const catEl = document.getElementById('dash-categories-count');
-    if (catEl) catEl.textContent = cats;
-
-    const ordEl = document.getElementById('dash-orders-count');
-    if (ordEl) ordEl.textContent = orders.length;
-  }
-
-  // 6. Orders & Enquiries
-  function renderOrders() {
-    const container = document.getElementById('admin-orders-list');
-    if (!container) return;
-    const orders = JSON.parse(localStorage.getItem('kg_order_history') || '[]');
-
-    if (orders.length === 0) {
-      container.innerHTML = '<p style="color: #64746B; font-size: 14px;">No customer cart orders recorded yet.</p>';
-      return;
-    }
-
-    let html = '';
-    orders.slice().reverse().forEach((ord, i) => {
-      let itemsListStr = '';
-      if (Array.isArray(ord.items) && ord.items.length > 0) {
-        itemsListStr = ord.items.map(item => `<strong>${item.name}</strong> (${item.variant}) &times; ${item.quantity} ${item.price ? `[₹${item.price}]` : ''}`).join(' &bull; ');
-      } else {
-        itemsListStr = ord.itemsSummary || ord.details || 'Order items placed on WhatsApp';
-      }
-
-      html += `
-        <div style="background: #F8FAF9; border: 1px solid var(--adm-border); border-radius: 8px; padding: 14px; margin-bottom: 10px;">
-          <div style="display: flex; justify-content: space-between; font-weight: 700; color: #0E3B2E; font-size: 14px; margin-bottom: 6px;">
-            <span>Order #${orders.length - i} &bull; ${ord.id || ''}</span>
-            <span style="color: #64746B; font-size: 12px;">${ord.date || 'Recent'}</span>
-          </div>
-          <div style="font-size: 13.5px; color: #1C2E24; margin-bottom: 4px;">${itemsListStr}</div>
-          <div style="font-size: 12px; color: #64746B; display: flex; gap: 14px; flex-wrap: wrap;">
-            <span>Total Items: <strong>${ord.totalItems || '-'}</strong></span>
-            <span>Est. Total: <strong style="color: #0E3B2E;">₹${ord.estimatedTotal || '-'}</strong></span>
-            <span style="color: #2E7D32;">Status: ${ord.status || 'Sent via WhatsApp'}</span>
-          </div>
-        </div>
-      `;
-    });
-    container.innerHTML = html;
-  }
-
-  function clearOrderHistory() {
-    if (confirm('Clear all order history records?')) {
-      localStorage.removeItem('kg_order_history');
-      renderOrders();
-      updateDashboardMetrics();
-      showToast('Order history cleared.');
-    }
-  }
-
-  function renderEnquiries() {
-    const container = document.getElementById('admin-enquiries-list');
-    if (!container) return;
-    const enquiries = JSON.parse(localStorage.getItem('kg_corporate_enquiries') || '[]');
-
-    if (enquiries.length === 0) {
-      container.innerHTML = '<p style="color: #64746B; font-size: 14px;">No corporate quote submissions recorded yet.</p>';
-      return;
-    }
-
-    let html = '';
-    enquiries.slice().reverse().forEach((enq, i) => {
-      html += `
-        <div style="background: #F8FAF9; border: 1px solid var(--adm-border); border-radius: 8px; padding: 14px; margin-bottom: 10px;">
-          <div style="display: flex; justify-content: space-between; font-weight: 700; color: #0E3B2E; font-size: 14px; margin-bottom: 6px;">
-            <span>${enq.company || 'Corporate Client'} &bull; Contact: ${enq.name || '-'}</span>
-            <span style="color: #64746B; font-size: 12px;">${enq.date || 'Recent'}</span>
-          </div>
-          <div style="font-size: 13px; color: #1C2E24; margin-bottom: 4px;">
-            ${enq.message ? `"${enq.message}"` : ''} ${enq.quantity ? `&bull; Qty: ${enq.quantity}` : ''} ${enq.budget ? `&bull; Budget: ${enq.budget}` : ''}
-          </div>
-          <div style="font-size: 12px; color: #64746B;">
-            📞 <a href="tel:${enq.phone}" style="color: #0E3B2E; font-weight: 600;">${enq.phone || '-'}</a> &bull; ✉️ <a href="mailto:${enq.email}" style="color: #0E3B2E;">${enq.email || '-'}</a>
-          </div>
-        </div>
-      `;
-    });
-    container.innerHTML = html;
-  }
-
-  function clearEnquiriesHistory() {
-    if (confirm('Clear all corporate enquiries?')) {
-      localStorage.removeItem('kg_corporate_enquiries');
-      renderEnquiries();
-      showToast('Corporate enquiries cleared.');
-  }
-
-  // 7. Settings
-  function loadSettings() {
-    const cloudUrl = document.getElementById('cloud-db-url');
-    if (cloudUrl) cloudUrl.value = localStorage.getItem('kg_cloud_db_url') || '';
-
-    const ghUser = document.getElementById('gh-user');
-    const ghRepo = document.getElementById('gh-repo');
-    const ghToken = document.getElementById('gh-token');
-    if (ghUser) ghUser.value = localStorage.getItem('gh_username') || '';
-    if (ghRepo) ghRepo.value = localStorage.getItem('gh_repo') || '';
-    if (ghToken) ghToken.value = localStorage.getItem('gh_pat') || '';
-  }
-
-  function saveCloudConfig() {
-    const val = (document.getElementById('cloud-db-url').value || '').trim();
-    localStorage.setItem('kg_cloud_db_url', val);
-    showToast('Cloud database settings saved.');
-  }
-
-  function saveGithubSettings() {
-    const u = (document.getElementById('gh-user').value || '').trim();
-    const r = (document.getElementById('gh-repo').value || '').trim();
-    const t = (document.getElementById('gh-token').value || '').trim();
-    localStorage.setItem('gh_username', u);
-    localStorage.setItem('gh_repo', r);
-    localStorage.setItem('gh_pat', t);
-    showToast('GitHub settings saved.');
-  }
-
-  function exportCatalogBackup() {
-    if (window.KG_STORE) {
-      const json = window.KG_STORE.exportJSON();
-      const blob = new Blob([json], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `Karol_Grove_Catalog_Backup_${new Date().toISOString().slice(0, 10)}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      showToast('Backup JSON downloaded.');
-    }
-  }
-
-  function importCatalogBackup(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async function(evt) {
-      const content = evt.target.result;
-      if (window.KG_STORE) {
-        const ok = await window.KG_STORE.importJSON(content);
-        if (ok) {
-          renderAdminProducts();
-          updateDashboardMetrics();
-          showToast('✅ Backup imported successfully! Public website updated.');
-        } else {
-          alert('Invalid backup JSON format.');
-        }
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  async function handleFactoryReset() {
-    if (confirm('Reset all prices and products to the original factory default catalog?')) {
-      if (window.KG_STORE) {
-        await window.KG_STORE.resetToDefaults();
-      }
-      renderAdminProducts();
-      updateDashboardMetrics();
-      showToast('Catalog reset to factory defaults.');
-    }
-  }
-
-  // 8. Toast Helper
-  function showToast(msg) {
-    const toast = document.getElementById('admin-toast');
-    const msgEl = document.getElementById('toast-message');
-    if (!toast) return;
-    if (msgEl) msgEl.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
-  }
-
-  // Init
-  document.addEventListener('DOMContentLoaded', checkAuth);
-</script>
-
+    <!-- Load the prices data -->
+    <script src="assets/prices.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Password Protection Logic
+            const overlay = document.getElementById('admin-login-overlay');
+            const passInput = document.getElementById('admin-password-input');
+            const loginBtn = document.getElementById('admin-login-btn');
+            const errorMsg = document.getElementById('admin-login-error');
+
+            if (sessionStorage.getItem('admin_unlocked') === 'true') {
+                overlay.style.display = 'none';
+            }
+
+            const checkPassword = () => {
+                if (passInput.value === 'karoladmin') {
+                    sessionStorage.setItem('admin_unlocked', 'true');
+                    overlay.style.display = 'none';
+                } else {
+                    errorMsg.style.display = 'block';
+                    passInput.value = '';
+                }
+            };
+
+            loginBtn.addEventListener('click', checkPassword);
+            passInput.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') checkPassword();
+            });
+
+            // Dark Mode toggle
+            const darkModeBtn = document.getElementById('dark-mode-toggle');
+            darkModeBtn.addEventListener('click', () => document.body.classList.toggle('dark-mode'));
+
+            const tableBody = document.querySelector('#price-table tbody');
+            let products = [];
+
+            function loadProducts() {
+                const cached = localStorage.getItem('kg_prices_local');
+                if (cached) {
+                    try {
+                        products = JSON.parse(cached);
+                    } catch(e) {
+                        products = window.priceListData ? JSON.parse(JSON.stringify(window.priceListData)) : [];
+                    }
+                } else {
+                    products = window.priceListData ? JSON.parse(JSON.stringify(window.priceListData)) : [];
+                }
+            }
+
+            function renderTableRows() {
+                tableBody.innerHTML = '';
+                products.forEach((p, index) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><input type="text" value="${p.category || ''}" data-index="${index}" data-field="category"></td>
+                        <td><input type="text" value="${p.name || ''}" data-index="${index}" data-field="name"></td>
+                        <td><input type="text" value="${p.price250g !== undefined ? p.price250g : ''}" data-index="${index}" data-field="price250g"></td>
+                        <td><input type="text" value="${p.price500g !== undefined ? p.price500g : ''}" data-index="${index}" data-field="price500g"></td>
+                        <td><input type="text" value="${p.price1kg !== undefined ? p.price1kg : ''}" data-index="${index}" data-field="price1kg"></td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            }
+
+            loadProducts();
+            renderTableRows();
+
+            // Handle Input Changes
+            tableBody.addEventListener('input', (e) => {
+                if(e.target.tagName === 'INPUT') {
+                    const index = parseInt(e.target.getAttribute('data-index'), 10);
+                    const field = e.target.getAttribute('data-field');
+                    const val = e.target.value.trim();
+                    if (field.startsWith('price')) {
+                        products[index][field] = val === '' ? '' : (isNaN(Number(val)) ? val : Number(val));
+                    } else {
+                        products[index][field] = val;
+                    }
+                }
+            });
+
+            // Save Local Preview Button
+            document.getElementById('save-local-btn').addEventListener('click', () => {
+                localStorage.setItem('kg_prices_local', JSON.stringify(products));
+                window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+                const statusDiv = document.getElementById('status');
+                statusDiv.className = 'status-msg success';
+                statusDiv.innerText = '✅ Saved locally! All open website pages (Home, Products, Cart) updated immediately.';
+            });
+
+            // Reset to Defaults Button
+            document.getElementById('reset-local-btn').addEventListener('click', () => {
+                if(confirm('Are you sure you want to reset all local edits back to Git defaults?')) {
+                    localStorage.removeItem('kg_prices_local');
+                    loadProducts();
+                    renderTableRows();
+                    window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+                    const statusDiv = document.getElementById('status');
+                    statusDiv.className = 'status-msg success';
+                    statusDiv.innerText = '🔄 Reset to original Git defaults.';
+                }
+            });
+
+            // Restore credentials
+            if(localStorage.getItem('kg_repo')) {
+                document.getElementById('github-repo').value = localStorage.getItem('kg_repo');
+            }
+            if(localStorage.getItem('kg_pat')) {
+                document.getElementById('github-pat').value = localStorage.getItem('kg_pat');
+            }
+
+            // Git Sync Logic
+            document.getElementById('sync-btn').addEventListener('click', async () => {
+                const repo = document.getElementById('github-repo').value.trim();
+                const pat = document.getElementById('github-pat').value.trim();
+                const statusDiv = document.getElementById('status');
+
+                if(!repo || !pat) {
+                    statusDiv.className = 'status-msg error';
+                    statusDiv.innerText = 'Error: Please provide both Repository and PAT.';
+                    return;
+                }
+
+                // Save credentials for next time
+                localStorage.setItem('kg_repo', repo);
+                localStorage.setItem('kg_pat', pat);
+
+                statusDiv.className = 'status-msg';
+                statusDiv.innerText = '🔄 Syncing to GitHub repository...';
+                statusDiv.style.display = 'block';
+                statusDiv.style.background = '#e2e3e5';
+                statusDiv.style.color = '#383d41';
+
+                try {
+                    // 1. Generate JS content
+                    const jsContent = `/**\n * Karol Grove — Weekly Price List Data\n * Automatically synced via Karol Grove Admin Portal\n */\n\nwindow.priceListData = ${JSON.stringify(products, null, 2)};\n`;
+                    const encodedContent = btoa(unescape(encodeURIComponent(jsContent)));
+
+                    // 2. Determine file path and SHA
+                    let filePath = 'assets/prices.js';
+                    let apiUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
+                    let getRes = await fetch(apiUrl, {
+                        headers: { 'Authorization': `token ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
+                    });
+                    
+                    let sha = '';
+                    if (getRes.status === 404) {
+                        // Try fallback path if repo has subfolder
+                        const fallbackPath = 'karol-grove/assets/prices.js';
+                        const fallbackRes = await fetch(`https://api.github.com/repos/${repo}/contents/${fallbackPath}`, {
+                            headers: { 'Authorization': `token ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
+                        });
+                        if (fallbackRes.ok) {
+                            filePath = fallbackPath;
+                            apiUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
+                            const data = await fallbackRes.json();
+                            sha = data.sha;
+                        }
+                    } else if (getRes.ok) {
+                        const data = await getRes.json();
+                        sha = data.sha;
+                    }
+
+                    // 3. Commit and Push via GitHub API
+                    const putRes = await fetch(apiUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${pat}`,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify({
+                            message: 'Admin Portal: Updated prices.js across website',
+                            content: encodedContent,
+                            sha: sha || undefined
+                        })
+                    });
+
+                    if(putRes.ok) {
+                        localStorage.setItem('kg_prices_local', JSON.stringify(products));
+                        window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+                        statusDiv.className = 'status-msg success';
+                        statusDiv.innerText = '✨ Successfully synced prices to GitHub! The live website and GitHub Pages will deploy this change.';
+                    } else {
+                        const errData = await putRes.json();
+                        throw new Error(errData.message || 'Failed to push to GitHub');
+                    }
+
+                } catch(err) {
+                    statusDiv.className = 'status-msg error';
+                    statusDiv.innerText = `Sync Failed: ${err.message}`;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
