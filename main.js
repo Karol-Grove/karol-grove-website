@@ -40,46 +40,27 @@ function initMobileNav() {
    Canvas Particles VFX
    ========================================================================== */
 function initCanvasParticles() {
-  let canvas = document.getElementById('vfx-canvas');
-  if (!canvas) {
-    canvas = document.createElement('canvas');
-    canvas.id = 'vfx-canvas';
-    document.body.prepend(canvas);
-  }
+  const canvas = document.getElementById('vfx-canvas');
+  if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-
   let particles = [];
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
-  const mouse = { x: null, y: null, radius: 150 };
+  const mouse = { x: null, y: null, radius: 160 };
 
   window.addEventListener('resize', () => {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
-    init();
   });
 
   window.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
+    mouse.x = e.x;
+    mouse.y = e.y;
   });
 
   window.addEventListener('mouseout', () => {
-    mouse.x = null;
-    mouse.y = null;
-  });
-
-  window.addEventListener('touchmove', (e) => {
-    if (e.touches && e.touches.length > 0) {
-      mouse.x = e.touches[0].clientX;
-      mouse.y = e.touches[0].clientY;
-    }
-  }, { passive: true });
-
-  window.addEventListener('touchend', () => {
     mouse.x = null;
     mouse.y = null;
   });
@@ -94,6 +75,7 @@ function initCanvasParticles() {
   ];
 
   const loadedImages = [];
+  let imagesLoaded = false;
   let loadedCount = 0;
 
   imageUrls.forEach((url, index) => {
@@ -102,29 +84,33 @@ function initCanvasParticles() {
     img.onload = () => {
       loadedImages[index] = img;
       loadedCount++;
+      if (loadedCount === imageUrls.length) {
+        imagesLoaded = true;
+      }
     };
     img.onerror = () => {
       console.warn('Failed to load particle image:', url);
+      loadedImages[index] = img;
+      loadedCount++;
+      if (loadedCount === imageUrls.length) {
+        imagesLoaded = true;
+      }
     };
   });
 
   class Particle {
     constructor() {
-      this.reset(true);
-    }
-
-    reset(initial = false) {
       this.x = Math.random() * width;
-      this.y = initial ? Math.random() * height : -50;
-      // Crisp, cute size for cartoon dry fruit characters (22px to 38px radius)
-      this.size = Math.random() * 16 + 22; 
-      this.speedX = Math.random() * 0.4 - 0.2;
-      this.speedY = Math.random() * 0.7 + 0.6; // Drizzles downward smoothly
+      this.y = Math.random() * height;
+      // Increased size range for clear, beautiful display of cartoon characters (20px to 38px)
+      this.size = Math.random() * 18 + 20; 
+      this.speedX = Math.random() * 0.3 - 0.15;
+      this.speedY = Math.random() * 0.8 + 0.4; // Drizzles downward slowly and elegantly
       // 0 = Almond, 1 = Cashew, 2 = Raisin, 3 = Walnut, 4 = Pistachio
       this.type = Math.floor(Math.random() * 5);
-      this.alpha = Math.random() * 0.25 + 0.35; // Ambient background translucency
+      this.alpha = Math.random() * 0.35 + 0.35; // Translucent and subtle
       this.angle = Math.random() * Math.PI * 2;
-      this.spin = Math.random() * 0.016 - 0.008; // Subtle rotation
+      this.spin = Math.random() * 0.015 - 0.0075; // Subtle rotate
     }
 
     update() {
@@ -133,30 +119,33 @@ function initCanvasParticles() {
       this.angle += this.spin;
 
       // Wrap-around edges for drizzle
-      if (this.y > height + 50) {
-        this.reset(false);
+      if (this.y > height + 40) {
+        this.y = -40;
+        this.x = Math.random() * width;
+        this.speedY = Math.random() * 0.8 + 0.4;
       }
-      if (this.x < -50) this.x = width + 50;
-      if (this.x > width + 50) this.x = -50;
+      if (this.x < -40) this.x = width + 40;
+      if (this.x > width + 40) this.x = -40;
 
-      // Mouse and Touch interactive push
+      // Mouse interactive push
       if (mouse.x != null && mouse.y != null) {
         let dx = this.x - mouse.x;
         let dy = this.y - mouse.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < mouse.radius) {
           let force = (mouse.radius - distance) / mouse.radius;
-          let directionX = dx / (distance || 1);
-          let directionY = dy / (distance || 1);
-          this.x += directionX * force * 3.5;
-          this.y += directionY * force * 3.5;
+          let directionX = dx / distance;
+          let directionY = dy / distance;
+          this.x += directionX * force * 3.0;
+          this.y += directionY * force * 3.0;
         }
       }
     }
 
     draw() {
+      if (!imagesLoaded) return;
       const img = loadedImages[this.type];
-      if (!img || !img.complete || img.naturalWidth === 0) return;
+      if (!img) return;
 
       ctx.save();
       ctx.globalAlpha = this.alpha;
@@ -173,7 +162,7 @@ function initCanvasParticles() {
 
   function init() {
     particles = [];
-    const count = Math.min(36, Math.max(16, Math.floor((width * height) / 32000)));
+    const count = Math.min(45, Math.floor((width * height) / 35000));
     for (let i = 0; i < count; i++) {
       particles.push(new Particle());
     }
@@ -261,139 +250,104 @@ function initOrderBuilder() {
   // Expose lookup function globally to find the price of an item from priceListData / local storage cache
   window.findPriceInList = function(name, variant) {
     let priceListData = [];
-    if (typeof window.getLiveCatalog === 'function') {
-      priceListData = window.getLiveCatalog();
-    } else {
-      const cached = localStorage.getItem('kg_live_catalog') || localStorage.getItem('kg_prices_local');
-      if (cached) {
-        try {
-          priceListData = JSON.parse(cached);
-        } catch (e) {
-          console.error('Failed to parse cached prices:', e);
-        }
+    const cached = localStorage.getItem('kg_prices_local');
+    if (cached) {
+      try {
+        priceListData = JSON.parse(cached);
+      } catch (e) {
+        console.error('Failed to parse cached prices:', e);
       }
     }
     if (!priceListData || priceListData.length === 0) {
-      priceListData = (window.getActivePriceCatalog ? window.getActivePriceCatalog() : window.priceListData) || [];
+      priceListData = window.priceListData || [];
     }
 
     if (priceListData.length === 0) return null;
 
     const normName = name.toLowerCase().trim();
-    const variantNorm = (variant || '').toLowerCase().replace(/\s+/g, '');
+    let found = priceListData.find(item => item.name.toLowerCase() === normName);
 
-    const nameAliases = {
-      "almonds": ["Almonds (Badam)", "Premium Almonds (Badam)"],
-      "cashews": ["Cashews (Kaju) - W240", "Premium Cashews (Kaju) - W240"],
-      "pistachios": ["Pistachios (Pista) - Roasted & Salted"],
-      "salted pistachios": ["Pistachios (Pista) - Roasted & Salted"],
-      "walnuts": ["Walnuts (Akhrot) - Chile Halves", "Premium Walnuts (Akhrot) - Chile Halves"],
-      "dates": ["Medjool Dates", "Medjool Dates (Premium)"],
-      "dry date": ["Dry Dates (Kharik) - Yellow"],
-      "black date": ["Black Dates", "Black Dates (Premium)"],
-      "raisins": ["Golden Raisins (Kishmish)"],
-      "dried figs": ["Dried Figs (Anjeer) - Jumbo", "Dried Figs (Anjeer) - Premium Jumbo"],
-      "apricots": ["Dried Apricots (Jardalu)"],
-      "honey": ["Honey"],
-      "pure honey": ["Honey"],
-      "jaggery": ["Jaggery (Powder)"],
-      "palm sugar": ["Palm Sugar"],
-      "palm candy": ["Palm Candy (Panakarkandu)"],
-      "almond gum": ["Almond Gum (Pisin)"],
-      "brown sugar": ["Brown Sugar (Nattu Sakkarai)"],
-      "deluxe harvest mix": ["Festive Gift Hamper", "Premium Festive Gift Hamper"],
-      "festive dry fruits box": ["Dry Fruit & Nuts Gift Box (4-in-1)"],
-      "seed mixed": ["Seeds & Mix Gift Pack"],
-      "seeds & mix gift pack": ["Seeds & Mix Gift Pack"],
-      "nuts mixed": ["Dry Fruit & Nuts Gift Box (4-in-1)"],
-      "karol grove deluxe harvest mix": ["Festive Gift Hamper"],
-      "dry cherry": ["Dried Cranberries", "Dried Cranberries (Whole)"],
-      "dried kiwi": ["Dried Cranberries", "Dried Cranberries (Whole)"],
-      "dried pineapple": ["Dried Cranberries", "Dried Cranberries (Whole)"],
-      "dry strawberry": ["Dried Cranberries", "Dried Cranberries (Whole)"],
-      "dry amla": ["Dried Cranberries", "Dried Cranberries (Whole)"],
-      "honey amla": ["Honey"],
-      "dry mango": ["Dried Cranberries", "Dried Cranberries (Whole)"],
-      "dry blueberry": ["Dried Blueberries"],
-      "dry cranberry": ["Dried Cranberries", "Dried Cranberries (Whole)"],
-      "sabja seeds": ["Basil Seeds (Sabja)"],
-      "chia seeds": ["Chia Seeds"],
-      "pumpkin seeds": ["Pumpkin Seeds (Raw)"],
-      "sunflower seeds": ["Sunflower Seeds (Raw)"],
-      "flax seeds": ["Flax Seeds"],
-      "watermelon seeds": ["Watermelon Seeds"]
-    };
-
-    // Helper to check if item name matches query
-    function matchesName(item, target) {
-      const iName = (item.name || '').toLowerCase();
-      if (iName === target) return true;
-      if (nameAliases[target]) {
-        if (nameAliases[target].some(alias => alias.toLowerCase() === iName)) return true;
-      }
-      return iName.includes(target) || target.includes(iName);
-    }
-
-    // Helper to check if variant matches item
-    function matchesVariant(item, vNorm) {
-      if (item.packSize && item.unit) {
-        const itemVar = `${item.packSize}${item.unit}`.toLowerCase().replace(/\s+/g, '');
-        if (vNorm.includes(itemVar) || itemVar.includes(vNorm)) return true;
-      }
-      if (Array.isArray(item.variants)) {
-        const hasV = item.variants.some(v => {
-          const s = (v.packSize || '').toLowerCase().replace(/\s+/g, '');
-          return s === vNorm || vNorm.includes(s) || s.includes(vNorm);
-        });
-        if (hasV) return true;
-      }
-      if (vNorm.includes('250g') && (item.packSize == '250' || item.price250g)) return true;
-      if (vNorm.includes('500g') && (item.packSize == '500' || item.price500g)) return true;
-      if (vNorm.includes('1kg') && (item.packSize == '1' || item.packSize == '1000' || item.price1kg)) return true;
-      if (vNorm.includes('pack') && item.unit === 'pack') return true;
-      return false;
-    }
-
-    // First attempt: Granular search for both Name AND Variant
-    const exactMatch = priceListData.find(item => {
-      if (item.availability === 'disabled' || item.availability === 'out_of_stock') return false;
-      return matchesName(item, normName) && matchesVariant(item, variantNorm);
-    });
-
-    if (exactMatch) {
-      if (Array.isArray(exactMatch.variants) && exactMatch.variants.length > 0) {
-        const vObj = exactMatch.variants.find(v => {
-          const s = (v.packSize || '').toLowerCase().replace(/\s+/g, '');
-          return s === variantNorm || variantNorm.includes(s) || s.includes(variantNorm);
-        });
-        if (vObj && vObj.price !== undefined) return vObj.price;
-      }
-      if (exactMatch.price !== undefined) {
-        return exactMatch.price;
+    if (!found) {
+      const aliasKey = normName.replace(/^(premium|organic|raw|pure|dried|dry|fresh)\s+/i, '')
+                               .replace(/\s+(premium|organic|raw|pure|dried|dry|fresh)$/i, '');
+      const nameAliases = {
+        "almonds": "Premium Almonds (Badam)",
+        "cashews": "Premium Cashews (Kaju) - W240",
+        "pistachios": "Pistachios (Pista) - Roasted & Salted",
+        "salted pistachios": "Pistachios (Pista) - Roasted & Salted",
+        "walnuts": "Premium Walnuts (Akhrot) - Chile Halves",
+        "dates": "Medjool Dates (Premium)",
+        "dry date": "Dry Dates (Kharik) - Yellow",
+        "black date": "Black Dates (Premium)",
+        "raisins": "Golden Raisins (Kishmish)",
+        "dried figs": "Dried Figs (Anjeer) - Premium Jumbo",
+        "apricots": "Dried Apricots (Jardalu)",
+        "honey": "Pure Organic Honey",
+        "jaggery": "Organic Jaggery (Powder)",
+        "palm sugar": "Palm Sugar",
+        "palm candy": "Palm Candy (Panakarkandu)",
+        "almond gum": "Almond Gum (Pisin)",
+        "brown sugar": "Brown Sugar (Nattu Sakkarai)",
+        "deluxe harvest mix": "Premium Festive Gift Hamper",
+        "festive dry fruits box": "Dry Fruit & Nuts Gift Box (4-in-1)",
+        "seed mixed": "Healthy Seeds & Mix Gift Pack",
+        "nuts mixed": "Dry Fruit & Nuts Gift Box (4-in-1)",
+        "karol grove deluxe harvest mix": "Premium Festive Gift Hamper",
+        "dry cherry": "Dried Cranberries (Whole)",
+        "dried kiwi": "Dried Cranberries (Whole)",
+        "dried pineapple": "Dried Cranberries (Whole)",
+        "dry strawberry": "Dried Cranberries (Whole)",
+        "dry amla": "Dried Cranberries (Whole)",
+        "honey amla": "Pure Organic Honey",
+        "dry mango": "Dried Cranberries (Whole)",
+        "dry blueberry": "Dried Blueberries",
+        "dry cranberry": "Dried Cranberries (Whole)",
+        "sabja seeds": "Basil Seeds (Sabja)",
+        "chia seeds": "Chia Seeds (Organic)",
+        "pumpkin seeds": "Pumpkin Seeds (Raw)",
+        "sunflower seeds": "Sunflower Seeds (Raw)",
+        "flax seeds": "Flax Seeds (Organic)",
+        "watermelon seeds": "Watermelon Seeds",
+      };
+      const mappedRealName = nameAliases[normName] || nameAliases[aliasKey];
+      if (mappedRealName) {
+        found = priceListData.find(item => item.name === mappedRealName);
       }
     }
 
-    // Second attempt: Legacy composite format
-    const legacyItem = priceListData.find(item => {
-      if (item.availability === 'disabled' || item.availability === 'out_of_stock') return false;
-      return matchesName(item, normName);
-    });
-
-    if (legacyItem) {
-      if (Array.isArray(legacyItem.variants) && legacyItem.variants.length > 0) {
-        const vObj = legacyItem.variants.find(v => {
-          const s = (v.packSize || '').toLowerCase().replace(/\s+/g, '');
-          return s === variantNorm || variantNorm.includes(s) || s.includes(variantNorm);
-        });
-        if (vObj && vObj.price !== undefined) return vObj.price;
-      }
-      if (variantNorm.includes('250g')) return legacyItem.price250g || legacyItem.price || null;
-      if (variantNorm.includes('500g')) return legacyItem.price500g || legacyItem.price || null;
-      if (variantNorm.includes('1kg')) return legacyItem.price1kg || legacyItem.price || null;
-      return legacyItem.price || legacyItem.price250g || legacyItem.price500g || legacyItem.price1kg || null;
+    if (!found) {
+      found = priceListData.find(item => {
+        const itemNorm = item.name.toLowerCase();
+        return itemNorm.includes(normName) || normName.includes(itemNorm);
+      });
     }
 
-    return null;
+    if (!found) {
+      const words = normName.split(/\s+/).filter(w => w.length > 2);
+      found = priceListData.find(item => {
+        const itemNorm = item.name.toLowerCase();
+        return words.some(w => itemNorm.includes(w));
+      });
+    }
+
+    if (!found) return null;
+
+    const variantNorm = variant.toLowerCase().replace(/\s+/g, '');
+    if (variantNorm.includes('250g')) {
+      return found.price250g || null;
+    } else if (variantNorm.includes('500g')) {
+      return found.price500g || null;
+    } else if (variantNorm.includes('1kg')) {
+      return found.price1kg || null;
+    } else if (variantNorm.includes('6egg')) {
+      return 36;
+    } else if (variantNorm.includes('12egg') || variantNorm.includes('1dozen')) {
+      return 72;
+    } else if (variantNorm.includes('30egg')) {
+      return found.price1kg || 180;
+    }
+
+    return found.price250g || found.price500g || found.price1kg || null;
   };
 
   // Helper alias for internal usage
@@ -582,25 +536,6 @@ function initOrderBuilder() {
         msg += `\nPlease email the customized quotation and corporate catalog to ${email}. Our team will wait for your contact. Thank you!`;
 
         const waUrl = `https://wa.me/+918494832492?text=${encodeURIComponent(msg)}`;
-        
-        try {
-          const enquiries = JSON.parse(localStorage.getItem('kg_corporate_enquiries') || '[]');
-          enquiries.unshift({
-            id: 'ENQ-' + Date.now().toString(36).toUpperCase(),
-            date: new Date().toLocaleString(),
-            company: company || 'N/A',
-            contactName: contactName || 'N/A',
-            mobile: mobile || 'N/A',
-            email: email || 'N/A',
-            qty: qty || 'N/A',
-            budget: budget || 'N/A',
-            notes: notes || ''
-          });
-          localStorage.setItem('kg_corporate_enquiries', JSON.stringify(enquiries.slice(0, 100)));
-        } catch (err) {
-          console.error('Error recording corporate enquiry:', err);
-        }
-
         window.open(waUrl, '_blank');
         
         alert(`✅ Thank you! Your quotation request for "${company || contactName}" has been received. We will send the customized quotation and catalog to your Gmail ID (${email || 'your email'}) and contact you shortly.`);
@@ -692,31 +627,31 @@ function initOrderBuilder() {
       drawer.className = 'order-drawer';
       drawer.innerHTML = `
         <div class="drawer-header">
-          <h3 style="color: #123020; font-weight: 800; margin: 0; font-size: 19px;">Your WhatsApp Order Basket</h3>
-          <button class="close-drawer" onclick="toggleCartDrawer(false)" aria-label="Close Cart" style="color: #64756a; background: none; border: none; font-size: 32px; cursor: pointer; line-height: 1;">&times;</button>
+          <h3>Your WhatsApp Order Basket</h3>
+          <button class="close-drawer" onclick="toggleCartDrawer(false)" aria-label="Close Cart">&times;</button>
         </div>
         <div class="drawer-body" id="drawer-items-list">
           <!-- Items will render here -->
         </div>
         <div class="drawer-footer">
-          <div class="footer-summary" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span style="color: #123020 !important; font-weight: 700; font-size: 14.5px;">Total Items:</span>
-            <strong id="drawer-total-count" style="color: #b07314 !important; font-weight: 800; font-size: 16px;">0</strong>
+          <div class="footer-summary" style="margin-bottom: 6px;">
+            <span>Total Items:</span>
+            <strong id="drawer-total-count">0</strong>
           </div>
-          <div class="footer-summary" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span style="color: #123020 !important; font-weight: 700; font-size: 14.5px;">Subtotal:</span>
-            <strong id="drawer-subtotal-price" style="color: #b07314 !important; font-weight: 800; font-size: 16px;">₹0</strong>
+          <div class="footer-summary" style="margin-bottom: 6px;">
+            <span>Subtotal:</span>
+            <strong id="drawer-subtotal-price">₹0</strong>
           </div>
-          <div class="footer-summary" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-top: 1px dashed rgba(18,48,32,0.18); padding-top: 12px;">
-            <span style="font-weight: 800; font-size: 16px; color: #123020 !important;">Estimated Total:</span>
-            <strong id="drawer-total-price" style="font-size: 21px; color: #b07314 !important; font-weight: 900;">₹0</strong>
+          <div class="footer-summary" style="margin-bottom: 18px; border-top: 1px dashed rgba(0,0,0,0.15); padding-top: 10px;">
+            <span style="font-weight: 700; color: var(--forest-deep);">Estimated Total:</span>
+            <strong id="drawer-total-price" style="font-size: 20px; color: var(--gold-deep);">₹0</strong>
           </div>
-          <button class="btn btn-primary btn-block" style="width: 100%; margin-bottom: 10px; font-weight: 800; padding: 14px 20px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; background: #123020; color: #ffffff;" onclick="sendWhatsAppOrder()">
+          <button class="btn btn-primary btn-block" style="width: 100%; margin-bottom: 10px; font-weight: 800; padding: 14px 20px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="sendWhatsAppOrder()">
             <span>Proceed to WhatsApp Order</span> &rarr;
           </button>
           <div style="display: flex; gap: 10px;">
-            <button class="btn btn-secondary btn-block" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; background: #ffffff; color: #123020; border: 1.5px solid #E9ECEF;" onclick="toggleCartDrawer(false)">Continue Shopping</button>
-            <button class="btn btn-clear btn-block" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; background: #ffffff; color: #a84250; border: 1.5px solid #E9ECEF;" onclick="clearCart()">Clear Basket</button>
+            <button class="btn btn-secondary btn-block" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;" onclick="toggleCartDrawer(false)">Continue Shopping</button>
+            <button class="btn btn-clear btn-block" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;" onclick="clearCart()">Clear Basket</button>
           </div>
         </div>
       `;
@@ -757,7 +692,7 @@ function initOrderBuilder() {
       list.innerHTML = `
         <div class="empty-cart-state">
           <span class="ico">🍃</span>
-          <p style="color: #3b5c47; font-size: 14.5px; line-height: 1.6;">Your basket is empty. Add premium dry fruits, nuts & seeds from the catalog to build your WhatsApp order!</p>
+          <p>Your basket is empty. Add premium dry fruits, nuts & seeds from the catalog to build your WhatsApp order!</p>
         </div>
       `;
       totalEl.textContent = '0';
@@ -781,20 +716,20 @@ function initOrderBuilder() {
         const itemTotal = price * item.quantity;
         totalPrice += itemTotal;
         priceDisplay = ` &bull; ₹${price}`;
-        qtyDisplay = `${item.quantity} <span style="font-size: 11.5px; color: #3b5c47; font-weight: 600;">(₹${itemTotal})</span>`;
+        qtyDisplay = `${item.quantity} <span style="font-size: 11px; color: var(--text-secondary); font-weight: normal;">(₹${itemTotal})</span>`;
       }
 
       itemsHtml += `
-        <div class="cart-item-row" style="background: #ffffff; padding: 14px 16px; border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(18, 48, 32, 0.08); display: flex; justify-content: space-between; align-items: center; gap: 12px;">
-          <div class="item-info" style="flex: 1;">
-            <h4 style="color: #123020 !important; font-size: 15px; font-weight: 800; margin: 0 0 3px; line-height: 1.3;">${item.name}</h4>
-            <span class="variant" style="color: #b07314 !important; font-size: 12px; font-weight: 700; text-transform: uppercase;">${item.variant}${priceDisplay}</span>
+        <div class="cart-item-row">
+          <div class="item-info">
+            <h4>${item.name}</h4>
+            <span class="variant">${item.variant}${priceDisplay}</span>
           </div>
-          <div class="item-controls" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', -1)" aria-label="Decrease quantity" style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #226b42 !important; background: #ffffff !important; color: #123020 !important; font-size: 16px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; line-height: 1;">-</button>
-            <span class="qty" style="color: #123020 !important; font-size: 14px; font-weight: 800; min-width: 20px; text-align: center;">${qtyDisplay}</span>
-            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', 1)" aria-label="Increase quantity" style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #226b42 !important; background: #ffffff !important; color: #123020 !important; font-size: 16px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; line-height: 1;">+</button>
-            <button class="remove" onclick="removeFromCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}')" aria-label="Remove item" style="background: none !important; border: none !important; color: #782631 !important; font-size: 22px; cursor: pointer; margin-left: 4px; line-height: 1;">&times;</button>
+          <div class="item-controls">
+            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', -1)">-</button>
+            <span class="qty">${qtyDisplay}</span>
+            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', 1)">+</button>
+            <button class="remove" onclick="removeFromCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}')">&times;</button>
           </div>
         </div>
       `;
@@ -836,26 +771,6 @@ function initOrderBuilder() {
     text += `\nPlease let me know the current pricing and payment details. Thank you!`;
     const encodedText = encodeURIComponent(text);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
-
-    try {
-      const orders = JSON.parse(localStorage.getItem('kg_order_history') || '[]');
-      orders.unshift({
-        id: 'ORD-' + Date.now().toString(36).toUpperCase(),
-        date: new Date().toLocaleString(),
-        items: cart.map(i => ({
-          name: i.name,
-          variant: i.variant,
-          quantity: i.quantity,
-          price: findPriceInList(i.name, i.variant) || 0
-        })),
-        totalItems: cart.reduce((sum, i) => sum + i.quantity, 0),
-        estimatedTotal: totalPrice,
-        status: 'Sent via WhatsApp'
-      });
-      localStorage.setItem('kg_order_history', JSON.stringify(orders.slice(0, 100)));
-    } catch (err) {
-      console.error('Error logging order history:', err);
-    }
 
     window.open(whatsappUrl, '_blank');
   }
@@ -982,11 +897,6 @@ function initContactForm() {
       input.parentElement.classList.add('has-value');
     }
   });
-
-  // If this form is configured for WhatsApp direct submission (no access_key), do not intercept with Web3Forms
-  if (!form.querySelector('input[name="access_key"]')) {
-    return;
-  }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();

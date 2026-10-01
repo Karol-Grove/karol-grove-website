@@ -1,535 +1,708 @@
 /**
- * Karol Grove — Premium Price List & Catalogue Handler
- * Renders the clean product catalogue layout:
- * - Product image, name, category, description, pack sizes (250g, 500g, 1kg), price, MRP, discount, availability, Add to Cart
- * - Categories: All, Cashews, Almonds, Pistachios, Raisins, Dates, Seeds, Other
- * - Real-time synchronization via BroadcastChannel & Local/Cloud Storage
+ * Karol Grove — Price List Handler Script
+ * Powers rendering, search/filters, admin editing mode, CSV export, PDF print, and GitHub Sync.
  */
 
-(function() {
-  'use strict';
+document.addEventListener('DOMContentLoaded', () => {
+  // Dynamically load prices.js with a cache-buster to completely bypass browser and CDN cache
+  const cacheBuster = document.createElement('script');
+  cacheBuster.src = `assets/prices.js?t=${Date.now()}`;
+  cacheBuster.onload = () => {
+    initPriceList();
+  };
+  cacheBuster.onerror = () => {
+    console.error('Failed to load fresh prices.js, falling back to cached.');
+    initPriceList();
+  };
+  document.head.appendChild(cacheBuster);
+});
 
-  const ORDERED_CATEGORIES = ['All', 'Cashews', 'Almonds', 'Pistachios', 'Raisins', 'Dates', 'Seeds', 'Other'];
-  let currentCategory = 'All';
+function initPriceList() {
+  const tableBody = document.getElementById('pricelist-table-body');
+  const searchInput = document.getElementById('pricelist-search');
+  const filterTabsContainer = document.getElementById('pricelist-filter-tabs');
+  const localBanner = document.getElementById('local-edits-banner');
+  const adminToolbar = document.getElementById('admin-toolbar');
+  
+  let priceListData = [];
+  let activeCategory = 'all';
   let searchQuery = '';
-  let currentView = 'cards'; // 'cards' or 'table'
+  let isAdmin = sessionStorage.getItem('kg_admin_logged_in') === 'true';
 
-  // Helper: Escape HTML
-  function escapeHtml(str) {
-    if (!str) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  // Get active catalog from engine or storage
-  function getCatalog() {
-    if (typeof window.getLiveCatalog === 'function') {
-      const live = window.getLiveCatalog();
-      if (Array.isArray(live) && live.length > 0) return live;
-    }
-    const cached = localStorage.getItem('kg_live_catalog') || localStorage.getItem('kg_prices_local');
+  // Load Pricing Data
+  function loadData() {
+    const cached = localStorage.getItem('kg_prices_local');
     if (cached) {
       try {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      } catch(e) {}
-    }
-    if (Array.isArray(window.priceListData) && window.priceListData.length > 0) {
-      return window.priceListData;
-    }
-    return window.defaultPriceCatalog || [];
-  }
-
-  // Robust Category Identifier (Checks both item.category and item.name)
-  function getItemCategory(item) {
-    if (!item) return 'Other';
-    const name = String(item.name || '').toLowerCase();
-    const cat = String(item.category || '').toLowerCase();
-    const combined = `${cat} ${name}`;
-
-    if (/cashew|kaju/i.test(combined)) return 'Cashews';
-    if (/almond|badam/i.test(combined)) return 'Almonds';
-    if (/pista|pistachio/i.test(combined)) return 'Pistachios';
-    if (/raisin|kishmish/i.test(combined)) return 'Raisins';
-    if (/date|khajoor|kharik|medjool|ajwa/i.test(combined)) return 'Dates';
-    if (/seed|chia|pumpkin|flax|sunflower|watermelon|cucumber|sabja/i.test(combined)) return 'Seeds';
-    return 'Other';
-  }
-
-  // Smart Product Image Resolver (Matches images even for older cache entries)
-  function getProductImage(item) {
-    if (item.image && typeof item.image === 'string' && item.image.trim() !== '') {
-      return item.image;
-    }
-    const name = String(item.name || '').toLowerCase();
-    if (/pepper.*cashew/i.test(name)) return 'assets/product-pepper-cashews.png';
-    if (/chilli.*cashew/i.test(name)) return 'assets/product-chilli-cashews.png';
-    if (/cashew|kaju/i.test(name)) return 'assets/product-cashews.png';
-    if (/almond|badam/i.test(name)) return 'assets/product-almonds.png';
-    if (/pista|pistachio/i.test(name)) return 'assets/product-pistachios.png';
-    if (/black.*raisin/i.test(name)) return 'assets/product-black-raisins.png';
-    if (/raisin|kishmish/i.test(name)) return 'assets/product-raisins.png';
-    if (/black.*date/i.test(name)) return 'assets/product-black-dates.png';
-    if (/dry.*date/i.test(name)) return 'assets/product-dry-dates.png';
-    if (/date|medjool|ajwa/i.test(name)) return 'assets/product-dates.png';
-    if (/chia/i.test(name)) return 'assets/product-chia-seeds.png';
-    if (/pumpkin/i.test(name)) return 'assets/product-pumpkin-seeds.png';
-    if (/sunflower/i.test(name)) return 'assets/product-sunflower-seeds.png';
-    if (/flax/i.test(name)) return 'assets/product-flax-seeds.png';
-    if (/cucumber/i.test(name)) return 'assets/product-cucumber-seeds.png';
-    if (/watermelon/i.test(name)) return 'assets/product-watermelon-seeds.png';
-    if (/sabja/i.test(name)) return 'assets/product-sabja-seeds.png';
-    if (/seed/i.test(name)) return 'assets/product-seeds.png';
-    if (/fig|anjeer/i.test(name)) return 'assets/product-figs.png';
-    if (/walnut|akhrot/i.test(name)) return 'assets/product-walnuts.png';
-    if (/apricot|jardalu/i.test(name)) return 'assets/product-apricots.png';
-    if (/blueberry/i.test(name)) return 'assets/product-dry-blueberry.png';
-    if (/cranberry/i.test(name)) return 'assets/product-dry-cranberry.png';
-    if (/honey/i.test(name)) return 'assets/product-honey.png';
-    if (/gift|hamper|box/i.test(name)) return 'assets/product-gift-box.png';
-    return 'assets/karol-grove-pouch.png';
-  }
-
-  // Compute discount percentage
-  function computeDiscount(price, mrp) {
-    if (!price || !mrp || mrp <= price) return null;
-    const pct = Math.round(((mrp - price) / mrp) * 100);
-    return pct > 0 ? `${pct}% OFF` : null;
-  }
-
-  // Render Filter Tabs
-  function renderFilterTabs() {
-    const container = document.getElementById('pricelist-filter-tabs');
-    if (!container) return;
-
-    const catalog = getCatalog();
-    
-    // Group counts
-    const counts = { All: catalog.length };
-    ORDERED_CATEGORIES.forEach(c => { if (c !== 'All') counts[c] = 0; });
-
-    catalog.forEach(item => {
-      const cat = getItemCategory(item);
-      if (counts[cat] !== undefined) {
-        counts[cat]++;
+        priceListData = JSON.parse(cached);
+        if (localBanner) localBanner.style.display = 'flex';
+      } catch (e) {
+        console.error('Failed to parse cached prices, loading default:', e);
+        priceListData = [...window.priceListData];
+      }
+    } else {
+      if (window.priceListData) {
+        priceListData = [...window.priceListData];
       } else {
-        counts['Other'] = (counts['Other'] || 0) + 1;
+        priceListData = [];
       }
-    });
-
-    let html = '';
-    ORDERED_CATEGORIES.forEach(cat => {
-      const count = counts[cat] || 0;
-      // Only display categories that actually contain products
-      if (count > 0 || cat === 'All') {
-        const isActive = (currentCategory === cat);
-        html += `
-          <button type="button" 
-                  class="cat-pill ${isActive ? 'active' : ''}" 
-                  data-category="${escapeHtml(cat)}"
-                  onclick="window.selectPricelistCategory('${escapeHtml(cat)}')"
-                  style="padding: 9px 18px; border-radius: 30px; font-weight: 700; font-size: 13.5px; cursor: pointer; transition: all 0.2s ease;">
-            ${escapeHtml(cat)} <span style="opacity: 0.8; font-size: 11.5px; margin-left: 4px;">(${count})</span>
-          </button>
-        `;
-      }
-    });
-
-    container.innerHTML = html;
-  }
-
-  // Category selection handler
-  window.selectPricelistCategory = function(cat) {
-    currentCategory = cat;
-    renderFilterTabs();
-    renderPublicCatalogue();
-  };
-
-  // Add to cart with visual feedback
-  function handleAddToCart(name, variant, btnElement) {
-    if (typeof window.addToCart === 'function') {
-      window.addToCart(name, variant, 1);
-    }
-
-    if (btnElement) {
-      const origText = btnElement.innerHTML;
-      btnElement.innerHTML = '✓ Added!';
-      btnElement.style.background = '#2E7D32';
-      btnElement.style.color = '#FFFFFF';
-      setTimeout(() => {
-        btnElement.innerHTML = origText;
-        btnElement.style.background = '';
-        btnElement.style.color = '';
-      }, 1200);
+      if (localBanner) localBanner.style.display = 'none';
     }
   }
-  window.handleAddToCart = handleAddToCart;
 
-  // Render Product Catalogue Cards (Premium Layout)
-  function renderCatalogueCards(items) {
-    const container = document.getElementById('pricelist-catalogue-container');
-    if (!container) return;
+  loadData();
 
-    // Force visibility (never allow opacity: 0 to hide items)
-    container.classList.remove('reveal');
-    container.classList.add('revealed');
-    container.style.opacity = '1';
-    container.style.visibility = 'visible';
-    container.style.display = 'grid';
-
-    if (items.length === 0) {
-      container.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; background: #FFFFFF; border-radius: 16px; border: 1.5px dashed #CCD7D0;">
-          <div style="font-size: 38px; margin-bottom: 10px;">🔍</div>
-          <h3 style="color: #0E3B2E; font-family: var(--font-display); font-size: 22px; margin-bottom: 8px;">No products found in this category</h3>
-          <p style="color: #64746B; font-size: 14px; margin-bottom: 16px;">Try switching to "All" or clear your search query.</p>
-          <button onclick="window.clearPricelistFilters()" class="btn-action btn-action-edit" style="padding: 10px 20px; font-size: 13.5px; border-radius: 8px; cursor: pointer;">Show All Products</button>
-        </div>
-      `;
-      return;
-    }
-
-    let html = '';
-    items.forEach(item => {
-      const isAvailable = (item.availability !== 'disabled' && item.availability !== 'out_of_stock');
-      const catName = getItemCategory(item);
-      const imgSrc = getProductImage(item);
-      const desc = item.description || 'Premium quality selected dry fruits & nuts, packaged for guaranteed crisp freshness.';
-
-      // Compile variants: support item.variants or fallback to price250g / price500g / price1kg
-      let variants = [];
-      if (Array.isArray(item.variants) && item.variants.length > 0) {
-        variants = item.variants;
-      } else {
-        if (item.price250g !== undefined && item.price250g !== '') {
-          variants.push({ packSize: '250 g', price: item.price250g, mrp: item.mrp250g || item.mrp || Math.round(item.price250g * 1.18) });
-        }
-        if (item.price500g !== undefined && item.price500g !== '') {
-          variants.push({ packSize: '500 g', price: item.price500g, mrp: item.mrp500g || (item.mrp ? Math.round(item.mrp * 1.9) : Math.round(item.price500g * 1.18)) });
-        }
-        if (item.price1kg !== undefined && item.price1kg !== '') {
-          variants.push({ packSize: '1 kg', price: item.price1kg, mrp: item.mrp1kg || (item.mrp ? Math.round(item.mrp * 3.7) : Math.round(item.price1kg * 1.18)) });
-        }
-        if (variants.length === 0 && item.price) {
-          variants.push({ packSize: `${item.packSize || 1} ${item.unit || 'pack'}`, price: item.price, mrp: item.mrp || null });
-        }
-      }
-
-      // Generate variant rows
-      let variantsHtml = '';
-      if (variants.length > 0) {
-        variants.forEach(v => {
-          const priceNum = parseFloat(v.price) || 0;
-          const mrpNum = v.mrp ? parseFloat(v.mrp) : null;
-          const discount = computeDiscount(priceNum, mrpNum);
-
-          const mrpHtml = mrpNum && mrpNum > priceNum 
-            ? `<span class="variant-mrp">₹${mrpNum.toLocaleString('en-IN')}</span>` 
-            : '';
-          
-          const discountHtml = discount 
-            ? `<span class="variant-discount-tag">${discount}</span>` 
-            : '';
-
-          variantsHtml += `
-            <div class="catalogue-variant-row">
-              <span class="variant-size-label">${escapeHtml(v.packSize)}</span>
-              <div class="variant-pricing">
-                <span class="variant-price-live">₹${priceNum.toLocaleString('en-IN')}</span>
-                ${mrpHtml}
-                ${discountHtml}
-              </div>
-              <button type="button" 
-                      class="variant-add-btn" 
-                      onclick="window.handleAddToCart('${escapeHtml(item.name)}', '${escapeHtml(v.packSize)}', this)"
-                      ${!isAvailable ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''}
-                      title="Add ${escapeHtml(item.name)} (${escapeHtml(v.packSize)}) to Cart">
-                <span>🛒</span> Add
-              </button>
-            </div>
-          `;
-        });
-      } else {
-        variantsHtml = `<div style="padding: 10px; text-align: center; color: #888; font-size: 13px;">Price on request</div>`;
-      }
-
-      html += `
-        <article class="catalogue-card" data-product-id="${escapeHtml(item.id || '')}">
-          <div class="catalogue-card-header">
-            <span class="catalogue-badge-cat">${escapeHtml(catName)}</span>
-            <span class="catalogue-badge-stock ${isAvailable ? 'stock-available' : 'stock-out'}">
-              ${isAvailable ? 'In Stock' : 'Out of Stock'}
-            </span>
-            <img src="${escapeHtml(imgSrc)}" 
-                 alt="${escapeHtml(item.name)}" 
-                 class="catalogue-card-img"
-                 loading="lazy"
-                 onerror="this.src='assets/karol-grove-pouch.png'">
-          </div>
-          <div class="catalogue-card-body">
-            <h3 class="catalogue-card-title">${escapeHtml(item.name)}</h3>
-            <p class="catalogue-card-desc">${escapeHtml(desc)}</p>
-            
-            <div class="catalogue-variants-list">
-              <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #64746B; letter-spacing: 0.5px; margin-bottom: 2px;">
-                Available Pack Sizes &amp; Prices
-              </div>
-              ${variantsHtml}
-            </div>
-
-            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid #EEF2F0; display: flex; justify-content: space-between; align-items: center;">
-              <a href="https://wa.me/+918494832492?text=Hi%20Karol%20Grove%2C%20I%20want%20to%20order%20${encodeURIComponent(item.name)}" 
-                 target="_blank" 
-                 rel="noopener" 
-                 style="font-size: 12.5px; color: #0E3B2E; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
-                <span>💬</span> WhatsApp Order &rarr;
-              </a>
-              <span style="font-size: 11px; color: #8A9B92;">100% Quality Inspected</span>
-            </div>
-          </div>
-        </article>
-      `;
-    });
-
-    container.innerHTML = html;
-  }
-
-  // Render Table View (Alternative)
-  function renderTable(items) {
-    const tableBody = document.getElementById('pricelist-table-body');
-    const tableContainer = document.getElementById('pricelist-table-container');
+  // Render Table Rows
+  function renderTable() {
     if (!tableBody) return;
+    tableBody.innerHTML = '';
 
-    if (tableContainer) {
-      tableContainer.classList.remove('reveal');
-      tableContainer.classList.add('revealed');
-    }
-
-    if (items.length === 0) {
-      tableBody.innerHTML = `
-        <tr>
-          <td colspan="5" style="text-align: center; padding: 40px; color: #64746B;">
-            No items match your filter criteria.
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    let html = '';
-    items.forEach(item => {
-      const p250 = (item.price250g !== undefined && item.price250g !== '')
-        ? `<span class="price-val" onclick="window.handleAddToCart('${escapeHtml(item.name)}', '250g', this)"><span class="price-cart-icon">🛒</span> ₹${item.price250g}</span>`
-        : '-';
-
-      const p500 = (item.price500g !== undefined && item.price500g !== '')
-        ? `<span class="price-val" onclick="window.handleAddToCart('${escapeHtml(item.name)}', '500g', this)"><span class="price-cart-icon">🛒</span> ₹${item.price500g}</span>`
-        : '-';
-
-      const p1kg = (item.price1kg !== undefined && item.price1kg !== '')
-        ? `<span class="price-val" onclick="window.handleAddToCart('${escapeHtml(item.name)}', '1kg', this)"><span class="price-cart-icon">🛒</span> ₹${item.price1kg}</span>`
-        : '-';
-
-      html += `
-        <tr>
-          <td style="width: 20%;">
-            <span class="item-category-tag" style="background: rgba(14, 59, 46, 0.08); color: #0E3B2E; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 11.5px; text-transform: uppercase;">
-              ${escapeHtml(getItemCategory(item))}
-            </span>
-          </td>
-          <td style="width: 44%;">
-            <strong style="color: #0E3B2E; font-size: 15px;">${escapeHtml(item.name)}</strong>
-          </td>
-          <td class="price-col" style="width: 12%; text-align: center;">${p250}</td>
-          <td class="price-col" style="width: 12%; text-align: center;">${p500}</td>
-          <td class="price-col" style="width: 12%; text-align: center;">${p1kg}</td>
-        </tr>
-      `;
-    });
-
-    tableBody.innerHTML = html;
-  }
-
-  // Master Render Function
-  function renderPublicCatalogue() {
-    const catalog = getCatalog();
-
-    // Filter items
-    const filtered = catalog.filter(item => {
-      // Category match
-      const itemCat = getItemCategory(item);
-      const catMatch = (currentCategory === 'All') || (itemCat === currentCategory);
-
-      // Search match
-      const q = searchQuery.toLowerCase().trim();
-      const nameMatch = !q ||
-        (item.name && String(item.name).toLowerCase().includes(q)) ||
-        (itemCat && itemCat.toLowerCase().includes(q)) ||
-        (item.description && String(item.description).toLowerCase().includes(q));
-
+    // Filter data
+    const filtered = priceListData.filter(item => {
+      const catMatch = activeCategory === 'all' || item.category === activeCategory;
+      const nameMatch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        item.category.toLowerCase().includes(searchQuery.toLowerCase());
       return catMatch && nameMatch;
     });
 
-    // Update count indicator
-    const countIndicator = document.getElementById('pricelist-count-badge');
-    if (countIndicator) {
-      countIndicator.textContent = `Showing ${filtered.length} of ${catalog.length} products`;
+    if (filtered.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="${isAdmin ? 6 : 5}" style="text-align: center; padding: 40px; color: var(--text-muted);">
+            No items match your search.
+          </td>
+        </tr>
+      `;
+      return;
     }
 
-    // Render cards and table
-    renderCatalogueCards(filtered);
-    renderTable(filtered);
-  }
-  window.renderPublicCatalogue = renderPublicCatalogue;
+    // Group items by category for cleaner display in normal mode (unless searching or editing)
+    const isGroupingActive = !isAdmin && searchQuery === '' && activeCategory === 'all';
 
-  // View Switcher: Cards vs Table
-  window.switchPricelistView = function(view) {
-    currentView = view;
-    const cardsContainer = document.getElementById('pricelist-catalogue-container');
-    const tableContainer = document.getElementById('pricelist-table-container');
-    const btnCards = document.getElementById('view-toggle-cards');
-    const btnTable = document.getElementById('view-toggle-table');
+    if (isGroupingActive) {
+      // Grouping logic
+      const grouped = {};
+      filtered.forEach(item => {
+        if (!grouped[item.category]) grouped[item.category] = [];
+        grouped[item.category].push(item);
+      });
 
-    if (view === 'table') {
-      if (cardsContainer) cardsContainer.style.setProperty('display', 'none', 'important');
-      if (tableContainer) {
-        tableContainer.style.setProperty('display', 'block', 'important');
-        tableContainer.style.setProperty('opacity', '1', 'important');
-        tableContainer.style.setProperty('visibility', 'visible', 'important');
-      }
-      if (btnCards) btnCards.classList.remove('active');
-      if (btnTable) btnTable.classList.add('active');
+      Object.keys(grouped).forEach(categoryName => {
+        // Render category header row
+        const headerRow = document.createElement('tr');
+        headerRow.className = 'category-header-row';
+        headerRow.innerHTML = `
+          <td colspan="5">
+            📂 ${getTranslatedCategory(categoryName)}
+          </td>
+        `;
+        tableBody.appendChild(headerRow);
+
+        // Render items under this category
+        grouped[categoryName].forEach((item, index) => {
+          const originalIndex = priceListData.findIndex(p => p === item);
+          tableBody.appendChild(createRowElement(item, originalIndex));
+        });
+      });
     } else {
-      if (cardsContainer) {
-        cardsContainer.style.setProperty('display', 'grid', 'important');
-        cardsContainer.style.setProperty('opacity', '1', 'important');
-        cardsContainer.style.setProperty('visibility', 'visible', 'important');
-      }
-      if (tableContainer) tableContainer.style.setProperty('display', 'none', 'important');
-      if (btnCards) btnCards.classList.add('active');
-      if (btnTable) btnTable.classList.remove('active');
+      // Non-grouped view (used when search/filter is active, or in admin mode)
+      filtered.forEach(item => {
+        const originalIndex = priceListData.findIndex(p => p === item);
+        tableBody.appendChild(createRowElement(item, originalIndex));
+      });
     }
-  };
+  }
 
-  // Clear filters
-  window.clearPricelistFilters = function() {
-    searchQuery = '';
-    currentCategory = 'All';
-    const sInput = document.getElementById('pricelist-search');
-    if (sInput) sInput.value = '';
-    renderFilterTabs();
-    renderPublicCatalogue();
-  };
+  // Helper to translate category names dynamically
+  function getTranslatedCategory(cat) {
+    const currentLang = localStorage.getItem('kg_lang') || 'en';
+    if (currentLang === 'en') return cat;
+    
+    // Mapping key
+    let key = 'cat_other';
+    if (cat === 'Nuts') key = 'cat_nuts';
+    else if (cat === 'Dates') key = 'cat_dates';
+    else if (cat === 'Dried Fruits') key = 'cat_dried-fruits';
+    else if (cat === 'Seeds') key = 'cat_seeds';
+    else if (cat === 'Gift Packs') key = 'cat_mixed';
+    else if (cat === 'Sweeteners & Others') key = 'cat_other';
+    
+    // Look up in uiTranslations (from translations.js)
+    if (window.uiTranslations && window.uiTranslations[key]) {
+      return window.uiTranslations[key][currentLang] || cat;
+    }
+    return cat;
+  }
 
-  // Download CSV
-  function downloadCSV() {
-    const catalog = getCatalog();
-    let csv = "Product Name,Category,250g Price,500g Price,1kg Price,Availability\n";
-    catalog.forEach(item => {
+  // Create Row DOM Element
+  function createRowElement(item, index) {
+    const row = document.createElement('tr');
+    
+    if (isAdmin) {
+      row.innerHTML = `
+        <td style="width: 20%;">
+          <select class="admin-editable-select" data-index="${index}" data-field="category">
+            <option value="Nuts" ${item.category === 'Nuts' ? 'selected' : ''}>Nuts</option>
+            <option value="Dates" ${item.category === 'Dates' ? 'selected' : ''}>Dates</option>
+            <option value="Dried Fruits" ${item.category === 'Dried Fruits' ? 'selected' : ''}>Dried Fruits</option>
+            <option value="Seeds" ${item.category === 'Seeds' ? 'selected' : ''}>Healthy Seeds</option>
+            <option value="Sweeteners & Others" ${item.category === 'Sweeteners & Others' ? 'selected' : ''}>Sweeteners & Others</option>
+            <option value="Gift Packs" ${item.category === 'Gift Packs' ? 'selected' : ''}>Gift Packs</option>
+          </select>
+        </td>
+        <td style="width: 45%;">
+          <input type="text" class="admin-editable-input" data-index="${index}" data-field="name" value="${escapeHtml(item.name)}">
+        </td>
+        <td style="width: 10%;">
+          <input type="text" class="admin-editable-input" data-index="${index}" data-field="price250g" value="${item.price250g || ''}" placeholder="-">
+        </td>
+        <td style="width: 10%;">
+          <input type="text" class="admin-editable-input" data-index="${index}" data-field="price500g" value="${item.price500g || ''}" placeholder="-">
+        </td>
+        <td style="width: 10%;">
+          <input type="text" class="admin-editable-input" data-index="${index}" data-field="price1kg" value="${item.price1kg || ''}" placeholder="-">
+        </td>
+        <td style="width: 5%; text-align: center;">
+          <button class="row-delete-btn" data-index="${index}" title="Delete Item">🗑️</button>
+        </td>
+      `;
+      
+      // Wire change listeners
+      row.querySelectorAll('.admin-editable-input, .admin-editable-select').forEach(el => {
+        el.addEventListener('change', handleCellEdit);
+      });
+      
+      row.querySelector('.row-delete-btn').addEventListener('click', handleDeleteRow);
+
+    } else {
+      // Normal User Row
+      const display250 = item.price250g ? `<span class="price-cart-icon">🛒</span> ₹${item.price250g}` : '-';
+      const display500 = item.price500g ? `<span class="price-cart-icon">🛒</span> ₹${item.price500g}` : '-';
+      const display1kg = item.price1kg ? `<span class="price-cart-icon">🛒</span> ₹${item.price1kg}` : '-';
+
+      const tagClass = getCategoryTagClass(item.category);
+
+      row.innerHTML = `
+        <td><span class="item-category-tag ${tagClass}">${getTranslatedCategory(item.category)}</span></td>
+        <td><strong>${escapeHtml(item.name)}</strong></td>
+        <td class="price-col">
+          <span class="price-val ${item.price250g ? '' : 'no-price'}" data-name="${escapeHtml(item.name)}" data-variant="250gm" data-price="${item.price250g || ''}">
+            ${display250}
+          </span>
+        </td>
+        <td class="price-col">
+          <span class="price-val ${item.price500g ? '' : 'no-price'}" data-name="${escapeHtml(item.name)}" data-variant="500gm" data-price="${item.price500g || ''}">
+            ${display500}
+          </span>
+        </td>
+        <td class="price-col">
+          <span class="price-val ${item.price1kg ? '' : 'no-price'}" data-name="${escapeHtml(item.name)}" data-variant="1kg" data-price="${item.price1kg || ''}">
+            ${display1kg}
+          </span>
+        </td>
+      `;
+
+      // Wire cart clicks
+      row.querySelectorAll('.price-val:not(.no-price)').forEach(span => {
+        span.addEventListener('click', handleAddToCart);
+      });
+    }
+
+    return row;
+  }
+
+  function getCategoryTagClass(cat) {
+    if (cat === 'Nuts') return 'tag-nuts';
+    if (cat === 'Dates') return 'tag-dates';
+    if (cat === 'Dried Fruits') return 'tag-dryfruits';
+    if (cat === 'Seeds') return 'tag-seeds';
+    if (cat === 'Gift Packs') return 'tag-gifts';
+    return 'tag-other';
+  }
+
+  // Add Item to WhatsApp Basket Cart (from Click)
+  function handleAddToCart(e) {
+    const span = e.currentTarget;
+    const name = span.getAttribute('data-name');
+    const variant = span.getAttribute('data-variant');
+    const price = span.getAttribute('data-price');
+
+    if (window.addToCart) {
+      window.addToCart(name, variant, 1);
+      
+      // Visual feedback
+      const originalText = span.innerHTML;
+      span.innerHTML = '✨ Added!';
+      span.style.color = 'var(--gold)';
+      setTimeout(() => {
+        span.innerHTML = originalText;
+        span.style.color = '';
+      }, 1000);
+
+      // Open dynamic cart drawer for quick feedback
+      if (window.toggleCartDrawer) {
+        window.toggleCartDrawer(true);
+      }
+    } else {
+      console.warn('WhatsApp Order Builder is not loaded.');
+    }
+  }
+
+  // Handle Input Changes in Admin Edit Mode
+  function handleCellEdit(e) {
+    const input = e.target;
+    const index = parseInt(input.getAttribute('data-index'));
+    const field = input.getAttribute('data-field');
+    let value = input.value.trim();
+
+    // Convert prices to numbers if editable numeric fields
+    if (field.startsWith('price')) {
+      if (value === '') {
+        value = '';
+      } else {
+        const num = parseFloat(value);
+        value = isNaN(num) ? '' : num;
+      }
+    }
+
+    priceListData[index][field] = value;
+  }
+
+  // Handle Delete Row
+  function handleDeleteRow(e) {
+    const btn = e.target;
+    const index = parseInt(btn.getAttribute('data-index'));
+    
+    if (confirm(`Are you sure you want to delete "${priceListData[index].name}"?`)) {
+      priceListData.splice(index, 1);
+      renderTable();
+    }
+  }
+
+  // Add New Row in Edit Mode
+  function handleAddRow() {
+    priceListData.push({
+      category: 'Nuts',
+      name: 'New Premium Item',
+      price250g: '',
+      price500g: '',
+      price1kg: ''
+    });
+    renderTable();
+    // Scroll to the bottom of the table
+    const tableContainer = document.querySelector('.pricelist-table-wrapper');
+    if (tableContainer) {
+      tableContainer.scrollTop = tableContainer.scrollHeight;
+    }
+  }
+
+  // Save changes locally (localStorage)
+  function handleSaveLocal() {
+    localStorage.setItem('kg_prices_local', JSON.stringify(priceListData));
+    window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+    if (localBanner) localBanner.style.display = 'flex';
+    
+    // Toggle admin view save status
+    const saveBtn = document.getElementById('admin-save-btn');
+    if (saveBtn) {
+      const origText = saveBtn.innerHTML;
+      saveBtn.innerHTML = '✅ Saved Locally!';
+      setTimeout(() => {
+        saveBtn.innerHTML = origText;
+      }, 1500);
+    }
+    
+    renderTable();
+    alert('Changes saved locally in your browser! All open pages on the website have updated immediately. Remember to sync to GitHub or download prices.js to deploy permanently.');
+  }
+
+  // Reset local edits (clear localStorage)
+  function handleResetLocal() {
+    if (confirm('Are you sure you want to discard all local edits and restore the prices from prices.js? This cannot be undone.')) {
+      localStorage.removeItem('kg_prices_local');
+      window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+      loadData();
+      renderTable();
+    }
+  }
+
+  // Download updated prices.js
+  function handleDownloadJS() {
+    // Generate clean javascript source content
+    let content = `/**\n * Karol Grove — Weekly Price List Data\n * This file contains the default list of products and their prices.\n */\n\nwindow.priceListData = [\n`;
+    
+    priceListData.forEach((item, index) => {
+      const comma = index === priceListData.length - 1 ? '' : ',';
+      const p250 = (item.price250g === '' || item.price250g === null || item.price250g === undefined) ? '""' : item.price250g;
+      const p500 = (item.price500g === '' || item.price500g === null || item.price500g === undefined) ? '""' : item.price500g;
+      const p1kg = (item.price1kg === '' || item.price1kg === null || item.price1kg === undefined) ? '""' : item.price1kg;
+      
+      content += `  { category: "${item.category}", name: "${item.name.replace(/"/g, '\\"')}", price250g: ${p250}, price500g: ${p500}, price1kg: ${p1kg} }${comma}\n`;
+    });
+    
+    content += `];\n\nwindow.KG_PRICES = window.priceListData;\n`;
+
+    const blob = new Blob([content], { type: 'application/javascript;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'prices.js';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  // Download CSV Format
+  function handleDownloadCSV() {
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    csvContent += 'Category,Item Name,250g Price (INR),500g Price (INR),1kg Price (INR)\r\n';
+
+    priceListData.forEach(item => {
       const name = item.name.includes(',') ? `"${item.name}"` : item.name;
-      const cat = getItemCategory(item);
-      const p250 = item.price250g || '';
-      const p500 = item.price500g || '';
-      const p1kg = item.price1kg || '';
-      const avail = item.availability || 'available';
-      csv += `${name},${cat},${p250},${p500},${p1kg},${avail}\n`;
+      const category = item.category.includes(',') ? `"${item.category}"` : item.category;
+      csvContent += `${category},${name},${item.price250g || '-'},${item.price500g || '-'},${item.price1kg || '-'}\r\n`;
     });
 
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `Karol_Grove_Price_List_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Karol_Grove_Price_List_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
 
-  // Setup Real-time Listeners
-  function setupLiveSync() {
-    // 1. BroadcastChannel: instant cross-tab / cross-window
-    if (window.BroadcastChannel) {
-      try {
-        const bc = new BroadcastChannel('kg_catalog_channel');
-        bc.onmessage = function(ev) {
-          if (ev.data && ev.data.type === 'CATALOG_UPDATED') {
-            console.log('⚡ Real-time price update received via BroadcastChannel');
-            renderFilterTabs();
-            renderPublicCatalogue();
-            showLiveSyncBanner();
-          }
-        };
-      } catch (e) {}
+  // GitHub Sync Panel Open/Toggle
+  function toggleGithubPanel() {
+    const panel = document.getElementById('github-sync-panel');
+    if (!panel) return;
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    
+    // Pre-populate fields
+    document.getElementById('gh-username').value = localStorage.getItem('gh_username') || '';
+    document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+    document.getElementById('gh-path').value = localStorage.getItem('gh_path') || 'assets/prices.js';
+    document.getElementById('gh-pat').value = localStorage.getItem('gh_pat') || '';
+  }
+
+  // Save via GitHub API directly from the browser!
+  async function handleGithubSync() {
+    let username = document.getElementById('gh-username').value.trim();
+    let repo = document.getElementById('gh-repo').value.trim();
+    let pat = document.getElementById('gh-pat').value.trim();
+    let path = document.getElementById('gh-path').value.trim() || 'assets/prices.js';
+    const syncStatus = document.getElementById('gh-sync-status');
+
+    // Clean username if user pasted full URL
+    if (username.includes('github.com/')) {
+      username = username.split('github.com/')[1].trim();
+    }
+    username = username.replace(/^https?:\/\//i, '').replace(/^@/, '').replace(/\/+$/, '').trim();
+
+    // Clean repo / username if user pasted full repo URL or owner/repo format
+    if (repo.includes('github.com/')) {
+      repo = repo.split('github.com/')[1].replace(/\.git$/, '').trim();
+    }
+    if (repo.includes('/')) {
+      const parts = repo.split('/');
+      if (!username) username = parts[0];
+      repo = parts[parts.length - 1];
+    }
+    path = path.replace(/^\/+/, ''); // Remove leading slash
+
+    // Clean PAT token
+    pat = pat.replace(/^bearer\s+/i, '').replace(/^token\s+/i, '').trim();
+
+    if (!username || !repo || !pat) {
+      alert('Please fill out GitHub Username, Repository Name, and Personal Access Token (PAT).');
+      return;
     }
 
-    // 2. Storage event
-    window.addEventListener('storage', function(e) {
-      if (e.key === 'kg_live_catalog' || e.key === 'kg_prices_local') {
-        console.log('⚡ Real-time price update received via storage event');
-        renderFilterTabs();
-        renderPublicCatalogue();
-        showLiveSyncBanner();
+    // Cache credentials locally in local storage for convenience (except security concerns, it's local)
+    localStorage.setItem('gh_username', username);
+    localStorage.setItem('gh_repo', repo);
+    localStorage.setItem('gh_pat', pat);
+    localStorage.setItem('gh_path', path);
+
+    if (syncStatus) {
+      syncStatus.textContent = '🔄 Querying repository...';
+      syncStatus.style.color = 'var(--gold)';
+    }
+
+    let url = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
+
+    try {
+      // 1. Get the current file content to get the SHA (try specified path first, fallback if not found and was default)
+      let getResponse = await fetch(url, {
+        headers: {
+          'Authorization': `token ${pat}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      });
+
+      let sha = '';
+      if (getResponse.ok) {
+        const fileData = await getResponse.json();
+        sha = fileData.sha;
+      } else if (getResponse.status === 404) {
+        // Fallback to legacy path if assets/prices.js is not found at root and was used as default
+        if (path === 'assets/prices.js') {
+          const fallbackPath = 'karol-grove/assets/prices.js';
+          const fallbackUrl = `https://api.github.com/repos/${username}/${repo}/contents/${fallbackPath}`;
+          const fallbackResponse = await fetch(fallbackUrl, {
+            headers: {
+              'Authorization': `token ${pat}`,
+              'Accept': 'application/vnd.github.v3+json'
+            }
+          });
+          
+          if (fallbackResponse.ok) {
+            path = fallbackPath;
+            url = fallbackUrl;
+            const fileData = await fallbackResponse.json();
+            sha = fileData.sha;
+            
+            // Update UI/localStorage with detected path
+            document.getElementById('gh-path').value = fallbackPath;
+            localStorage.setItem('gh_path', fallbackPath);
+          } else if (fallbackResponse.status !== 404) {
+            throw new Error(`Failed to fetch file SHA from fallback path. Status: ${fallbackResponse.status}`);
+          }
+        }
+      } else {
+        throw new Error(`Failed to fetch file SHA. Check repository name, token permissions, and file path. Status: ${getResponse.status}`);
+      }
+
+      // 2. Generate updated file contents
+      let fileContent = `/**\n * Karol Grove — Weekly Price List Data\n * Updated dynamically via Karol Grove Admin Portal\n */\n\nwindow.priceListData = [\n`;
+      priceListData.forEach((item, index) => {
+        const comma = index === priceListData.length - 1 ? '' : ',';
+        const p250 = (item.price250g === '' || item.price250g === null || item.price250g === undefined) ? '""' : item.price250g;
+        const p500 = (item.price500g === '' || item.price500g === null || item.price500g === undefined) ? '""' : item.price500g;
+        const p1kg = (item.price1kg === '' || item.price1kg === null || item.price1kg === undefined) ? '""' : item.price1kg;
+        fileContent += `  { category: "${item.category}", name: "${item.name.replace(/"/g, '\\"')}", price250g: ${p250}, price500g: ${p500}, price1kg: ${p1kg} }${comma}\n`;
+      });
+      fileContent += `];\n\nwindow.KG_PRICES = window.priceListData;\n`;
+
+      // 3. PUT the content back in base64
+      const base64Content = btoa(unescape(encodeURIComponent(fileContent)));
+      
+      if (syncStatus) syncStatus.textContent = '🔄 Committing to GitHub...';
+
+      const putResponse = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${pat}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify({
+          message: 'Update price list via admin web dashboard',
+          content: base64Content,
+          sha: sha || undefined
+        })
+      });
+
+      if (putResponse.ok) {
+        if (syncStatus) {
+          syncStatus.textContent = '✨ Saved to GitHub successfully! Rebuilding site...';
+          syncStatus.style.color = '#3c8f5f';
+        }
+        alert('Successfully pushed edits to your GitHub repository! GitHub Pages will rebuild and show the updated prices globally in a few minutes.');
+        // Update in-memory default list so UI doesn't revert to old values before page reload
+        window.priceListData = JSON.parse(JSON.stringify(priceListData));
+        // We can now safely clear local edits as they are synced
+        localStorage.removeItem('kg_prices_local');
+        loadData();
+        renderTable();
+        window.dispatchEvent(new CustomEvent('kg_prices_changed'));
+        // Close panel
+        setTimeout(toggleGithubPanel, 2000);
+      } else {
+        const errJson = await putResponse.json().catch(() => ({}));
+        let errMsg = errJson.message || 'Error updating repository.';
+        if (putResponse.status === 404) {
+          errMsg = 'Not Found / Permission Denied. This means your Personal Access Token lacks Write permissions ("repo" or "Contents: Read and write"), or the repository name/owner is under your personal account.';
+        }
+        throw new Error(errMsg);
+      }
+
+    } catch (e) {
+      console.error(e);
+      if (syncStatus) {
+        syncStatus.textContent = `❌ Error: ${e.message}`;
+        syncStatus.style.color = 'var(--berry)';
+      }
+      alert(`GitHub sync failed: ${e.message}`);
+    }
+  }
+
+  // Search input event
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderTable();
+    });
+  }
+
+  // Setup dynamic category filters
+  function initFilterTabs() {
+    if (!filterTabsContainer) return;
+    
+    // Get unique categories from data
+    const categories = ['all', 'Nuts', 'Dates', 'Dried Fruits', 'Seeds', 'Sweeteners & Others', 'Gift Packs'];
+    
+    filterTabsContainer.innerHTML = '';
+    categories.forEach(cat => {
+      const tab = document.createElement('button');
+      tab.className = `cat-filter-tab ${cat === activeCategory ? 'active' : ''}`;
+      tab.setAttribute('data-category', cat);
+      
+      // Translate tab text
+      let tabText = cat;
+      if (cat === 'all') {
+        tabText = 'All';
+        tab.setAttribute('data-tr', 'tab_all');
+      } else {
+        tabText = getTranslatedCategory(cat);
+      }
+      
+      tab.textContent = tabText;
+      
+      tab.addEventListener('click', (e) => {
+        filterTabsContainer.querySelectorAll('.cat-filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        activeCategory = cat;
+        renderTable();
+      });
+      
+      filterTabsContainer.appendChild(tab);
+    });
+  }
+
+  initFilterTabs();
+  renderTable();
+
+  // Watch for language change to update headers/tabs
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('lang-dropdown-item') || e.target.id === 'mobile-lang-select') {
+      setTimeout(() => {
+        initFilterTabs();
+        renderTable();
+      }, 100);
+    }
+  });
+
+  // Admin Auth Logic
+  const loginForm = document.getElementById('admin-login-form');
+  const loginModal = document.getElementById('admin-login-modal');
+  const passwordInput = document.getElementById('admin-password');
+  
+  window.openAdminLogin = function() {
+    if (loginModal) loginModal.classList.add('open');
+    if (passwordInput) passwordInput.focus();
+  };
+
+  window.closeAdminLogin = function() {
+    if (loginModal) loginModal.classList.remove('open');
+  };
+
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const pw = passwordInput.value;
+      if (pw === 'karoladmin') {
+        sessionStorage.setItem('kg_admin_logged_in', 'true');
+        isAdmin = true;
+        closeAdminLogin();
+        enterAdminMode();
+      } else {
+        alert('Incorrect password. Please try again.');
+        passwordInput.value = '';
       }
     });
-
-    // 3. Periodic cloud polling (every 25 seconds)
-    setInterval(function() {
-      if (typeof window.syncFromCloud === 'function') {
-        window.syncFromCloud().then(() => {
-          renderFilterTabs();
-          renderPublicCatalogue();
-        });
-      }
-    }, 25000);
   }
 
-  // Brief subtle pulse banner when live price updates arrive
-  function showLiveSyncBanner() {
-    let pill = document.getElementById('live-sync-pill');
-    if (!pill) {
-      pill = document.createElement('div');
-      pill.id = 'live-sync-pill';
-      pill.style.cssText = 'position:fixed; bottom:20px; right:20px; background:#0E3B2E; color:#FFFFFF; padding:10px 18px; border-radius:30px; font-size:13px; font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:99999; display:flex; align-items:center; gap:8px; border:1px solid #C89A3C; transform:translateY(100px); opacity:0; transition:all 0.3s ease;';
-      pill.innerHTML = '<span>⚡</span> Live Prices Updated!';
-      document.body.appendChild(pill);
+  function enterAdminMode() {
+    isAdmin = true;
+    if (adminToolbar) adminToolbar.style.display = 'block';
+    
+    // Style table headers to show "Actions" column
+    const headerRow = document.querySelector('.pricelist-table thead tr');
+    if (headerRow && !document.getElementById('action-th')) {
+      const actionTh = document.createElement('th');
+      actionTh.id = 'action-th';
+      actionTh.style.width = '5%';
+      actionTh.style.textAlign = 'center';
+      actionTh.textContent = 'Del';
+      headerRow.appendChild(actionTh);
     }
-    pill.style.transform = 'translateY(0)';
-    pill.style.opacity = '1';
-    setTimeout(() => {
-      pill.style.transform = 'translateY(100px)';
-      pill.style.opacity = '0';
-    }, 2500);
+    
+    // Hide standard category tabs and search filters during edit for structural integrity
+    // Or render standard inputs in all cells
+    renderTable();
   }
 
-  // Initialize
-  function init() {
-    renderFilterTabs();
-    renderPublicCatalogue();
-    setupLiveSync();
+  window.exitAdminMode = function() {
+    sessionStorage.removeItem('kg_admin_logged_in');
+    isAdmin = false;
+    if (adminToolbar) adminToolbar.style.display = 'none';
+    
+    const actionTh = document.getElementById('action-th');
+    if (actionTh) actionTh.remove();
+    
+    loadData();
+    renderTable();
+  };
 
-    // Search input listener
-    const searchInput = document.getElementById('pricelist-search');
-    if (searchInput) {
-      searchInput.addEventListener('input', function(e) {
-        searchQuery = e.target.value;
-        renderPublicCatalogue();
-      });
-    }
-
-    // CSV & Print
-    const csvBtn = document.getElementById('btn-download-csv');
-    if (csvBtn) csvBtn.addEventListener('click', downloadCSV);
-
-    const pdfBtn = document.getElementById('btn-download-pdf');
-    if (pdfBtn) pdfBtn.addEventListener('click', () => window.print());
+  // Check initial admin state
+  if (isAdmin) {
+    enterAdminMode();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  // Wire Admin Toolbar Buttons
+  const addRowBtn = document.getElementById('admin-add-row-btn');
+  if (addRowBtn) addRowBtn.addEventListener('click', handleAddRow);
 
-})();
+  const saveLocalBtn = document.getElementById('admin-save-btn');
+  if (saveLocalBtn) saveLocalBtn.addEventListener('click', handleSaveLocal);
+
+  const downloadJsBtn = document.getElementById('admin-download-btn');
+  if (downloadJsBtn) downloadJsBtn.addEventListener('click', handleDownloadJS);
+
+  const syncGhBtn = document.getElementById('admin-sync-btn');
+  if (syncGhBtn) syncGhBtn.addEventListener('click', toggleGithubPanel);
+
+  const doSyncGhBtn = document.getElementById('gh-sync-now-btn');
+  if (doSyncGhBtn) doSyncGhBtn.addEventListener('click', handleGithubSync);
+
+  const cancelSyncGhBtn = document.getElementById('gh-sync-cancel-btn');
+  if (cancelSyncGhBtn) cancelSyncGhBtn.addEventListener('click', toggleGithubPanel);
+
+  const resetLocalBtn = document.getElementById('admin-reset-btn');
+  if (resetLocalBtn) resetLocalBtn.addEventListener('click', handleResetLocal);
+
+  // Wire Download Excel/CSV buttons
+  const csvDownloadBtn = document.getElementById('btn-download-csv');
+  if (csvDownloadBtn) csvDownloadBtn.addEventListener('click', handleDownloadCSV);
+
+  // Wire Print/PDF buttons
+  const pdfDownloadBtn = document.getElementById('btn-download-pdf');
+  if (pdfDownloadBtn) {
+    pdfDownloadBtn.addEventListener('click', () => {
+      window.print();
+    });
+  }
+}
+
+// Simple HTML Escape function to prevent XSS
+function escapeHtml(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
