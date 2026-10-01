@@ -3,52 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Current Price List — Karol Grove | Transparent Product Pricing</title>
-<meta name="description" content="Check current retail and bulk prices for premium almonds, cashews, pistachios, dates, seeds, natural sweeteners and gift hampers at Karol Grove.">
+<title>Product Price Catalogue — Karol Grove | Live Transparent Pricing</title>
+<meta name="description" content="View transparent prices for premium cashews, almonds, pistachios, dates, seeds, dried fruits and gift boxes at Karol Grove. Multi-pack sizes available with 1-click cart addition.">
 <link rel="icon" href="assets/karol-grove-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261002-v8">
+<link rel="stylesheet" href="assets/style.css?v=20261002-v11">
 <script src="assets/prices.js"></script>
-<script src="assets/pricelist-handler.js?v=20261002-v4" defer></script><script src="assets/main.js?v=20261002-v8" defer></script>
+<script src="assets/pricelist-handler.js?v=20261002-v11" defer></script>
+<script src="assets/main.js?v=20261002-v11" defer></script>
+
 <style>
-  /* Direct high-contrast override for Admin Toolbar buttons */
-  #admin-toolbar .admin-btn-secondary,
-  .admin-toolbar .admin-btn-secondary {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 1.5px solid rgba(255, 255, 255, 0.65) !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
-    font-weight: 700 !important;
+  /* Premium Catalogue Styles */
+  .catalogue-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
   }
-  #admin-toolbar .admin-btn-primary,
-  .admin-toolbar .admin-btn-primary {
-    color: #0b1e15 !important;
-    background: linear-gradient(135deg, #f5d77f 0%, #d4af37 100%) !important;
-    border: 1.5px solid #ffe89e !important;
-    font-weight: 800 !important;
+  @media (max-width: 680px) {
+    .catalogue-grid {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
   }
-  #admin-toolbar .admin-btn-secondary:hover,
-  .admin-toolbar .admin-btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.38) !important;
-    border-color: #ffffff !important;
-    color: #ffffff !important;
+
+  .catalogue-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #E5EBE7;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(14, 59, 46, 0.05);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    display: flex;
+    flex-direction: column;
   }
-  #admin-toolbar .admin-btn-sync,
-  .admin-toolbar .admin-btn-sync {
-    color: #ffffff !important;
-    background: linear-gradient(135deg, #16a085 0%, #0d6945 100%) !important;
-    border: 1.5px solid #2ecc71 !important;
-    font-weight: 800 !important;
-    box-shadow: 0 2px 10px rgba(46, 204, 113, 0.4) !important;
+  .catalogue-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(14, 59, 46, 0.12);
+    border-color: #C89A3C;
   }
-  #admin-toolbar .admin-btn-danger,
-  .admin-toolbar .admin-btn-danger {
-    color: #ffffff !important;
-    background: rgba(231, 76, 60, 0.35) !important;
-    border: 1.5px solid #ff7675 !important;
-    font-weight: 700 !important;
+
+  .catalogue-card-header {
+    position: relative;
+    background: #F8FAF9;
+    padding: 24px 20px 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 180px;
+    border-bottom: 1px solid #EEF2F0;
+  }
+  .catalogue-card-img {
+    max-height: 150px;
+    max-width: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+  .catalogue-card:hover .catalogue-card-img {
+    transform: scale(1.06);
+  }
+
+  .catalogue-badge-cat {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #0E3B2E;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .catalogue-badge-stock {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .stock-available {
+    background: #E8F5E9;
+    color: #2E7D32;
+  }
+  .stock-available::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2E7D32;
+  }
+  .stock-out {
+    background: #FFEBEE;
+    color: #C62828;
+  }
+  .stock-out::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #C62828;
+  }
+
+  .catalogue-card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .catalogue-card-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 19px;
+    font-weight: 800;
+    color: #0E3B2E;
+    margin: 0 0 6px;
+  }
+
+  .catalogue-card-desc {
+    font-size: 13px;
+    color: #64746B;
+    line-height: 1.45;
+    margin: 0 0 16px;
+    flex: 1;
+  }
+
+  .catalogue-variants-list {
+    background: #F8FAF9;
+    border: 1px solid #E8EFEA;
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .catalogue-variant-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 4px;
+    border-bottom: 1px dashed #DCE5E0;
+  }
+  .catalogue-variant-row:last-child {
+    border-bottom: none;
+  }
+
+  .variant-size-label {
+    font-weight: 700;
+    color: #1C2E24;
+    font-size: 13.5px;
+    min-width: 65px;
+  }
+
+  .variant-pricing {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .variant-price-live {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0E3B2E;
+  }
+
+  .variant-mrp {
+    font-size: 12px;
+    color: #9AA7A0;
+    text-decoration: line-through;
+  }
+
+  .variant-discount-tag {
+    background: #FFF3E0;
+    color: #E65100;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .variant-add-btn {
+    background: #0E3B2E;
+    color: #FFFFFF;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 12.5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease;
+  }
+  .variant-add-btn:hover {
+    background: #C89A3C;
+    color: #0E3B2E;
+    transform: scale(1.04);
+  }
+
+  /* View Switcher Tabs */
+  .view-switcher-group {
+    display: inline-flex;
+    background: #E8EFEA;
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .view-btn {
+    border: none;
+    background: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0E3B2E;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .view-btn.active {
+    background: #FFFFFF;
+    color: #0E3B2E;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+
+  /* Filter category pills */
+  .cat-pill {
+    background: #FFFFFF;
+    border: 1.5px solid #D6E0DA;
+    color: #1C2E24;
+  }
+  .cat-pill:hover {
+    border-color: #0E3B2E;
+    color: #0E3B2E;
+    background: #F4F7F5;
+  }
+  .cat-pill.active {
+    background: #0E3B2E;
+    border-color: #0E3B2E;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(14, 59, 46, 0.2);
   }
 </style>
 </head>
@@ -56,55 +265,7 @@
 
 <canvas id="vfx-canvas"></canvas>
 
-<!-- Admin Toolbar (Sticky top, visible in admin mode) -->
-<div class="admin-toolbar" id="admin-toolbar">
-  <div class="admin-toolbar-inner">
-    <div class="admin-status">
-      <span class="admin-status-indicator"></span>
-      <span>Admin Edit Mode Active</span>
-    </div>
-    <div class="admin-actions">
-      <button id="admin-add-row-btn" class="admin-btn admin-btn-secondary" style="color: #ffffff !important; background: rgba(255, 255, 255, 0.22) !important; border: 1.5px solid rgba(255, 255, 255, 0.65) !important; text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;">➕ Add Item</button>
-      <button id="admin-save-btn" class="admin-btn admin-btn-primary" style="color: #0b1e15 !important; background: linear-gradient(135deg, #f5d77f 0%, #d4af37 100%) !important; border: 1.5px solid #ffe89e !important; font-weight: 800 !important;">💾 Save Locally</button>
-      <button id="admin-download-btn" class="admin-btn admin-btn-secondary" style="color: #ffffff !important; background: rgba(255, 255, 255, 0.22) !important; border: 1.5px solid rgba(255, 255, 255, 0.65) !important; text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;" title="Download updated prices.js">📥 Download prices.js</button>
-      <button id="admin-sync-btn" class="admin-btn admin-btn-sync" style="color: #ffffff !important; background: linear-gradient(135deg, #16a085 0%, #0d6945 100%) !important; border: 1.5px solid #2ecc71 !important; font-weight: 800 !important;" title="Sync changes directly to GitHub repository">🔄 Sync to GitHub</button>
-      <button id="admin-reset-btn" class="admin-btn admin-btn-danger" style="color: #ffffff !important; background: rgba(231, 76, 60, 0.35) !important; border: 1.5px solid #ff7675 !important; font-weight: 700 !important; text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;">Discard Edits</button>
-      <button onclick="exitAdminMode()" class="admin-btn admin-btn-secondary" style="color: #ffffff !important; background: rgba(255, 255, 255, 0.22) !important; border: 1.5px solid rgba(255, 255, 255, 0.65) !important; text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;">Exit Portal</button>
-    </div>
-  </div>
-
-  <!-- GitHub Direct Sync Panel (Toggled by Sync Button) -->
-  <div id="github-sync-panel" class="container" style="display: none; background: #08261C; padding: 25px; border-radius: 12px; border: 1.5px solid var(--gold); margin-top: 15px; margin-bottom: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); color: #fff;">
-    <h4 style="color: var(--gold); font-family: var(--font-display); font-size: 20px; margin-bottom: 8px;">Direct GitHub Synchronizer</h4>
-    <p style="font-size: 13.5px; color: #D3E0D8; margin-bottom: 20px; line-height: 1.5;">
-      Commit and push your current price edits directly to your GitHub repository. Once pushed, GitHub Pages will automatically recompile and redeploy the live website with updated prices in 1-2 minutes.
-    </p>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
-      <div class="admin-form-group" style="margin-bottom: 0;">
-        <label for="gh-username" style="display: block; font-size: 11.5px; font-weight: 800; text-transform: uppercase; color: var(--gold); margin-bottom: 6px;">GitHub Username / Owner</label>
-        <input type="text" id="gh-username" class="admin-editable-input" placeholder="e.g. your-github-username">
-      </div>
-      <div class="admin-form-group" style="margin-bottom: 0;">
-        <label for="gh-repo" style="display: block; font-size: 11.5px; font-weight: 800; text-transform: uppercase; color: var(--gold); margin-bottom: 6px;">Repository Name</label>
-        <input type="text" id="gh-repo" class="admin-editable-input" placeholder="e.g. karol-grove-website">
-      </div>
-      <div class="admin-form-group" style="margin-bottom: 0;">
-        <label for="gh-path" style="display: block; font-size: 11.5px; font-weight: 800; text-transform: uppercase; color: var(--gold); margin-bottom: 6px;">Prices File Path</label>
-        <input type="text" id="gh-path" class="admin-editable-input" placeholder="assets/prices.js" value="assets/prices.js">
-      </div>
-      <div class="admin-form-group" style="margin-bottom: 0;">
-        <label for="gh-pat" style="display: block; font-size: 11.5px; font-weight: 800; text-transform: uppercase; color: var(--gold); margin-bottom: 6px;">Personal Access Token (PAT)</label>
-        <input type="password" id="gh-pat" class="admin-editable-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-      </div>
-    </div>
-    <div style="display: flex; gap: 12px; margin-top: 20px; align-items: center; flex-wrap: wrap;">
-      <button id="gh-sync-now-btn" class="admin-btn admin-btn-sync" style="padding: 10px 22px; font-size: 13.5px;">🚀 Push &amp; Sync to GitHub</button>
-      <button id="gh-sync-cancel-btn" class="admin-btn admin-btn-secondary" style="padding: 10px 20px;">Cancel</button>
-    </div>
-    <div id="gh-sync-status" style="margin-top: 15px; font-weight: 700; font-size: 14px;"></div>
-  </div>
-</div>
-
+<!-- Header -->
 <header class="site-header">
   <div class="header-inner">
     <a href="index.html" class="brand">
@@ -117,7 +278,7 @@
     <nav class="main-nav">
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
-      <a href="index.html#launch-offers">Launch Offers</a>
+      <a href="about.html">About</a>
       <a href="corporate-gifts.html">Corporate Gifting</a>
       <a href="pricelist.html" class="active">Price List</a>
       <a href="contact.html">Contact</a>
@@ -137,7 +298,7 @@
   <div class="mobile-nav" id="mobileNav">
     <a href="index.html">Home</a>
     <a href="products.html">Products</a>
-    <a href="index.html#launch-offers">Launch Offers</a>
+    <a href="about.html">About</a>
     <a href="corporate-gifts.html">Corporate Gifting</a>
     <a href="pricelist.html" class="active">Price List</a>
     <a href="contact.html">Contact</a>
@@ -145,59 +306,70 @@
   </div>
 </header>
 
-<section class="page-header" style="background: linear-gradient(135deg, #0E3B2E 0%, #082119 100%); color: #fff; padding: 70px 20px 50px; text-align: center;">
+<!-- Page Header -->
+<section class="page-header" style="background: linear-gradient(135deg, #0E3B2E 0%, #082119 100%); color: #fff; padding: 65px 20px 45px; text-align: center;">
   <div class="container reveal">
     <span class="launch-badge-pill">TRANSPARENT PRODUCT PRICING</span>
-    <h1 style="font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.5rem); color: #fff; margin-bottom: 12px;">CURRENT PRICES AVAILABLE ONLINE</h1>
-    <p style="font-size: 16px; color: #D3E0D8; max-width: 680px; margin: 0 auto 16px;">
-      Explore updated retail and bulk prices across our complete collection. Click on any price tag below to add that item and pack size directly to your cart for WhatsApp checkout.
+    <h1 style="font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.4rem); color: #fff; margin-bottom: 12px;">CURRENT PRODUCT PRICING</h1>
+    <p style="font-size: 16px; color: #D3E0D8; max-width: 680px; margin: 0 auto 14px; line-height: 1.5;">
+      Explore our complete catalogue with multi-pack sizes (250g, 500g, 1kg). Click <strong>"Add"</strong> on any pack size to instantly add to your WhatsApp basket.
     </p>
-    <div style="font-size: 13.5px; color: var(--gold);">Grand Launch Event: <strong>02 October 2026</strong> &bull; Up to 40% OFF Selected Products</div>
+    <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(200, 154, 60, 0.2); border: 1px solid rgba(200, 154, 60, 0.4); padding: 6px 16px; border-radius: 20px; font-size: 13px; color: #F5D77F; font-weight: 600;">
+      <span>⚡</span> Live inventory prices &bull; Updated directly from Admin Portal
+    </div>
   </div>
 </section>
 
-<section class="pricelist-section" style="padding: 50px 0 80px;">
+<!-- Main Price Catalogue Section -->
+<section class="pricelist-section" style="padding: 36px 0 80px;">
   <div class="container">
-    
-    <!-- Local Edits Banner -->
-    <div class="local-edits-banner" id="local-edits-banner">
-      <span>💡 Showing local updates made in this browser.</span>
-      <button onclick="handleResetLocal()" class="admin-btn admin-btn-danger" style="padding: 6px 12px; font-size: 11px;">Reset Defaults</button>
-    </div>
 
-    <!-- Price List Visitor Guide Banner -->
-    <div class="visitor-guide-banner reveal" style="background: var(--cream); border: 1px solid rgba(216, 147, 42, 0.3); border-radius: 12px; padding: 18px 24px; display: flex; align-items: center; gap: 14px; margin-bottom: 30px;">
-      <div class="guide-icon" style="font-size: 24px;">💡</div>
-      <div class="guide-text" style="font-size: 14.5px; color: var(--forest-deep);">
-        <strong>Instant 1-Click Add</strong>: Click any price badge (e.g. <span class="price-val-demo" style="background: var(--forest); color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;">🛒 ₹430</span>) in the table below to add that product and size directly to your WhatsApp basket!
-      </div>
-    </div>
-
-    <!-- Search and Actions Toolbar -->
-    <div class="pricelist-toolbar reveal">
-      <div class="search-filter-box">
+    <!-- Search & View Toolbar -->
+    <div class="pricelist-toolbar reveal" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+      <div class="search-filter-box" style="flex: 1; max-width: 420px; min-width: 260px;">
         <div class="search-input-wrapper">
           <span class="search-icon">🔍</span>
-          <input type="text" id="pricelist-search" placeholder="Search nuts, dates, seeds, gift packs...">
+          <input type="text" id="pricelist-search" placeholder="Search cashews, almonds, pistachios, dates, seeds...">
         </div>
       </div>
-      <div class="action-buttons">
-        <button id="btn-download-csv" class="action-btn btn-excel">
-          <span>📊</span> Download CSV
+
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <!-- View Switcher -->
+        <div class="view-switcher-group">
+          <button id="view-toggle-cards" class="view-btn active" onclick="switchPricelistView('cards')">
+            <span>🎴</span> Catalogue
+          </button>
+          <button id="view-toggle-table" class="view-btn" onclick="switchPricelistView('table')">
+            <span>📋</span> Table
+          </button>
+        </div>
+
+        <button id="btn-download-csv" class="action-btn btn-excel" style="padding: 9px 16px; font-size: 13px;">
+          <span>📊</span> CSV
         </button>
-        <button id="btn-download-pdf" class="action-btn btn-pdf">
-          <span>🖨️</span> Print / Save PDF
+        <button id="btn-download-pdf" class="action-btn btn-pdf" style="padding: 9px 16px; font-size: 13px;">
+          <span>🖨️</span> Print
         </button>
       </div>
     </div>
 
-    <!-- Category Filters Navigation -->
-    <div class="cat-filters reveal" id="pricelist-filter-tabs" style="margin-bottom: 24px;">
-      <!-- Generated dynamically in pricelist-handler.js -->
+    <!-- Category Filter Tabs: All, Cashews, Almonds, Pistachios, Raisins, Dates, Seeds, Other -->
+    <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+      <div class="cat-filters reveal" id="pricelist-filter-tabs" style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <!-- Populated dynamically: Only categories that actually contain products are shown -->
+      </div>
+      <div id="pricelist-count-badge" style="font-size: 13px; color: #64746B; font-weight: 600;">
+        Loading catalogue...
+      </div>
     </div>
 
-    <!-- Pricing Table Container -->
-    <div class="pricelist-table-container reveal">
+    <!-- 1. Premium Product Catalogue Grid View (Default) -->
+    <div id="pricelist-catalogue-container" class="catalogue-grid reveal">
+      <!-- Dynamically generated product cards -->
+    </div>
+
+    <!-- 2. Compact Price Table View (Toggled via Switcher) -->
+    <div id="pricelist-table-container" class="pricelist-table-container reveal" style="display: none; margin-top: 24px;">
       <div class="pricelist-table-wrapper">
         <table class="pricelist-table">
           <thead>
@@ -210,17 +382,22 @@
             </tr>
           </thead>
           <tbody id="pricelist-table-body">
-            <!-- Dynamically populated from prices.js -->
+            <!-- Dynamically populated -->
           </tbody>
         </table>
       </div>
     </div>
-    
-    <!-- Admin Portal Login Link -->
-    <div class="admin-login-footer reveal" style="text-align: center; margin-top: 35px;">
-      <span class="admin-login-link" onclick="openAdminLogin()" style="font-size: 12px; color: var(--text-muted); text-decoration: underline; cursor: pointer;">
-        🔒 Admin Price Update Portal
-      </span>
+
+    <!-- Admin Price Management Link -->
+    <div class="admin-login-footer reveal" style="text-align: center; margin-top: 50px; padding: 30px; background: #F8FAF9; border: 1.5px dashed #CCD7D0; border-radius: 16px;">
+      <div style="font-size: 26px; margin-bottom: 8px;">⚙️</div>
+      <h3 style="font-family: var(--font-display); font-size: 20px; color: #0E3B2E; margin: 0 0 6px;">Store Management</h3>
+      <p style="font-size: 13.5px; color: #64746B; margin: 0 0 18px; max-width: 500px; margin-left: auto; margin-right: auto;">
+        Authorized administrators can update prices, edit products, toggle stock availability, and add new items directly without editing any code or files.
+      </p>
+      <a href="admin.html" style="display: inline-flex; align-items: center; gap: 8px; background: #0E3B2E; color: #FFFFFF; border: none; padding: 12px 26px; border-radius: 8px; font-weight: 800; font-size: 14px; text-decoration: none; box-shadow: 0 4px 16px rgba(14,59,46,0.25); transition: background 0.2s ease;">
+        <span>🔒</span> Open Admin Price Management Portal &rarr;
+      </a>
     </div>
 
   </div>
@@ -236,8 +413,7 @@
           <img src="assets/karol-grove-icon.png" alt="Karol Grove" style="height: 44px; width: auto;">
           <span style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: #FFFFFF;">Karol Grove</span>
         </div>
-        <p>Karol Grove brings you premium, hand-picked dry fruits, nuts, seeds and natural sweeteners — freshly packed, honest prices, delivered to your doorstep.</p>
-        <p style="margin-top: 14px; font-size: 13px; color: var(--gold);">Official Website Launch: <strong>02 October 2026</strong></p>
+        <p>Karol Grove brings you premium dry fruits, nuts, seeds and natural sweeteners — securely packed, honest prices, delivered to your doorstep.</p>
       </div>
 
       <!-- 2. Shop -->
@@ -245,10 +421,10 @@
         <h4>SHOP</h4>
         <ul>
           <li><a href="products.html">All Products</a></li>
-          <li><a href="index.html#launch-offers">Launch Offers</a></li>
+          <li><a href="about.html">About Us</a></li>
           <li><a href="pricelist.html">Price List</a></li>
           <li><a href="products.html#nuts">Nuts Varieties</a></li>
-          <li><a href="products.html#dates">Premium Dates</a></li>
+          <li><a href="products.html#dates">Dates</a></li>
           <li><a href="products.html#dried-fruits">Dried Fruits</a></li>
         </ul>
       </div>
@@ -295,7 +471,7 @@
     <!-- Bottom Bar -->
     <div class="footer-v2-bottom">
       <div>&copy; 2026 Karol Grove. All rights reserved.</div>
-      <div>Official Launch Date: <strong>02 October 2026</strong> &bull; Up to 40% OFF Selected Products</div>
+      <div>FSSAI Lic. No. 22421062000070 &bull; GSTIN: 33JQUPK0008M1ZH</div>
       <div>Website: <a href="https://www.karolgrove.com">www.karolgrove.com</a></div>
     </div>
   </div>
@@ -312,22 +488,6 @@
     <path fill="currentColor" d="M12.031 2c-5.514 0-9.99 4.477-9.99 9.99 0 2.08.636 4.01 1.728 5.614l-1.127 4.12 4.22-1.107c1.514.938 3.284 1.48 5.17 1.48 5.515 0 9.99-4.477 9.99-9.99 0-5.514-4.475-9.99-9.99-9.99zm5.556 14.13c-.224.634-1.22 1.157-1.68 1.206-.432.046-.86.23-2.738-.508-2.398-.942-3.896-3.376-4.016-3.536-.12-.16-1.002-1.332-1.002-2.54 0-1.21.632-1.804.856-2.048.225-.244.49-.305.653-.305.163 0 .326.002.47.01.15.008.347-.057.545.422.203.49.693 1.693.754 1.815.06.123.1.265.018.428-.08.163-.122.265-.244.407-.122.143-.257.32-.367.43-.122.12-.25.253-.108.497.143.244.636 1.05 1.362 1.7 1 .894 1.85 1.173 2.116 1.306.265.132.418.11.57-.06.153-.173.663-.774.846-1.037.183-.265.367-.224.622-.132.255.09 1.62.764 1.9.905.28.14.47.21.536.326.067.116.067.67-.156 1.306z"/>
   </svg>
 </a>
-
-<!-- Admin Login Modal -->
-<div class="admin-modal-overlay" id="admin-login-modal">
-  <div class="admin-modal">
-    <button class="admin-modal-close" onclick="closeAdminLogin()">&times;</button>
-    <h3>Admin Dashboard Login</h3>
-    <p>Please enter the administrative password to make edits to the price catalog.</p>
-    <form id="admin-login-form">
-      <div class="admin-form-group">
-        <label for="admin-password">Administrative Password</label>
-        <input type="password" id="admin-password" placeholder="Enter password..." required autocomplete="current-password">
-      </div>
-      <button type="submit" class="admin-modal-btn">Log In</button>
-    </form>
-  </div>
-</div>
 
 </body>
 </html>
