@@ -96,15 +96,15 @@ function initCanvasParticles() {
     constructor() {
       this.x = Math.random() * width;
       this.y = Math.random() * height;
-      // Increased size range for clear, beautiful display of cartoon characters (24px to 42px)
-      this.size = Math.random() * 18 + 24; 
-      this.speedX = Math.random() * 0.4 - 0.2;
-      this.speedY = Math.random() * 0.8 + 0.5; // Drizzles downward slowly and elegantly
+      // Elegant, delicate size range for ambient background drizzle
+      this.size = Math.random() * 12 + 16; 
+      this.speedX = Math.random() * 0.3 - 0.15;
+      this.speedY = Math.random() * 0.6 + 0.35; // Drizzles downward softly
       // 0 = Almond, 1 = Cashew, 2 = Raisin, 3 = Walnut, 4 = Pistachio
       this.type = Math.floor(Math.random() * 5);
-      this.alpha = Math.random() * 0.35 + 0.55; // Crisp and visible
+      this.alpha = Math.random() * 0.25 + 0.35; // Ambient background translucency
       this.angle = Math.random() * Math.PI * 2;
-      this.spin = Math.random() * 0.014 - 0.007; // Subtle rotate
+      this.spin = Math.random() * 0.01 - 0.005; // Gentle rotate
     }
 
     update() {
@@ -113,13 +113,13 @@ function initCanvasParticles() {
       this.angle += this.spin;
 
       // Wrap-around edges for drizzle
-      if (this.y > height + 50) {
-        this.y = -50;
+      if (this.y > height + 40) {
+        this.y = -40;
         this.x = Math.random() * width;
-        this.speedY = Math.random() * 0.8 + 0.5;
+        this.speedY = Math.random() * 0.6 + 0.35;
       }
-      if (this.x < -50) this.x = width + 50;
-      if (this.x > width + 50) this.x = -50;
+      if (this.x < -40) this.x = width + 40;
+      if (this.x > width + 40) this.x = -40;
 
       // Mouse interactive push
       if (mouse.x != null && mouse.y != null) {
@@ -130,13 +130,22 @@ function initCanvasParticles() {
           let force = (mouse.radius - distance) / mouse.radius;
           let directionX = dx / (distance || 1);
           let directionY = dy / (distance || 1);
-          this.x += directionX * force * 3.5;
-          this.y += directionY * force * 3.5;
+          this.x += directionX * force * 2.5;
+          this.y += directionY * force * 2.5;
         }
       }
     }
 
     draw() {
+      // Guarantee particles NEVER disturb or overlay the hero video and headline
+      const hero = document.querySelector('.hero-launch-wrapper, .hero-bg-video');
+      if (hero) {
+        const rect = hero.getBoundingClientRect();
+        if (this.y >= rect.top && this.y <= rect.bottom && this.x >= rect.left && this.x <= rect.right) {
+          return;
+        }
+      }
+
       const img = loadedImages[this.type];
       if (!img || !img.complete || !img.naturalWidth) return;
 
@@ -155,7 +164,7 @@ function initCanvasParticles() {
 
   function init() {
     particles = [];
-    const count = Math.min(45, Math.floor((width * height) / 32000));
+    const count = Math.min(26, Math.floor((width * height) / 48000));
     for (let i = 0; i < count; i++) {
       particles.push(new Particle());
     }

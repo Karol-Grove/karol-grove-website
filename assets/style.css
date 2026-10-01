@@ -87,8 +87,37 @@ body {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 90;
-  opacity: 0.92;
+  z-index: 0; /* Placed in true background, behind all text, video, cards and controls */
+  opacity: 0.6;
+}
+
+/* Stacking context: Ensure all page sections, videos and cards sit above background canvas */
+.hero-launch-wrapper,
+.site-header,
+main,
+section,
+footer,
+.site-footer-v2,
+.feature-strip,
+.page-header,
+.catalog-section,
+.pricelist-section,
+.corporate-section,
+.contact-section,
+.about-section {
+  position: relative;
+  z-index: 2;
+}
+
+.product-card,
+.category-card,
+.bento-card,
+.journey-card,
+.pricelist-table-container,
+.feature-item,
+.card-glass {
+  position: relative;
+  z-index: 3;
 }
 
 img {
