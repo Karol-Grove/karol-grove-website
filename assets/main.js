@@ -270,95 +270,103 @@ function initOrderBuilder() {
       }
     }
     if (!priceListData || priceListData.length === 0) {
-      priceListData = window.priceListData || [];
+      priceListData = (window.getActivePriceCatalog ? window.getActivePriceCatalog() : window.priceListData) || [];
     }
 
     if (priceListData.length === 0) return null;
 
     const normName = name.toLowerCase().trim();
-    let found = priceListData.find(item => item.name.toLowerCase() === normName);
+    const variantNorm = (variant || '').toLowerCase().replace(/\s+/g, '');
 
-    if (!found) {
-      const aliasKey = normName.replace(/^(premium|organic|raw|pure|dried|dry|fresh)\s+/i, '')
-                               .replace(/\s+(premium|organic|raw|pure|dried|dry|fresh)$/i, '');
-      const nameAliases = {
-        "almonds": "Premium Almonds (Badam)",
-        "cashews": "Premium Cashews (Kaju) - W240",
-        "pistachios": "Pistachios (Pista) - Roasted & Salted",
-        "salted pistachios": "Pistachios (Pista) - Roasted & Salted",
-        "walnuts": "Premium Walnuts (Akhrot) - Chile Halves",
-        "dates": "Medjool Dates (Premium)",
-        "dry date": "Dry Dates (Kharik) - Yellow",
-        "black date": "Black Dates (Premium)",
-        "raisins": "Golden Raisins (Kishmish)",
-        "dried figs": "Dried Figs (Anjeer) - Premium Jumbo",
-        "apricots": "Dried Apricots (Jardalu)",
-        "honey": "Pure Organic Honey",
-        "jaggery": "Organic Jaggery (Powder)",
-        "palm sugar": "Palm Sugar",
-        "palm candy": "Palm Candy (Panakarkandu)",
-        "almond gum": "Almond Gum (Pisin)",
-        "brown sugar": "Brown Sugar (Nattu Sakkarai)",
-        "deluxe harvest mix": "Premium Festive Gift Hamper",
-        "festive dry fruits box": "Dry Fruit & Nuts Gift Box (4-in-1)",
-        "seed mixed": "Healthy Seeds & Mix Gift Pack",
-        "nuts mixed": "Dry Fruit & Nuts Gift Box (4-in-1)",
-        "karol grove deluxe harvest mix": "Premium Festive Gift Hamper",
-        "dry cherry": "Dried Cranberries (Whole)",
-        "dried kiwi": "Dried Cranberries (Whole)",
-        "dried pineapple": "Dried Cranberries (Whole)",
-        "dry strawberry": "Dried Cranberries (Whole)",
-        "dry amla": "Dried Cranberries (Whole)",
-        "honey amla": "Pure Organic Honey",
-        "dry mango": "Dried Cranberries (Whole)",
-        "dry blueberry": "Dried Blueberries",
-        "dry cranberry": "Dried Cranberries (Whole)",
-        "sabja seeds": "Basil Seeds (Sabja)",
-        "chia seeds": "Chia Seeds (Organic)",
-        "pumpkin seeds": "Pumpkin Seeds (Raw)",
-        "sunflower seeds": "Sunflower Seeds (Raw)",
-        "flax seeds": "Flax Seeds (Organic)",
-        "watermelon seeds": "Watermelon Seeds",
-      };
-      const mappedRealName = nameAliases[normName] || nameAliases[aliasKey];
-      if (mappedRealName) {
-        found = priceListData.find(item => item.name === mappedRealName);
+    const nameAliases = {
+      "almonds": ["Almonds (Badam)", "Premium Almonds (Badam)"],
+      "cashews": ["Cashews (Kaju) - W240", "Premium Cashews (Kaju) - W240"],
+      "pistachios": ["Pistachios (Pista) - Roasted & Salted"],
+      "salted pistachios": ["Pistachios (Pista) - Roasted & Salted"],
+      "walnuts": ["Walnuts (Akhrot) - Chile Halves", "Premium Walnuts (Akhrot) - Chile Halves"],
+      "dates": ["Medjool Dates", "Medjool Dates (Premium)"],
+      "dry date": ["Dry Dates (Kharik) - Yellow"],
+      "black date": ["Black Dates", "Black Dates (Premium)"],
+      "raisins": ["Golden Raisins (Kishmish)"],
+      "dried figs": ["Dried Figs (Anjeer) - Jumbo", "Dried Figs (Anjeer) - Premium Jumbo"],
+      "apricots": ["Dried Apricots (Jardalu)"],
+      "honey": ["Honey"],
+      "pure honey": ["Honey"],
+      "jaggery": ["Jaggery (Powder)"],
+      "palm sugar": ["Palm Sugar"],
+      "palm candy": ["Palm Candy (Panakarkandu)"],
+      "almond gum": ["Almond Gum (Pisin)"],
+      "brown sugar": ["Brown Sugar (Nattu Sakkarai)"],
+      "deluxe harvest mix": ["Festive Gift Hamper", "Premium Festive Gift Hamper"],
+      "festive dry fruits box": ["Dry Fruit & Nuts Gift Box (4-in-1)"],
+      "seed mixed": ["Seeds & Mix Gift Pack"],
+      "seeds & mix gift pack": ["Seeds & Mix Gift Pack"],
+      "nuts mixed": ["Dry Fruit & Nuts Gift Box (4-in-1)"],
+      "karol grove deluxe harvest mix": ["Festive Gift Hamper"],
+      "dry cherry": ["Dried Cranberries", "Dried Cranberries (Whole)"],
+      "dried kiwi": ["Dried Cranberries", "Dried Cranberries (Whole)"],
+      "dried pineapple": ["Dried Cranberries", "Dried Cranberries (Whole)"],
+      "dry strawberry": ["Dried Cranberries", "Dried Cranberries (Whole)"],
+      "dry amla": ["Dried Cranberries", "Dried Cranberries (Whole)"],
+      "honey amla": ["Honey"],
+      "dry mango": ["Dried Cranberries", "Dried Cranberries (Whole)"],
+      "dry blueberry": ["Dried Blueberries"],
+      "dry cranberry": ["Dried Cranberries", "Dried Cranberries (Whole)"],
+      "sabja seeds": ["Basil Seeds (Sabja)"],
+      "chia seeds": ["Chia Seeds"],
+      "pumpkin seeds": ["Pumpkin Seeds (Raw)"],
+      "sunflower seeds": ["Sunflower Seeds (Raw)"],
+      "flax seeds": ["Flax Seeds"],
+      "watermelon seeds": ["Watermelon Seeds"]
+    };
+
+    // Helper to check if item name matches query
+    function matchesName(item, target) {
+      const iName = (item.name || '').toLowerCase();
+      if (iName === target) return true;
+      if (nameAliases[target]) {
+        if (nameAliases[target].some(alias => alias.toLowerCase() === iName)) return true;
       }
+      return iName.includes(target) || target.includes(iName);
     }
 
-    if (!found) {
-      found = priceListData.find(item => {
-        const itemNorm = item.name.toLowerCase();
-        return itemNorm.includes(normName) || normName.includes(itemNorm);
-      });
+    // Helper to check if variant matches item
+    function matchesVariant(item, vNorm) {
+      if (item.packSize && item.unit) {
+        const itemVar = `${item.packSize}${item.unit}`.toLowerCase().replace(/\s+/g, '');
+        if (vNorm.includes(itemVar) || itemVar.includes(vNorm)) return true;
+      }
+      if (vNorm.includes('250g') && (item.packSize == '250' || item.price250g)) return true;
+      if (vNorm.includes('500g') && (item.packSize == '500' || item.price500g)) return true;
+      if (vNorm.includes('1kg') && (item.packSize == '1' || item.packSize == '1000' || item.price1kg)) return true;
+      if (vNorm.includes('pack') && item.unit === 'pack') return true;
+      return false;
     }
 
-    if (!found) {
-      const words = normName.split(/\s+/).filter(w => w.length > 2);
-      found = priceListData.find(item => {
-        const itemNorm = item.name.toLowerCase();
-        return words.some(w => itemNorm.includes(w));
-      });
+    // First attempt: Granular search for both Name AND Variant
+    const exactMatch = priceListData.find(item => {
+      if (item.availability === 'disabled') return false;
+      return matchesName(item, normName) && matchesVariant(item, variantNorm);
+    });
+
+    if (exactMatch && exactMatch.price !== undefined) {
+      return exactMatch.price;
     }
 
-    if (!found) return null;
+    // Second attempt: Legacy composite format
+    const legacyItem = priceListData.find(item => {
+      if (item.availability === 'disabled') return false;
+      return matchesName(item, normName);
+    });
 
-    const variantNorm = variant.toLowerCase().replace(/\s+/g, '');
-    if (variantNorm.includes('250g')) {
-      return found.price250g || null;
-    } else if (variantNorm.includes('500g')) {
-      return found.price500g || null;
-    } else if (variantNorm.includes('1kg')) {
-      return found.price1kg || null;
-    } else if (variantNorm.includes('6egg')) {
-      return 36;
-    } else if (variantNorm.includes('12egg') || variantNorm.includes('1dozen')) {
-      return 72;
-    } else if (variantNorm.includes('30egg')) {
-      return found.price1kg || 180;
+    if (legacyItem) {
+      if (variantNorm.includes('250g')) return legacyItem.price250g || legacyItem.price || null;
+      if (variantNorm.includes('500g')) return legacyItem.price500g || legacyItem.price || null;
+      if (variantNorm.includes('1kg')) return legacyItem.price1kg || legacyItem.price || null;
+      return legacyItem.price || legacyItem.price250g || legacyItem.price500g || legacyItem.price1kg || null;
     }
 
-    return found.price250g || found.price500g || found.price1kg || null;
+    return null;
   };
 
   // Helper alias for internal usage
@@ -547,6 +555,25 @@ function initOrderBuilder() {
         msg += `\nPlease email the customized quotation and corporate catalog to ${email}. Our team will wait for your contact. Thank you!`;
 
         const waUrl = `https://wa.me/+918494832492?text=${encodeURIComponent(msg)}`;
+        
+        try {
+          const enquiries = JSON.parse(localStorage.getItem('kg_corporate_enquiries') || '[]');
+          enquiries.unshift({
+            id: 'ENQ-' + Date.now().toString(36).toUpperCase(),
+            date: new Date().toLocaleString(),
+            company: company || 'N/A',
+            contactName: contactName || 'N/A',
+            mobile: mobile || 'N/A',
+            email: email || 'N/A',
+            qty: qty || 'N/A',
+            budget: budget || 'N/A',
+            notes: notes || ''
+          });
+          localStorage.setItem('kg_corporate_enquiries', JSON.stringify(enquiries.slice(0, 100)));
+        } catch (err) {
+          console.error('Error recording corporate enquiry:', err);
+        }
+
         window.open(waUrl, '_blank');
         
         alert(`✅ Thank you! Your quotation request for "${company || contactName}" has been received. We will send the customized quotation and catalog to your Gmail ID (${email || 'your email'}) and contact you shortly.`);
@@ -782,6 +809,26 @@ function initOrderBuilder() {
     text += `\nPlease let me know the current pricing and payment details. Thank you!`;
     const encodedText = encodeURIComponent(text);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+
+    try {
+      const orders = JSON.parse(localStorage.getItem('kg_order_history') || '[]');
+      orders.unshift({
+        id: 'ORD-' + Date.now().toString(36).toUpperCase(),
+        date: new Date().toLocaleString(),
+        items: cart.map(i => ({
+          name: i.name,
+          variant: i.variant,
+          quantity: i.quantity,
+          price: findPriceInList(i.name, i.variant) || 0
+        })),
+        totalItems: cart.reduce((sum, i) => sum + i.quantity, 0),
+        estimatedTotal: totalPrice,
+        status: 'Sent via WhatsApp'
+      });
+      localStorage.setItem('kg_order_history', JSON.stringify(orders.slice(0, 100)));
+    } catch (err) {
+      console.error('Error logging order history:', err);
+    }
 
     window.open(whatsappUrl, '_blank');
   }
