@@ -24,10 +24,18 @@
       .replace(/"/g, '&quot;');
   }
 
-  // Get active catalog from engine
+  // Get active catalog from engine or storage
   function getCatalog() {
     if (typeof window.getLiveCatalog === 'function') {
-      return window.getLiveCatalog();
+      const live = window.getLiveCatalog();
+      if (Array.isArray(live) && live.length > 0) return live;
+    }
+    const cached = localStorage.getItem('kg_live_catalog') || localStorage.getItem('kg_prices_local');
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch(e) {}
     }
     if (Array.isArray(window.priceListData) && window.priceListData.length > 0) {
       return window.priceListData;
@@ -35,23 +43,54 @@
     return window.defaultPriceCatalog || [];
   }
 
-  // Normalize category name to standard group
-  function normalizeCategory(cat) {
-    if (!cat) return 'Other';
-    const c = cat.trim();
-    if (/cashew/i.test(c)) return 'Cashews';
-    if (/almond/i.test(c)) return 'Almonds';
-    if (/pista/i.test(c)) return 'Pistachios';
-    if (/raisin|kishmish/i.test(c)) return 'Raisins';
-    if (/date/i.test(c)) return 'Dates';
-    if (/seed/i.test(c)) return 'Seeds';
-    if (/nut/i.test(c)) {
-      if (/cashew/i.test(c)) return 'Cashews';
-      if (/almond/i.test(c)) return 'Almonds';
-      if (/pista/i.test(c)) return 'Pistachios';
-      return 'Other';
-    }
+  // Robust Category Identifier (Checks both item.category and item.name)
+  function getItemCategory(item) {
+    if (!item) return 'Other';
+    const name = String(item.name || '').toLowerCase();
+    const cat = String(item.category || '').toLowerCase();
+    const combined = `${cat} ${name}`;
+
+    if (/cashew|kaju/i.test(combined)) return 'Cashews';
+    if (/almond|badam/i.test(combined)) return 'Almonds';
+    if (/pista|pistachio/i.test(combined)) return 'Pistachios';
+    if (/raisin|kishmish/i.test(combined)) return 'Raisins';
+    if (/date|khajoor|kharik|medjool|ajwa/i.test(combined)) return 'Dates';
+    if (/seed|chia|pumpkin|flax|sunflower|watermelon|cucumber|sabja/i.test(combined)) return 'Seeds';
     return 'Other';
+  }
+
+  // Smart Product Image Resolver (Matches images even for older cache entries)
+  function getProductImage(item) {
+    if (item.image && typeof item.image === 'string' && item.image.trim() !== '') {
+      return item.image;
+    }
+    const name = String(item.name || '').toLowerCase();
+    if (/pepper.*cashew/i.test(name)) return 'assets/product-pepper-cashews.png';
+    if (/chilli.*cashew/i.test(name)) return 'assets/product-chilli-cashews.png';
+    if (/cashew|kaju/i.test(name)) return 'assets/product-cashews.png';
+    if (/almond|badam/i.test(name)) return 'assets/product-almonds.png';
+    if (/pista|pistachio/i.test(name)) return 'assets/product-pistachios.png';
+    if (/black.*raisin/i.test(name)) return 'assets/product-black-raisins.png';
+    if (/raisin|kishmish/i.test(name)) return 'assets/product-raisins.png';
+    if (/black.*date/i.test(name)) return 'assets/product-black-dates.png';
+    if (/dry.*date/i.test(name)) return 'assets/product-dry-dates.png';
+    if (/date|medjool|ajwa/i.test(name)) return 'assets/product-dates.png';
+    if (/chia/i.test(name)) return 'assets/product-chia-seeds.png';
+    if (/pumpkin/i.test(name)) return 'assets/product-pumpkin-seeds.png';
+    if (/sunflower/i.test(name)) return 'assets/product-sunflower-seeds.png';
+    if (/flax/i.test(name)) return 'assets/product-flax-seeds.png';
+    if (/cucumber/i.test(name)) return 'assets/product-cucumber-seeds.png';
+    if (/watermelon/i.test(name)) return 'assets/product-watermelon-seeds.png';
+    if (/sabja/i.test(name)) return 'assets/product-sabja-seeds.png';
+    if (/seed/i.test(name)) return 'assets/product-seeds.png';
+    if (/fig|anjeer/i.test(name)) return 'assets/product-figs.png';
+    if (/walnut|akhrot/i.test(name)) return 'assets/product-walnuts.png';
+    if (/apricot|jardalu/i.test(name)) return 'assets/product-apricots.png';
+    if (/blueberry/i.test(name)) return 'assets/product-dry-blueberry.png';
+    if (/cranberry/i.test(name)) return 'assets/product-dry-cranberry.png';
+    if (/honey/i.test(name)) return 'assets/product-honey.png';
+    if (/gift|hamper|box/i.test(name)) return 'assets/product-gift-box.png';
+    return 'assets/karol-grove-pouch.png';
   }
 
   // Compute discount percentage
@@ -61,77 +100,53 @@
     return pct > 0 ? `${pct}% OFF` : null;
   }
 
-  // Get categories that actually contain products
-  function getAvailableCategories(catalog) {
-    const active = new Set();
-    catalog.forEach(item => {
-      const cat = item.category ? item.category : normalizeCategory(item.category);
-      active.add(cat);
-    });
-
-    const ordered = [];
-    ORDERED_CATEGORIES.forEach(cat => {
-      if (cat === 'All') {
-        ordered.push('All');
-      } else if (active.has(cat)) {
-        ordered.push(cat);
-      }
-    });
-
-    // Add any category from catalog not in predefined list under 'Other'
-    active.forEach(cat => {
-      if (!ORDERED_CATEGORIES.includes(cat) && !ordered.includes(cat)) {
-        if (!ordered.includes('Other')) ordered.push('Other');
-      }
-    });
-
-    return ordered;
-  }
-
   // Render Filter Tabs
   function renderFilterTabs() {
     const container = document.getElementById('pricelist-filter-tabs');
     if (!container) return;
 
     const catalog = getCatalog();
-    const availableCats = getAvailableCategories(catalog);
+    
+    // Group counts
+    const counts = { All: catalog.length };
+    ORDERED_CATEGORIES.forEach(c => { if (c !== 'All') counts[c] = 0; });
 
-    // If current selected category no longer exists, reset to All
-    if (currentCategory !== 'All' && !availableCats.includes(currentCategory)) {
-      currentCategory = 'All';
-    }
+    catalog.forEach(item => {
+      const cat = getItemCategory(item);
+      if (counts[cat] !== undefined) {
+        counts[cat]++;
+      } else {
+        counts['Other'] = (counts['Other'] || 0) + 1;
+      }
+    });
 
     let html = '';
-    availableCats.forEach(cat => {
-      let count = 0;
-      if (cat === 'All') {
-        count = catalog.length;
-      } else {
-        count = catalog.filter(i => (i.category === cat || normalizeCategory(i.category) === cat)).length;
+    ORDERED_CATEGORIES.forEach(cat => {
+      const count = counts[cat] || 0;
+      // Only display categories that actually contain products
+      if (count > 0 || cat === 'All') {
+        const isActive = (currentCategory === cat);
+        html += `
+          <button type="button" 
+                  class="cat-pill ${isActive ? 'active' : ''}" 
+                  data-category="${escapeHtml(cat)}"
+                  onclick="window.selectPricelistCategory('${escapeHtml(cat)}')"
+                  style="padding: 9px 18px; border-radius: 30px; font-weight: 700; font-size: 13.5px; cursor: pointer; transition: all 0.2s ease;">
+            ${escapeHtml(cat)} <span style="opacity: 0.8; font-size: 11.5px; margin-left: 4px;">(${count})</span>
+          </button>
+        `;
       }
-
-      const isActive = currentCategory === cat;
-      html += `
-        <button type="button" 
-                class="cat-pill ${isActive ? 'active' : ''}" 
-                data-category="${escapeHtml(cat)}"
-                style="padding: 9px 18px; border-radius: 30px; font-weight: 700; font-size: 13.5px; cursor: pointer; transition: all 0.2s ease;">
-          ${escapeHtml(cat)} <span style="opacity: 0.75; font-size: 11.5px; margin-left: 4px;">(${count})</span>
-        </button>
-      `;
     });
 
     container.innerHTML = html;
-
-    container.querySelectorAll('.cat-pill').forEach(btn => {
-      btn.addEventListener('click', function() {
-        container.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        currentCategory = this.getAttribute('data-category');
-        renderPublicCatalogue();
-      });
-    });
   }
+
+  // Category selection handler
+  window.selectPricelistCategory = function(cat) {
+    currentCategory = cat;
+    renderFilterTabs();
+    renderPublicCatalogue();
+  };
 
   // Add to cart with visual feedback
   function handleAddToCart(name, variant, btnElement) {
@@ -158,13 +173,20 @@
     const container = document.getElementById('pricelist-catalogue-container');
     if (!container) return;
 
+    // Force visibility (never allow opacity: 0 to hide items)
+    container.classList.remove('reveal');
+    container.classList.add('revealed');
+    container.style.opacity = '1';
+    container.style.visibility = 'visible';
+    container.style.display = 'grid';
+
     if (items.length === 0) {
       container.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #FFFFFF; border-radius: 16px; border: 1px dashed #CCD7D0;">
-          <div style="font-size: 40px; margin-bottom: 12px;">🔍</div>
-          <h3 style="color: #0E3B2E; font-family: var(--font-display); font-size: 22px; margin-bottom: 8px;">No products found</h3>
-          <p style="color: #64746B; font-size: 14px; margin-bottom: 16px;">Try adjusting your search query or switching to "All" category.</p>
-          <button onclick="window.clearPricelistFilters()" class="btn btn-launch-primary" style="padding: 8px 18px; font-size: 13px;">Clear Filters</button>
+        <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; background: #FFFFFF; border-radius: 16px; border: 1.5px dashed #CCD7D0;">
+          <div style="font-size: 38px; margin-bottom: 10px;">🔍</div>
+          <h3 style="color: #0E3B2E; font-family: var(--font-display); font-size: 22px; margin-bottom: 8px;">No products found in this category</h3>
+          <p style="color: #64746B; font-size: 14px; margin-bottom: 16px;">Try switching to "All" or clear your search query.</p>
+          <button onclick="window.clearPricelistFilters()" class="btn-action btn-action-edit" style="padding: 10px 20px; font-size: 13.5px; border-radius: 8px; cursor: pointer;">Show All Products</button>
         </div>
       `;
       return;
@@ -173,19 +195,27 @@
     let html = '';
     items.forEach(item => {
       const isAvailable = (item.availability !== 'disabled' && item.availability !== 'out_of_stock');
-      const catName = item.category || 'Dry Fruits';
-      const imgSrc = item.image || 'assets/karol-grove-pouch.png';
-      const desc = item.description || 'Premium quality selected dry fruits & nuts, packaged for guaranteed freshness.';
+      const catName = getItemCategory(item);
+      const imgSrc = getProductImage(item);
+      const desc = item.description || 'Premium quality selected dry fruits & nuts, packaged for guaranteed crisp freshness.';
 
       // Compile variants: support item.variants or fallback to price250g / price500g / price1kg
       let variants = [];
       if (Array.isArray(item.variants) && item.variants.length > 0) {
         variants = item.variants;
       } else {
-        if (item.price250g) variants.push({ packSize: '250 g', price: item.price250g, mrp: item.mrp || null });
-        if (item.price500g) variants.push({ packSize: '500 g', price: item.price500g, mrp: item.mrp ? Math.round(item.mrp * 1.9) : null });
-        if (item.price1kg) variants.push({ packSize: '1 kg', price: item.price1kg, mrp: item.mrp ? Math.round(item.mrp * 3.7) : null });
-        if (variants.length === 0 && item.price) variants.push({ packSize: `${item.packSize || 1} ${item.unit || 'pack'}`, price: item.price, mrp: item.mrp || null });
+        if (item.price250g !== undefined && item.price250g !== '') {
+          variants.push({ packSize: '250 g', price: item.price250g, mrp: item.mrp250g || item.mrp || Math.round(item.price250g * 1.18) });
+        }
+        if (item.price500g !== undefined && item.price500g !== '') {
+          variants.push({ packSize: '500 g', price: item.price500g, mrp: item.mrp500g || (item.mrp ? Math.round(item.mrp * 1.9) : Math.round(item.price500g * 1.18)) });
+        }
+        if (item.price1kg !== undefined && item.price1kg !== '') {
+          variants.push({ packSize: '1 kg', price: item.price1kg, mrp: item.mrp1kg || (item.mrp ? Math.round(item.mrp * 3.7) : Math.round(item.price1kg * 1.18)) });
+        }
+        if (variants.length === 0 && item.price) {
+          variants.push({ packSize: `${item.packSize || 1} ${item.unit || 'pack'}`, price: item.price, mrp: item.mrp || null });
+        }
       }
 
       // Generate variant rows
@@ -254,7 +284,7 @@
               <a href="https://wa.me/+918494832492?text=Hi%20Karol%20Grove%2C%20I%20want%20to%20order%20${encodeURIComponent(item.name)}" 
                  target="_blank" 
                  rel="noopener" 
-                 style="font-size: 12px; color: #0E3B2E; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                 style="font-size: 12.5px; color: #0E3B2E; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
                 <span>💬</span> WhatsApp Order &rarr;
               </a>
               <span style="font-size: 11px; color: #8A9B92;">100% Quality Inspected</span>
@@ -267,10 +297,16 @@
     container.innerHTML = html;
   }
 
-  // Render Old-Model Table (Alternative View)
+  // Render Table View (Alternative)
   function renderTable(items) {
     const tableBody = document.getElementById('pricelist-table-body');
+    const tableContainer = document.getElementById('pricelist-table-container');
     if (!tableBody) return;
+
+    if (tableContainer) {
+      tableContainer.classList.remove('reveal');
+      tableContainer.classList.add('revealed');
+    }
 
     if (items.length === 0) {
       tableBody.innerHTML = `
@@ -300,12 +336,12 @@
       html += `
         <tr>
           <td style="width: 20%;">
-            <span class="item-category-tag" style="background: rgba(14, 59, 46, 0.08); color: var(--forest); padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 11.5px; text-transform: uppercase;">
-              ${escapeHtml(item.category || 'Dry Fruits')}
+            <span class="item-category-tag" style="background: rgba(14, 59, 46, 0.08); color: #0E3B2E; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 11.5px; text-transform: uppercase;">
+              ${escapeHtml(getItemCategory(item))}
             </span>
           </td>
           <td style="width: 44%;">
-            <strong style="color: var(--forest-deep); font-size: 15px;">${escapeHtml(item.name)}</strong>
+            <strong style="color: #0E3B2E; font-size: 15px;">${escapeHtml(item.name)}</strong>
           </td>
           <td class="price-col" style="width: 12%; text-align: center;">${p250}</td>
           <td class="price-col" style="width: 12%; text-align: center;">${p500}</td>
@@ -324,15 +360,15 @@
     // Filter items
     const filtered = catalog.filter(item => {
       // Category match
-      const itemCat = item.category || normalizeCategory(item.category);
-      const catMatch = (currentCategory === 'All') || (itemCat === currentCategory) || (normalizeCategory(itemCat) === currentCategory);
+      const itemCat = getItemCategory(item);
+      const catMatch = (currentCategory === 'All') || (itemCat === currentCategory);
 
       // Search match
       const q = searchQuery.toLowerCase().trim();
       const nameMatch = !q ||
-        (item.name && item.name.toLowerCase().includes(q)) ||
-        (item.category && item.category.toLowerCase().includes(q)) ||
-        (item.description && item.description.toLowerCase().includes(q));
+        (item.name && String(item.name).toLowerCase().includes(q)) ||
+        (itemCat && itemCat.toLowerCase().includes(q)) ||
+        (item.description && String(item.description).toLowerCase().includes(q));
 
       return catMatch && nameMatch;
     });
@@ -340,10 +376,10 @@
     // Update count indicator
     const countIndicator = document.getElementById('pricelist-count-badge');
     if (countIndicator) {
-      countIndicator.textContent = `Showing ${filtered.length} of ${catalog.length} items`;
+      countIndicator.textContent = `Showing ${filtered.length} of ${catalog.length} products`;
     }
 
-    // Always render both so tab switches are instantaneous
+    // Render cards and table
     renderCatalogueCards(filtered);
     renderTable(filtered);
   }
@@ -358,13 +394,21 @@
     const btnTable = document.getElementById('view-toggle-table');
 
     if (view === 'table') {
-      if (cardsContainer) cardsContainer.style.display = 'none';
-      if (tableContainer) tableContainer.style.display = 'block';
+      if (cardsContainer) cardsContainer.style.setProperty('display', 'none', 'important');
+      if (tableContainer) {
+        tableContainer.style.setProperty('display', 'block', 'important');
+        tableContainer.style.setProperty('opacity', '1', 'important');
+        tableContainer.style.setProperty('visibility', 'visible', 'important');
+      }
       if (btnCards) btnCards.classList.remove('active');
       if (btnTable) btnTable.classList.add('active');
     } else {
-      if (cardsContainer) cardsContainer.style.display = 'grid';
-      if (tableContainer) tableContainer.style.display = 'none';
+      if (cardsContainer) {
+        cardsContainer.style.setProperty('display', 'grid', 'important');
+        cardsContainer.style.setProperty('opacity', '1', 'important');
+        cardsContainer.style.setProperty('visibility', 'visible', 'important');
+      }
+      if (tableContainer) tableContainer.style.setProperty('display', 'none', 'important');
       if (btnCards) btnCards.classList.add('active');
       if (btnTable) btnTable.classList.remove('active');
     }
@@ -383,15 +427,15 @@
   // Download CSV
   function downloadCSV() {
     const catalog = getCatalog();
-    let csv = "Product Name,Category,Pack Sizes,250g Price,500g Price,1kg Price,Availability\n";
+    let csv = "Product Name,Category,250g Price,500g Price,1kg Price,Availability\n";
     catalog.forEach(item => {
       const name = item.name.includes(',') ? `"${item.name}"` : item.name;
-      const cat = item.category ? (item.category.includes(',') ? `"${item.category}"` : item.category) : 'Dry Fruits';
+      const cat = getItemCategory(item);
       const p250 = item.price250g || '';
       const p500 = item.price500g || '';
       const p1kg = item.price1kg || '';
       const avail = item.availability || 'available';
-      csv += `${name},${cat},"250g, 500g, 1kg",${p250},${p500},${p1kg},${avail}\n`;
+      csv += `${name},${cat},${p250},${p500},${p1kg},${avail}\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
