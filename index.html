@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karol Grove — Grand Website Launch | Premium Dry Fruits & Nuts</title>
+<meta name="description" content="Grand Website Launch 02 October 2026! Up to 40% OFF on selected products. Karol Grove brings you premium, hand-picked dry fruits, nuts, seeds and natural sweeteners.">
+<link rel="icon" href="assets/karol-grove-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=20261002-v3">
+<script src="assets/prices.js" defer></script>
+<script src="assets/main.js?v=20261002-v3" defer></script>
+</head>
+<body>
+
+<!-- Sticky Header & Navigation -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="brand">
+      <img src="assets/karol-grove-icon.png" alt="Karol Grove Premium Dry Fruits & Nuts" class="brand-logo-img">
+      <div class="brand-text">
+        <span class="brand-name">Karol Grove</span>
+        <span class="brand-tagline">Premium Dry Fruits &amp; Nuts</span>
+      </div>
+    </a>
+    <nav class="main-nav">
+      <a href="index.html" class="active">Home</a>
+      <a href="products.html">Products</a>
+      <a href="#launch-offers">Launch Offers</a>
+      <a href="corporate-gifts.html">Corporate Gifting</a>
+      <a href="pricelist.html">Price List</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="header-actions-group">
+      <button class="header-cart-btn" onclick="toggleCartDrawer(true)" aria-label="Shopping Cart">
+        <span class="cart-icon-symbol">🛒</span>
+        <span class="cart-text">Cart</span>
+        <span class="badge cart-badge">0</span>
+      </button>
+      <a class="header-cta" href="https://wa.me/+918494832492" target="_blank" rel="noopener">WhatsApp Order &rarr;</a>
+      <button class="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html" class="active">Home</a>
+    <a href="products.html">Products</a>
+    <a href="#launch-offers">Launch Offers</a>
+    <a href="corporate-gifts.html">Corporate Gifting</a>
+    <a href="pricelist.html">Price List</a>
+    <a href="contact.html">Contact</a>
+    <a href="https://wa.me/+918494832492" target="_blank" rel="noopener" style="color:var(--forest); font-weight:700;">💬 Order on WhatsApp</a>
+  </div>
+</header>
+
+<!-- 1. HOMEPAGE HERO — LAUNCH OFFER PRIMARY MESSAGE -->
+<section class="hero-launch-wrapper">
+  <video autoplay muted loop playsinline poster="assets/karol-grove-pouch-hd.jpg" class="hero-bg-video">
+    <source src="assets/hero-video.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-launch-content reveal">
+    <div class="launch-pill-eyebrow">
+      <span class="pulse-live-dot"></span> GRAND WEBSITE LAUNCH
+    </div>
+    <h1 class="hero-launch-h1">
+      <span class="gold-highlight">UP TO 40% OFF</span>
+      <span class="sub-heading-text">ON SELECTED PRODUCTS</span>
+    </h1>
+    <div>
+      <div class="hero-launch-date-tag">
+        📅 02 OCTOBER 2026
+      </div>
+    </div>
+    <div class="hero-supporting-message">
+      <span>✓ Easy Cart</span>
+      <span class="bullet">•</span>
+      <span>✓ Current Prices</span>
+      <span class="bullet">•</span>
+      <span>✓ WhatsApp Checkout</span>
+    </div>
+    <div class="hero-launch-actions">
+      <a href="#launch-offers" class="btn btn-launch-primary">SHOP LAUNCH OFFERS &rarr;</a>
+      <a href="products.html" class="btn btn-launch-secondary">Browse All Products</a>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Feature Strip -->
+<section class="feature-strip">
+  <div class="container feature-grid reveal">
+    <div class="feature-item">
+      <span class="icon">🌿</span>
+      <div>
+        <h3>Quality-Focused</h3>
+        <p>Premium handpicked dry fruits &amp; crunchy nuts</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="icon">🏷️</span>
+      <div>
+        <h3>Transparent Prices</h3>
+        <p>Current retail &amp; bulk rates displayed online</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="icon">💬</span>
+      <div>
+        <h3>WhatsApp Convenience</h3>
+        <p>Instant order review and confirmation</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. DEDICATED LAUNCH OFFERS SECTION -->
+<section class="section section-launch-offers" id="launch-offers">
+  <div class="container">
+    <div class="launch-offers-banner reveal">
+      <div class="launch-offers-banner-text">
+        <span class="launch-badge-pill">🔥 GRAND LAUNCH OFFERS</span>
+        <h2>Up to <span>40% OFF</span> on Selected Products</h2>
+        <p>Celebrate our official website launch on <strong>02 October 2026</strong> with special promotional savings on handpicked premium favorites. Add items to your basket and confirm conveniently on WhatsApp.</p>
+      </div>
+      <div>
+        <a href="products.html" class="btn btn-launch-primary">SHOP LAUNCH OFFERS &rarr;</a>
+      </div>
+    </div>
+
+    <!-- Curated Launch Products Grid using Existing Prices from prices.js -->
+    <div class="product-grid" style="margin-top: 30px;">
+
+      <!-- Launch Product 1: Premium Almonds -->
+      <div class="glass-card product-card tilt-card reveal">
+        <div class="product-img-wrapper">
+          <img src="assets/product-almonds.png" alt="Premium Almonds (Badam)" class="product-card-img">
+          <span class="label" style="background: var(--terracotta); color: #fff;">Launch Special</span>
+        </div>
+        <div class="product-card-body">
+          <h3>Premium Almonds (Badam)</h3>
+          <p>Crisp, nutrient-dense California harvest. Packed with Vitamin E and healthy proteins.</p>
+          <div class="product-selector">
+            <div class="variant-wrapper">
+              <span>Select Size:</span>
+              <select class="variant-select">
+                <option value="250g">250g — ₹220</option>
+                <option value="500g" selected>500g — ₹430</option>
+                <option value="1kg">1kg — ₹850</option>
+              </select>
+            </div>
+            <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Launch Product 2: Premium Cashews -->
+      <div class="glass-card product-card tilt-card reveal">
+        <div class="product-img-wrapper">
+          <img src="assets/product-cashews.png" alt="Premium Cashews (Kaju)" class="product-card-img">
+          <span class="label" style="background: var(--terracotta); color: #fff;">Launch Special</span>
+        </div>
+        <div class="product-card-body">
+          <h3>Premium Cashews (Kaju) - W240</h3>
+          <p>Plump, whole, grade-A cashews with a rich buttery crunch. Hygienically packed.</p>
+          <div class="product-selector">
+            <div class="variant-wrapper">
+              <span>Select Size:</span>
+              <select class="variant-select">
+                <option value="250g">250g — ₹250</option>
+                <option value="500g" selected>500g — ₹490</option>
+                <option value="1kg">1kg — ₹960</option>
+              </select>
+            </div>
+            <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Launch Product 3: Medjool Dates -->
+      <div class="glass-card product-card tilt-card reveal">
+        <div class="product-img-wrapper">
+          <img src="assets/product-dates-premium.png" alt="Medjool Dates (Premium)" class="product-card-img">
+          <span class="label" style="background: var(--terracotta); color: #fff;">Launch Special</span>
+        </div>
+        <div class="product-card-body">
+          <h3>Medjool Dates (Premium)</h3>
+          <p>King of dates with soft texture and natural caramel sweetness. Naturally delicious.</p>
+          <div class="product-selector">
+            <div class="variant-wrapper">
+              <span>Select Size:</span>
+              <select class="variant-select">
+                <option value="250g">250g — ₹350</option>
+                <option value="500g" selected>500g — ₹680</option>
+                <option value="1kg">1kg — ₹1300</option>
+              </select>
+            </div>
+            <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Launch Product 4: Dried Figs (Anjeer) -->
+      <div class="glass-card product-card tilt-card reveal">
+        <div class="product-img-wrapper">
+          <img src="assets/product-figs.png" alt="Dried Figs (Anjeer)" class="product-card-img">
+          <span class="label" style="background: var(--terracotta); color: #fff;">Launch Special</span>
+        </div>
+        <div class="product-card-body">
+          <h3>Dried Figs (Anjeer) - Premium Jumbo</h3>
+          <p>Naturally sweet, fiber-rich whole dried figs sorted for uniform size and freshness.</p>
+          <div class="product-selector">
+            <div class="variant-wrapper">
+              <span>Select Size:</span>
+              <select class="variant-select">
+                <option value="250g">250g — ₹340</option>
+                <option value="500g" selected>500g — ₹660</option>
+                <option value="1kg">1kg — ₹1280</option>
+              </select>
+            </div>
+            <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Launch Product 5: Festive Gift Hamper -->
+      <div class="glass-card product-card tilt-card reveal">
+        <div class="product-img-wrapper">
+          <img src="assets/product-gift-box.png" alt="Premium Festive Gift Hamper" class="product-card-img">
+          <span class="label" style="background: var(--forest); color: #fff;">Festive Favorite</span>
+        </div>
+        <div class="product-card-body">
+          <h3>Premium Festive Gift Hamper</h3>
+          <p>Curated assortment of premier nuts and dry fruits in an elegant gift box presentation.</p>
+          <div class="product-selector">
+            <div class="variant-wrapper">
+              <span>Select Size:</span>
+              <select class="variant-select">
+                <option value="250g">250g — ₹599</option>
+                <option value="500g" selected>500g — ₹999</option>
+                <option value="1kg">1kg — ₹1899</option>
+              </select>
+            </div>
+            <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Launch Product 6: Chia Seeds -->
+      <div class="glass-card product-card tilt-card reveal">
+        <div class="product-img-wrapper">
+          <img src="assets/product-chia-seeds.png" alt="Chia Seeds (Organic)" class="product-card-img">
+          <span class="label" style="background: var(--terracotta); color: #fff;">Launch Special</span>
+        </div>
+        <div class="product-card-body">
+          <h3>Chia Seeds (Organic)</h3>
+          <p>Omega-3 rich super-seeds for smoothies, puddings, and daily wellness nutrition.</p>
+          <div class="product-selector">
+            <div class="variant-wrapper">
+              <span>Select Size:</span>
+              <select class="variant-select">
+                <option value="250g">250g — ₹120</option>
+                <option value="500g" selected>500g — ₹220</option>
+                <option value="1kg">1kg — ₹420</option>
+              </select>
+            </div>
+            <button class="add-to-order-btn">🛒 Add to WhatsApp Order</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="text-align: center; margin-top: 45px;">
+      <a href="products.html" class="btn btn-launch-primary">VIEW ALL PRODUCTS &amp; OFFERS &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- 4. MAKE THE SHOPPING FLOW OBVIOUS (HOW TO ORDER) -->
+<section class="section" id="how-to-order" style="background: #FFFFFF;">
+  <div class="container">
+    <div class="section-head reveal" style="text-align: center; max-width: 700px; margin: 0 auto 30px;">
+      <span class="eyebrow" style="color: var(--forest); font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; font-size: 13px;">Simple &bull; Transparent</span>
+      <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-top: 8px;">HOW TO ORDER</h2>
+      <p style="font-size: 16px; color: var(--text-secondary); margin-top: 10px;">Building your basket and placing an order takes less than a minute.</p>
+    </div>
+
+    <div class="order-stepper-grid">
+      <!-- Step 01 -->
+      <div class="order-stepper-card reveal">
+        <div class="stepper-header-row">
+          <div class="stepper-icon-highlight" title="Browse Products">
+            <span>🔍</span>
+          </div>
+          <div class="stepper-number-highlight">
+            <span class="stepper-step-label">STEP</span>
+            <span class="stepper-num-val">01</span>
+          </div>
+        </div>
+        <h3>01 — Browse Products</h3>
+        <p>Choose your preferred dry fruits, nuts, seeds, and pack quantities from our online catalog.</p>
+      </div>
+
+      <!-- Step 02 -->
+      <div class="order-stepper-card reveal" style="transition-delay: 0.1s;">
+        <div class="stepper-header-row">
+          <div class="stepper-icon-highlight" title="Add to Cart">
+            <span>🛒</span>
+          </div>
+          <div class="stepper-number-highlight">
+            <span class="stepper-step-label">STEP</span>
+            <span class="stepper-num-val">02</span>
+          </div>
+        </div>
+        <h3>02 — Add to Cart</h3>
+        <p>Review your selected products and adjust quantities directly in your floating cart basket.</p>
+      </div>
+
+      <!-- Step 03 -->
+      <div class="order-stepper-card reveal" style="transition-delay: 0.2s;">
+        <div class="stepper-header-row">
+          <div class="stepper-icon-highlight" title="Confirm on WhatsApp">
+            <span>💬</span>
+          </div>
+          <div class="stepper-number-highlight">
+            <span class="stepper-step-label">STEP</span>
+            <span class="stepper-num-val">03</span>
+          </div>
+        </div>
+        <h3>03 — Confirm on WhatsApp</h3>
+        <p>Send your order through WhatsApp for instant confirmation, delivery scheduling, and payment.</p>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 45px;">
+      <a href="products.html" class="btn btn-launch-primary">SHOP NOW &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- 5. ADD A TRUST / WHY KAROL GROVE SECTION -->
+<section class="section" style="background: #FAF8F5;">
+  <div class="container">
+    <div class="section-head reveal" style="text-align: center; max-width: 750px; margin: 0 auto 20px;">
+      <span class="eyebrow" style="color: var(--gold-deep); font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; font-size: 13px;">Our Commitments</span>
+      <h2 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-top: 8px;">WHY KAROL GROVE?</h2>
+      <p style="font-size: 16px; color: var(--text-secondary); margin-top: 8px;">Clear standards, honest pricing, and personal customer service.</p>
+    </div>
+
+    <div class="trust-cards-grid">
+      <!-- Benefit 1 -->
+      <div class="trust-feature-card reveal">
+        <div class="trust-check-badge">✓</div>
+        <div>
+          <h4>Transparent Pricing</h4>
+          <p>Current product prices are displayed online clearly before you place your order.</p>
+        </div>
+      </div>
+
+      <!-- Benefit 2 -->
+      <div class="trust-feature-card reveal" style="transition-delay: 0.05s;">
+        <div class="trust-check-badge">✓</div>
+        <div>
+          <h4>Easy Ordering</h4>
+          <p>Add products directly to your cart and customize your preferred sizes with one click.</p>
+        </div>
+      </div>
+
+      <!-- Benefit 3 -->
+      <div class="trust-feature-card reveal" style="transition-delay: 0.1s;">
+        <div class="trust-check-badge">✓</div>
+        <div>
+          <h4>WhatsApp Confirmation</h4>
+          <p>Review and confirm your order conveniently through WhatsApp before dispatch.</p>
+        </div>
+      </div>
+
+      <!-- Benefit 4 -->
+      <div class="trust-feature-card reveal" style="transition-delay: 0.15s;">
+        <div class="trust-check-badge">✓</div>
+        <div>
+          <h4>Quality-Focused</h4>
+          <p>Premium dry fruits, nuts, and seeds carefully packed to maintain natural freshness and crunch.</p>
+        </div>
+      </div>
+
+      <!-- Benefit 5 -->
+      <div class="trust-feature-card reveal" style="transition-delay: 0.2s;">
+        <div class="trust-check-badge">✓</div>
+        <div>
+          <h4>Corporate Orders</h4>
+          <p>Dedicated support for corporate, employee appreciation, and bulk festive gifting requirements.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. MAKE THE PRICE INFORMATION EASIER TO FIND (PRICE BANNER) -->
+<section class="container reveal">
+  <div class="section-price-banner">
+    <div class="price-banner-text">
+      <span style="color: var(--forest); font-weight: 800; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 4px;">WEEKLY PRICE CATALOG</span>
+      <h3>CURRENT PRICES AVAILABLE ONLINE</h3>
+      <p>Check current retail and bulk rates across all nuts, dates, dried fruits, seeds, and gift packs before placing your order. No hidden charges.</p>
+    </div>
+    <div>
+      <a href="pricelist.html" class="btn btn-launch-primary">VIEW COMPLETE PRICE LIST &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- 7 & 8. REDESIGNED & SIMPLIFIED CORPORATE GIFTING SECTION -->
+<section class="section" id="corporate-gifting">
+  <div class="container">
+    <div class="corporate-commercial-container reveal">
+      <div class="corporate-commercial-grid">
+        
+        <!-- Left Side: Clear Business Information -->
+        <div class="corporate-commercial-info">
+          <span class="eyebrow">B2B &amp; Bulk Solutions</span>
+          <h2>CORPORATE GIFTING</h2>
+          <p class="corp-lead">Premium gifts for your employees, clients &amp; business partners.</p>
+          <p style="font-size: 14.5px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6;">
+            Make a memorable impression with thoughtful, health-focused dry fruit hampers. Designed for corporate festive gifting, employee milestones, client appreciation, and executive occasions.
+          </p>
+
+          <div class="corporate-feature-pills">
+            <div class="corp-feature-item">
+              <strong>Custom Branding</strong>
+              <span>Company logo on boxes, gift tags &amp; greeting cards</span>
+            </div>
+            <div class="corp-feature-item">
+              <strong>Multiple Budget Options</strong>
+              <span>From smart festive boxes to luxury wooden hampers</span>
+            </div>
+            <div class="corp-feature-item">
+              <strong>Bulk &amp; Festival Gifting</strong>
+              <span>Diwali, New Year, and annual corporate events</span>
+            </div>
+            <div class="corp-feature-item">
+              <strong>Pan-India Delivery</strong>
+              <span>Direct delivery to your office or multiple branches</span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center;">
+            <a href="corporate-gifts.html" class="btn btn-launch-secondary" style="background: var(--forest); border-color: var(--forest); color: #fff !important;">
+              Explore Corporate Gifting &rarr;
+            </a>
+            <a href="https://wa.me/+918494832492?text=Hi%20Karol%20Grove%2C%20I%20am%20interested%20in%20Corporate%20Gifting%20options." target="_blank" rel="noopener" style="font-size: 14px; font-weight: 700; color: var(--forest); text-decoration: underline;">
+              Chat with Corporate Team &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Side: Fast Quote Request Form -->
+        <div class="corporate-commercial-form-box">
+          <h3>Request Corporate Quote</h3>
+          <p>Get customized pricing and sample recommendations for your organization.</p>
+          <form id="corporateQuoteForm" class="corp-quick-form">
+            <div>
+              <label for="corpCompany">Company Name *</label>
+              <input type="text" id="corpCompany" name="company" placeholder="e.g. Infosys, Tata, Start-up Ltd" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div>
+                <label for="corpName">Contact Person *</label>
+                <input type="text" id="corpName" name="name" placeholder="Your Name" required>
+              </div>
+              <div>
+                <label for="corpMobile">Mobile Number *</label>
+                <input type="tel" id="corpMobile" name="mobile" placeholder="e.g. 9876543210" required>
+              </div>
+            </div>
+            <div>
+              <label for="corpEmail">Gmail / Official Email ID * (Quotation will be sent here)</label>
+              <input type="email" id="corpEmail" name="email" placeholder="e.g. yourname@gmail.com" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div>
+                <label for="corpQty">Estimated Quantity</label>
+                <select id="corpQty" name="quantity">
+                  <option value="25-50 hampers">25 – 50 hampers</option>
+                  <option value="50-200 hampers">50 – 200 hampers</option>
+                  <option value="200-500 hampers">200 – 500 hampers</option>
+                  <option value="500+ hampers">500+ hampers</option>
+                </select>
+              </div>
+              <div>
+                <label for="corpBudget">Budget per Box</label>
+                <select id="corpBudget" name="budget">
+                  <option value="₹500 - ₹1,000">₹500 – ₹1,000</option>
+                  <option value="₹1,000 - ₹2,000">₹1,000 – ₹2,000</option>
+                  <option value="₹2,000 - ₹3,500">₹2,000 – ₹3,500</option>
+                  <option value="Above ₹3,500">Above ₹3,500 (Luxury)</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn-corp-submit">
+              <span>REQUEST CORPORATE QUOTE</span> &rarr;
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. STRONG FINAL CTA SECTION -->
+<section class="container reveal">
+  <div class="section-final-cta">
+    <h2>READY TO SHOP KAROL GROVE?</h2>
+    <p>Explore our products, check current prices and order easily through WhatsApp.</p>
+    <div class="final-cta-buttons">
+      <a href="products.html" class="btn btn-launch-primary">SHOP NOW &rarr;</a>
+      <a href="corporate-gifts.html" class="btn btn-launch-secondary">CORPORATE GIFTING &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- 12. IMPROVED STANDARDIZED FOOTER -->
+<footer class="site-footer-v2">
+  <div class="container">
+    <div class="footer-v2-grid">
+      <!-- 1. Brand Info -->
+      <div class="footer-v2-col">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <img src="assets/karol-grove-icon.png" alt="Karol Grove" style="height: 44px; width: auto;">
+          <span style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: #FFFFFF;">Karol Grove</span>
+        </div>
+        <p>Karol Grove brings you premium, hand-picked dry fruits, nuts, seeds and natural sweeteners — freshly packed, honest prices, delivered to your doorstep.</p>
+        <p style="margin-top: 14px; font-size: 13px; color: var(--gold);">Official Website Launch: <strong>02 October 2026</strong></p>
+      </div>
+
+      <!-- 2. Shop -->
+      <div class="footer-v2-col">
+        <h4>SHOP</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="#launch-offers">Launch Offers</a></li>
+          <li><a href="pricelist.html">Price List</a></li>
+          <li><a href="products.html#nuts">Nuts Varieties</a></li>
+          <li><a href="products.html#dates">Premium Dates</a></li>
+          <li><a href="products.html#dried-fruits">Dried Fruits</a></li>
+        </ul>
+      </div>
+
+      <!-- 3. Corporate -->
+      <div class="footer-v2-col">
+        <h4>CORPORATE</h4>
+        <ul>
+          <li><a href="corporate-gifts.html">Corporate Gifting</a></li>
+          <li><a href="corporate-gifts.html#quote">Request Quote</a></li>
+          <li><a href="corporate-gifts.html#branding">Custom Branding</a></li>
+          <li><a href="corporate-gifts.html#festival">Festival Gifting</a></li>
+          <li><a href="corporate-gifts.html#bulk">Bulk Orders</a></li>
+        </ul>
+      </div>
+
+      <!-- 4. Help -->
+      <div class="footer-v2-col">
+        <h4>HELP</h4>
+        <ul>
+          <li><a href="#how-to-order">How to Order</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="https://wa.me/+918494832492" target="_blank" rel="noopener">WhatsApp Support</a></li>
+          <li><a href="about.html">Our Story</a></li>
+        </ul>
+      </div>
+
+      <!-- 5. Business Information -->
+      <div class="footer-v2-col">
+        <h4>BUSINESS INFO</h4>
+        <div class="footer-legal-badge">
+          <p><strong>Marketed &amp; Packed by:</strong><br>SRG Stores</p>
+          <p style="margin-top: 6px;"><strong>Location:</strong><br>Mullamparappu, Erode, Tamil Nadu 638115</p>
+          <p style="margin-top: 6px;"><strong>Phone &amp; WhatsApp:</strong><br>+91 84948 32492</p>
+          <p style="margin-top: 6px;"><strong>Email:</strong><br>karolgrovenuts@gmail.com</p>
+          <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15);">
+            <p><strong>GSTIN:</strong> 33JQUPK0008M1ZH</p>
+            <p><strong>FSSAI Lic. No.:</strong> 22421062000070</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-v2-bottom">
+      <div>&copy; 2026 Karol Grove. All rights reserved.</div>
+      <div>Official Launch Date: <strong>02 October 2026</strong> &bull; Up to 40% OFF Selected Products</div>
+      <div>Website: <a href="https://www.karolgrove.com">www.karolgrove.com</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating WhatsApp Action Button -->
+<a href="https://wa.me/918494832492?text=Hi%20Karol%20Grove%2C%20I%20would%20like%20to%20place%20an%20order." 
+   class="floating-whatsapp" 
+   target="_blank" 
+   rel="noopener" 
+   aria-label="Order on WhatsApp">
+  <div class="whatsapp-badge">Order on WhatsApp</div>
+  <svg class="whatsapp-icon-svg" viewBox="0 0 24 24" width="24" height="24">
+    <path fill="currentColor" d="M12.031 2c-5.514 0-9.99 4.477-9.99 9.99 0 2.08.636 4.01 1.728 5.614l-1.127 4.12 4.22-1.107c1.514.938 3.284 1.48 5.17 1.48 5.515 0 9.99-4.477 9.99-9.99 0-5.514-4.475-9.99-9.99-9.99zm5.556 14.13c-.224.634-1.22 1.157-1.68 1.206-.432.046-.86.23-2.738-.508-2.398-.942-3.896-3.376-4.016-3.536-.12-.16-1.002-1.332-1.002-2.54 0-1.21.632-1.804.856-2.048.225-.244.49-.305.653-.305.163 0 .326.002.47.01.15.008.347-.057.545.422.203.49.693 1.693.754 1.815.06.123.1.265.018.428-.08.163-.122.265-.244.407-.122.143-.257.32-.367.43-.122.12-.25.253-.108.497.143.244.636 1.05 1.362 1.7 1 .894 1.85 1.173 2.116 1.306.265.132.418.11.57-.06.153-.173.663-.774.846-1.037.183-.265.367-.224.622-.132.255.09 1.62.764 1.9.905.28.14.47.21.536.326.067.116.067.67-.156 1.306z"/>
+  </svg>
+</a>
+
+</body>
+</html>
