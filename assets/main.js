@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initProductFilters();
   initContactForm();
   initHeroVideoLoop();
+  initSecretAdminTrigger();
 });
 
 /* ==========================================================================
@@ -40,15 +41,19 @@ function initMobileNav() {
    Canvas Particles VFX
    ========================================================================== */
 function initCanvasParticles() {
-  const canvas = document.getElementById('vfx-canvas');
-  if (!canvas) return;
+  let canvas = document.getElementById('vfx-canvas');
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.id = 'vfx-canvas';
+    document.body.prepend(canvas);
+  }
 
   const ctx = canvas.getContext('2d');
   let particles = [];
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
-  const mouse = { x: null, y: null, radius: 160 };
+  const mouse = { x: null, y: null, radius: 180 };
 
   window.addEventListener('resize', () => {
     width = canvas.width = window.innerWidth;
@@ -56,8 +61,8 @@ function initCanvasParticles() {
   });
 
   window.addEventListener('mousemove', (e) => {
-    mouse.x = e.x;
-    mouse.y = e.y;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
   });
 
   window.addEventListener('mouseout', () => {
@@ -75,26 +80,15 @@ function initCanvasParticles() {
   ];
 
   const loadedImages = [];
-  let imagesLoaded = false;
-  let loadedCount = 0;
 
   imageUrls.forEach((url, index) => {
     const img = new Image();
     img.src = url;
     img.onload = () => {
       loadedImages[index] = img;
-      loadedCount++;
-      if (loadedCount === imageUrls.length) {
-        imagesLoaded = true;
-      }
     };
     img.onerror = () => {
-      console.warn('Failed to load particle image:', url);
-      loadedImages[index] = img;
-      loadedCount++;
-      if (loadedCount === imageUrls.length) {
-        imagesLoaded = true;
-      }
+      console.warn('Failed to load drizzle particle image:', url);
     };
   });
 
@@ -102,15 +96,15 @@ function initCanvasParticles() {
     constructor() {
       this.x = Math.random() * width;
       this.y = Math.random() * height;
-      // Increased size range for clear, beautiful display of cartoon characters (20px to 38px)
-      this.size = Math.random() * 18 + 20; 
-      this.speedX = Math.random() * 0.3 - 0.15;
-      this.speedY = Math.random() * 0.8 + 0.4; // Drizzles downward slowly and elegantly
+      // Increased size range for clear, beautiful display of cartoon characters (24px to 42px)
+      this.size = Math.random() * 18 + 24; 
+      this.speedX = Math.random() * 0.4 - 0.2;
+      this.speedY = Math.random() * 0.8 + 0.5; // Drizzles downward slowly and elegantly
       // 0 = Almond, 1 = Cashew, 2 = Raisin, 3 = Walnut, 4 = Pistachio
       this.type = Math.floor(Math.random() * 5);
-      this.alpha = Math.random() * 0.35 + 0.35; // Translucent and subtle
+      this.alpha = Math.random() * 0.35 + 0.55; // Crisp and visible
       this.angle = Math.random() * Math.PI * 2;
-      this.spin = Math.random() * 0.015 - 0.0075; // Subtle rotate
+      this.spin = Math.random() * 0.014 - 0.007; // Subtle rotate
     }
 
     update() {
@@ -119,13 +113,13 @@ function initCanvasParticles() {
       this.angle += this.spin;
 
       // Wrap-around edges for drizzle
-      if (this.y > height + 40) {
-        this.y = -40;
+      if (this.y > height + 50) {
+        this.y = -50;
         this.x = Math.random() * width;
-        this.speedY = Math.random() * 0.8 + 0.4;
+        this.speedY = Math.random() * 0.8 + 0.5;
       }
-      if (this.x < -40) this.x = width + 40;
-      if (this.x > width + 40) this.x = -40;
+      if (this.x < -50) this.x = width + 50;
+      if (this.x > width + 50) this.x = -50;
 
       // Mouse interactive push
       if (mouse.x != null && mouse.y != null) {
@@ -134,18 +128,17 @@ function initCanvasParticles() {
         let distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < mouse.radius) {
           let force = (mouse.radius - distance) / mouse.radius;
-          let directionX = dx / distance;
-          let directionY = dy / distance;
-          this.x += directionX * force * 3.0;
-          this.y += directionY * force * 3.0;
+          let directionX = dx / (distance || 1);
+          let directionY = dy / (distance || 1);
+          this.x += directionX * force * 3.5;
+          this.y += directionY * force * 3.5;
         }
       }
     }
 
     draw() {
-      if (!imagesLoaded) return;
       const img = loadedImages[this.type];
-      if (!img) return;
+      if (!img || !img.complete || !img.naturalWidth) return;
 
       ctx.save();
       ctx.globalAlpha = this.alpha;
@@ -162,7 +155,7 @@ function initCanvasParticles() {
 
   function init() {
     particles = [];
-    const count = Math.min(45, Math.floor((width * height) / 35000));
+    const count = Math.min(45, Math.floor((width * height) / 32000));
     for (let i = 0; i < count; i++) {
       particles.push(new Particle());
     }
@@ -634,17 +627,17 @@ function initOrderBuilder() {
           <!-- Items will render here -->
         </div>
         <div class="drawer-footer">
-          <div class="footer-summary" style="margin-bottom: 6px;">
-            <span>Total Items:</span>
-            <strong id="drawer-total-count">0</strong>
+          <div class="footer-summary" style="margin-bottom: 8px;">
+            <span style="color: var(--text-primary); font-weight: 600;">Total Items:</span>
+            <strong id="drawer-total-count" style="color: var(--forest-deep); font-weight: 700;">0</strong>
           </div>
-          <div class="footer-summary" style="margin-bottom: 6px;">
-            <span>Subtotal:</span>
-            <strong id="drawer-subtotal-price">₹0</strong>
+          <div class="footer-summary" style="margin-bottom: 8px;">
+            <span style="color: var(--text-primary); font-weight: 600;">Subtotal:</span>
+            <strong id="drawer-subtotal-price" style="color: var(--gold-deep); font-weight: 800;">₹0</strong>
           </div>
-          <div class="footer-summary" style="margin-bottom: 18px; border-top: 1px dashed rgba(0,0,0,0.15); padding-top: 10px;">
+          <div class="footer-summary" style="margin-bottom: 18px; border-top: 1px dashed rgba(18, 48, 32, 0.2); padding-top: 10px;">
             <span style="font-weight: 700; color: var(--forest-deep);">Estimated Total:</span>
-            <strong id="drawer-total-price" style="font-size: 20px; color: var(--gold-deep);">₹0</strong>
+            <strong id="drawer-total-price" style="font-size: 20px; color: var(--gold-deep); font-weight: 800;">₹0</strong>
           </div>
           <button class="btn btn-primary btn-block" style="width: 100%; margin-bottom: 10px; font-weight: 800; padding: 14px 20px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="sendWhatsAppOrder()">
             <span>Proceed to WhatsApp Order</span> &rarr;
@@ -692,7 +685,7 @@ function initOrderBuilder() {
       list.innerHTML = `
         <div class="empty-cart-state">
           <span class="ico">🍃</span>
-          <p>Your basket is empty. Add premium dry fruits, nuts & seeds from the catalog to build your WhatsApp order!</p>
+          <p style="color: var(--text-secondary); margin: 0;">Your basket is empty. Add premium dry fruits, nuts & seeds from the catalog to build your WhatsApp order!</p>
         </div>
       `;
       totalEl.textContent = '0';
@@ -715,21 +708,21 @@ function initOrderBuilder() {
       if (price) {
         const itemTotal = price * item.quantity;
         totalPrice += itemTotal;
-        priceDisplay = ` &bull; ₹${price}`;
-        qtyDisplay = `${item.quantity} <span style="font-size: 11px; color: var(--text-secondary); font-weight: normal;">(₹${itemTotal})</span>`;
+        priceDisplay = ` &bull; <strong style="color: var(--gold-deep); font-weight: 700;">₹${price}</strong>`;
+        qtyDisplay = `${item.quantity} <span style="font-size: 11px; color: var(--text-secondary); font-weight: 600;">(₹${itemTotal})</span>`;
       }
 
       itemsHtml += `
         <div class="cart-item-row">
           <div class="item-info">
-            <h4>${item.name}</h4>
-            <span class="variant">${item.variant}${priceDisplay}</span>
+            <h4 style="color: var(--text-primary); font-size: 14.5px; font-weight: 700; margin: 0 0 3px 0; line-height: 1.3;">${item.name}</h4>
+            <span class="variant" style="color: var(--gold-deep); font-weight: 700; font-size: 11.5px; text-transform: uppercase;">${item.variant}${priceDisplay}</span>
           </div>
           <div class="item-controls">
-            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', -1)">-</button>
-            <span class="qty">${qtyDisplay}</span>
-            <button onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', 1)">+</button>
-            <button class="remove" onclick="removeFromCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}')">&times;</button>
+            <button type="button" style="color: var(--text-primary); background: #ffffff; border: 1.5px solid rgba(18, 48, 32, 0.25);" onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', -1)">-</button>
+            <span class="qty" style="color: var(--text-primary); font-weight: 700;">${qtyDisplay}</span>
+            <button type="button" style="color: var(--text-primary); background: #ffffff; border: 1.5px solid rgba(18, 48, 32, 0.25);" onclick="addToCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}', 1)">+</button>
+            <button type="button" class="remove" onclick="removeFromCart('${escapeQuote(item.name)}', '${escapeQuote(item.variant)}')">&times;</button>
           </div>
         </div>
       `;
@@ -995,6 +988,42 @@ function initHeroVideoLoop() {
       heroVideo.currentTime = 0;
       heroVideo.play().catch(() => {});
     }
+  });
+}
+
+/* ==========================================================================
+   Method 3: Secret Triple-Click Admin Trigger
+   ========================================================================== */
+function initSecretAdminTrigger() {
+  let clickCount = 0;
+  let clickResetTimer = null;
+
+  function handleSecretClick(e) {
+    clickCount++;
+    clearTimeout(clickResetTimer);
+
+    if (clickCount >= 3) {
+      clickCount = 0;
+      if (typeof window.openAdminLogin === 'function') {
+        window.openAdminLogin();
+      } else {
+        window.location.href = 'pricelist.html?admin';
+      }
+    } else {
+      clickResetTimer = setTimeout(() => {
+        clickCount = 0;
+      }, 1500);
+    }
+  }
+
+  // Bind to footer bottom bar & copyright text
+  const copyrightElements = document.querySelectorAll(
+    '.footer-v2-bottom, .footer-v2-bottom div, .footer-bottom, .footer-copyright, .site-footer-v2 .footer-v2-bottom div'
+  );
+
+  copyrightElements.forEach((el) => {
+    el.addEventListener('click', handleSecretClick);
+    el.style.userSelect = 'none';
   });
 }
 

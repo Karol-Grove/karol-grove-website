@@ -612,7 +612,7 @@ function initPriceList() {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const pw = passwordInput.value;
-      if (pw === 'karoladmin') {
+      if (pw === '@dm!nl0gin') {
         sessionStorage.setItem('kg_admin_logged_in', 'true');
         isAdmin = true;
         closeAdminLogin();
@@ -623,6 +623,43 @@ function initPriceList() {
       }
     });
   }
+
+  // Secret / Hidden triggers to open Admin Login:
+  // 1. Secret URL: visit pricelist.html?admin or pricelist.html#admin
+  if (window.location.hash.toLowerCase().includes('admin') || window.location.search.toLowerCase().includes('admin')) {
+    setTimeout(() => {
+      window.openAdminLogin();
+    }, 400);
+  }
+
+  // 2. Secret Keyboard Shortcut: Ctrl + Shift + A  OR  Alt + A
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) || 
+        (e.altKey && (e.key === 'A' || e.key === 'a'))) {
+      e.preventDefault();
+      window.openAdminLogin();
+    }
+  });
+
+  // 3. Secret Triple-Click on footer copyright or page title
+  let clickCounter = 0;
+  let clickTimer = null;
+  const registerSecretClickTarget = (el) => {
+    if (!el) return;
+    el.addEventListener('click', () => {
+      clickCounter++;
+      clearTimeout(clickTimer);
+      if (clickCounter >= 3) {
+        clickCounter = 0;
+        window.openAdminLogin();
+      } else {
+        clickTimer = setTimeout(() => { clickCounter = 0; }, 700);
+      }
+    });
+  };
+
+  // Register footer copyright & header title as discreet triggers
+  document.querySelectorAll('.footer-v2-bottom div, .pricelist-header h1').forEach(registerSecretClickTarget);
 
   function enterAdminMode() {
     isAdmin = true;
